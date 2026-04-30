@@ -1,7 +1,445 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>我的主页</title></head>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>奥本海默组织 | 超越认知的边界</title>
+    <!-- Google Fonts 引入现代无衬线体与优雅衬线 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
+            font-family: 'Inter', sans-serif;
+            color: #eef5ff;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 动态粒子背景层 (轻微科技感) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 15% 30%, rgba(100, 150, 255, 0.2) 1px, transparent 1px),
+                radial-gradient(1.5px 1.5px at 72% 68%, rgba(80, 200, 255, 0.15) 1px, transparent 1px);
+            background-size: 48px 48px, 64px 64px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 头部区域 */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            border-bottom: 1px solid rgba(70, 130, 200, 0.3);
+            padding-bottom: 2rem;
+        }
+
+        .org-badge {
+            display: inline-block;
+            background: rgba(20, 40, 70, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 100px;
+            padding: 0.3rem 1.2rem;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            font-weight: 500;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #9fd3ff;
+            margin-bottom: 1.5rem;
+            font-family: monospace;
+        }
+
+        h1 {
+            font-size: clamp(2.6rem, 8vw, 4.8rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #91c9ff, #4f9eff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 160, 255, 0.2);
+        }
+
+        .subhead {
+            font-size: 1.2rem;
+            color: #c0d9ff;
+            max-width: 700px;
+            margin: 0 auto;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            border-left: 3px solid #3b82f6;
+            border-right: 3px solid #3b82f6;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+        }
+
+        .intro-text {
+            max-width: 800px;
+            margin: 2rem auto 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            background: rgba(10, 20, 35, 0.5);
+            backdrop-filter: blur(4px);
+            padding: 1.2rem 2rem;
+            border-radius: 48px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #e2edff;
+        }
+
+        /* 网格布局 四部门 */
+        .departments-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.8rem;
+            margin: 3rem 0 2rem;
+        }
+
+        /* 卡片样式：玻璃态 + 科技感 */
+        .card {
+            background: rgba(12, 22, 35, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.8rem 1.5rem;
+            transition: all 0.35s ease;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            box-shadow: 0 15px 35px -12px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa, #2563eb);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(16, 28, 44, 0.75);
+            box-shadow: 0 25px 40px -15px rgba(0, 100, 255, 0.3);
+        }
+
+        .card:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* 部门图标 */
+        .card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 1.2rem;
+            color: #60a5fa;
+            text-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+            transition: all 0.2s;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.05);
+            color: #90cdf4;
+        }
+
+        .card-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(120deg, #f0f9ff, #b9dcff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .card-sub {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #7aa9dd;
+            margin-bottom: 1rem;
+            border-left: 2px solid #3b82f6;
+            padding-left: 0.6rem;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #cfdfff;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #7f9fcf;
+            border-top: 1px solid rgba(72, 187, 255, 0.2);
+            padding-top: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .card-stats span i {
+            margin-right: 0.3rem;
+            font-size: 0.7rem;
+        }
+
+        /* 底部引用装饰 */
+        .quote-section {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 80px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #bbd9ff;
+        }
+
+        .quote-author {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #6c8fc7;
+        }
+
+        footer {
+            margin-top: 3.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #5e7d9e;
+            border-top: 1px solid rgba(72, 187, 255, 0.2);
+            padding-top: 2rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1100px) {
+            .departments-grid {
+                gap: 1.2rem;
+            }
+            .card-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .departments-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            .hero {
+                margin-bottom: 2.5rem;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .container {
+                padding: 1.5rem 1rem 2rem;
+            }
+            .departments-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .intro-text {
+                padding: 0.8rem 1rem;
+                font-size: 0.95rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .card-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07121f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2c5282;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* 装饰性浮动光晕 */
+        .glow-spot {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(59,130,246,0.05) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            top: -20vh;
+            right: -20vw;
+        }
+        .glow-spot-2 {
+            bottom: -30vh;
+            left: -20vw;
+            top: auto;
+            background: radial-gradient(circle, rgba(0,200,255,0.04) 0%, rgba(0,0,0,0) 70%);
+        }
+    </style>
+</head>
 <body>
-  <h1>你好，这里是我的个人网站！</h1>
+<div class="glow-spot"></div>
+<div class="glow-spot glow-spot-2"></div>
+
+<div class="container">
+    <div class="hero">
+        <div class="org-badge">
+            <i class="fas fa-microchip" style="margin-right: 6px;"></i>  Ω 绝密等级 · 超越理性边疆
+        </div>
+        <h1>奥本海默组织</h1>
+        <div class="subhead">Oppenheimer Collective — 驾驭未知，重构实相</div>
+        <div class="intro-text">
+            <i class="fas fa-eye" style="margin-right: 8px; opacity: 0.8;"></i> 
+            成立于1947年的隐秘智囊团，由顶尖理论家、实验先驱与逻辑哲学家共同创立。以“奥本海默之灯”为信标，致力于解开宇宙基本法则、突破认知极限，并在混沌中建立理性秩序。四大支柱协同运作，构成人类史上最精密的科学思想引擎。
+        </div>
+    </div>
+
+    <!-- 四大核心部门网格 -->
+    <div class="departments-grid">
+        <!-- 数学总部 -->
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-square-root-variable"></i>
+            </div>
+            <div class="card-title">数学总部</div>
+            <div class="card-sub">Mathematical Nexus · 公理奠基者</div>
+            <div class="card-desc">
+                一切理论的绝对起点。从集合论悖论到高维几何，数学总部构建了组织赖以推演的纯形式体系。超弦计算框架、范畴论语言、随机矩阵预测模型皆诞生于此。作为组织的大脑中枢，其严谨性确保任何物理推演与逻辑推理拥有坚不可摧的根基。
+            </div>
+            <div class="card-stats">
+                <span><i class="fas fa-chalkboard-user"></i> 7 位菲尔兹奖得主</span>
+                <span><i class="fas fa-infinity"></i> ∞ 未解命题档案</span>
+            </div>
+        </div>
+
+        <!-- 物理部 -->
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-atom"></i>
+            </div>
+            <div class="card-title">物理部</div>
+            <div class="card-sub">Physics Division · 万物法则之手</div>
+            <div class="card-desc">
+                从普朗克尺度到可观测宇宙边缘，物理部探索物质、能量与时空的本质。运行着全球最隐秘的粒子对撞设施与量子引力观测站，率先提出“奥本海默-玻恩全息原理”。部门同时主导异常现象实证研究，将玄秘转化为可计算方程，为组织提供技术突破的核心燃料。
+            </div>
+            <div class="card-stats">
+                <span><i class="fas fa-bolt"></i> 17 项诺贝尔奖级突破</span>
+                <span><i class="fas fa-charging-station"></i> 暗物质探测阵列</span>
+            </div>
+        </div>
+
+        <!-- 运转部 -->
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <div class="card-title">运转部</div>
+            <div class="card-sub">Operational Dynamics · 非凡执行之臂</div>
+            <div class="card-desc">
+                将理论锋芒转化为现实干预的关键齿轮。运转部掌控全球地下实验室网络、量子加密通信系统以及战术工程军团，负责大型科研计划的资源调度、临界实验的工程落地以及应急响应。从深海探测器到平流层纳米阵列，运转部让不可能实验成为日常。
+            </div>
+            <div class="card-stats">
+                <span><i class="fas fa-rocket"></i> 23 处绝密站点</span>
+                <span><i class="fas fa-diagram-project"></i> 实时调度矩阵</span>
+            </div>
+        </div>
+
+        <!-- 逻辑学部 -->
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="card-title">逻辑学部</div>
+            <div class="card-sub">Logic Academy · 理性圣殿</div>
+            <div class="card-desc">
+                致力于形式逻辑、计算理论及自指系统的边界探索。该部门开发了“超一致性验证引擎”，消除所有策略与科学框架内的潜在悖论。从哥德尔不完备到模态逻辑超结构，逻辑学部同时为人工智能意识奠基，是组织的决策验证中枢，防止思维谬误渗透。
+            </div>
+            <div class="card-stats">
+                <span><i class="fas fa-code-branch"></i> 元定理库 · δ 级协议</span>
+                <span><i class="fas fa-robot"></i> 自反式推理机</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 附加协同概述 / 组织宣言 -->
+    <div class="quote-section">
+        <div class="quote">
+            “我们在数学中编织真相，在物理中触碰深渊，借运转部将思想锻造成现实，并依逻辑学部审视每一个幻象。四重智慧汇于‘奥本海默之眼’，只因人类需要超越自身局限的勇气。”
+        </div>
+        <div class="quote-author">
+            —— 奥本海默组织宪章 · 第一卷
+        </div>
+    </div>
+
+    <!-- 额外功能点缀: 四大部门协同环形说明 (装饰性) -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2rem;">
+        <div style="background: rgba(59,130,246,0.1); border-radius: 40px; padding: 0.4rem 1rem; font-size: 0.7rem; backdrop-filter: blur(4px);">
+            <i class="fas fa-synagogue"></i> 数学总部 · 绝对公理
+        </div>
+        <div style="background: rgba(59,130,246,0.1); border-radius: 40px; padding: 0.4rem 1rem; font-size: 0.7rem; backdrop-filter: blur(4px);">
+            <i class="fas fa-flask"></i> 物理部 · 底层现实
+        </div>
+        <div style="background: rgba(59,130,246,0.1); border-radius: 40px; padding: 0.4rem 1rem; font-size: 0.7rem; backdrop-filter: blur(4px);">
+            <i class="fas fa-gear"></i> 运转部 · 工程意志
+        </div>
+        <div style="background: rgba(59,130,246,0.1); border-radius: 40px; padding: 0.4rem 1rem; font-size: 0.7rem; backdrop-filter: blur(4px);">
+            <i class="fas fa-scale-balanced"></i> 逻辑学部 · 一致性守护
+        </div>
+    </div>
+
+    <footer>
+        <i class="fas fa-shield-alt" style="opacity: 0.6;"></i> 奥本海默组织 · 超越认知边界的智识联盟<br>
+        © 2026 辛迪加档案 | 本页面为虚构学术概念，致敬理性探索精神
+    </footer>
+</div>
+
+<!-- 微小交互动效：卡片悬停音感？无需，但保持平滑。没有额外heavy js -->
 </body>
 </html>
