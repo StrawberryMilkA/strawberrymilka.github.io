@@ -176,6 +176,41 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* Rating 折线图区域 */
+        .rating-section {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 36px 32px;
+            margin-top: 40px;
+        }
+        .rating-section h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .rating-section h2::before {
+            content: "📈";
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 24px auto;
+            height: 400px;
+        }
+        .rating-note {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--text);
+            line-height: 1.7;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -398,6 +433,26 @@
             </div>
         </section>
 
+        <!-- ========== Rating 变化图表 ========== -->
+        <section class="rating-section">
+            <h2>Elo Rating 变化趋势</h2>
+            <p style="text-align:center; color: var(--text-light); margin-bottom: 8px;">
+                基于每场联测成绩动态更新，初始 Rating = 1500
+            </p>
+            <div class="chart-container">
+                <canvas id="ratingChart"></canvas>
+            </div>
+            <div class="rating-note">
+                <strong>📊 Rating 计算说明：</strong>
+                <ul style="margin: 8px 0 0 20px;">
+                    <li>采用类 Elo 算法，根据考生成绩排名及分差计算期望胜率，结合实际表现调整 Rating。</li>
+                    <li>首场联测后，曾奂霖（116分）净增 +96，邹宗睿（85分）+64，赵哲宇（65分）+32；</li>
+                    <li>高分者 Rating 显著提升，低分者暂时回落，后续多场累计将更准确反映长期实力。</li>
+                    <li>图表展示从初始 Rating 到最新一场的变化轨迹，后续考试将继续更新。</li>
+                </ul>
+            </div>
+        </section>
+
         <a href="/" class="back-link">← 返回组织主页</a>
     </main>
 
@@ -414,5 +469,91 @@
     </footer>
 
     <script src="/script.js"></script>
+
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        (function() {
+            // 基于 rating_backup_2026-05-01.json 的数据，手动构建每个学生的历史记录
+            const students = [
+                { id: "100001", name: "曾奂霖", color: "#e2b04a" },
+                { id: "100002", name: "丁致远", color: "#5a8fcf" },
+                { id: "100003", name: "邹宗睿", color: "#6abf69" },
+                { id: "100005", name: "何慕",     color: "#e05d5d" },
+                { id: "100006", name: "张浩民",   color: "#9b59b6" },
+                { id: "100007", name: "赵哲宇",   color: "#f39c12" },
+                { id: "100008", name: "李沂铮",   color: "#1abc9c" }
+            ];
+
+            // 每个学生的 Rating 历史：初始1500 + 2026-05-01 数值
+            const ratingData = {
+                "100001": [1500, 1596],
+                "100002": [1500, 1500],
+                "100003": [1500, 1564],
+                "100005": [1500, 1404],
+                "100006": [1500, 1452],
+                "100007": [1500, 1532],
+                "100008": [1500, 1452]
+            };
+
+            // X 轴标签
+            const labels = ["初始 Rating", "2026-05-01 联测"];
+
+            // 构建数据集
+            const datasets = students.map(s => ({
+                label: s.name,
+                data: ratingData[s.id],
+                borderColor: s.color,
+                backgroundColor: s.color + '20',
+                borderWidth: 2.5,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                tension: 0.2,
+                fill: false
+            }));
+
+            // 绘制折线图
+            const ctx = document.getElementById('ratingChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.dataset.label + ': ' + ctx.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 1300,
+                            max: 1700,
+                            title: {
+                                display: true,
+                                text: 'Rating'
+                            }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+    
 </body>
 </html>
