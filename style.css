@@ -100,6 +100,7 @@ a {
     height: 70px;
 }
 
+/* 修改 .nav-logo 样式 */
 .nav-logo {
     display: flex;
     align-items: center;
@@ -107,12 +108,21 @@ a {
     font-weight: 700;
     font-size: 1.3rem;
     color: var(--primary);
+    /* 移除文字相关 flex 布局？保留但简化为仅图片 */
+    gap: 0;
 }
 
 .nav-logo-img {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    /* 原样式 width: 36px; height: 36px; border-radius: 8px; */
+    height: 40px;          /* 固定高度，宽度自动按比例 */
+    width: auto;
+    border-radius: 4px;    /* 可根据需要保留微小圆角 */
+    display: block;
+}
+
+/* 如果 .nav-logo-text 存在，可隐藏或移除 */
+.nav-logo-text {
+    display: none;         /* 不再显示文字 */
 }
 
 .nav-links {
