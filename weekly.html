@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="奥本海默组织高联联测成绩 - ABHM_LCGL_25GZ">
+    <title>高联联测成绩 | 奥本海默组织</title>
+    <link rel="icon" type="image/png" href="/abhmmath.png">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* 成绩页面专用样式 */
+        .weekly-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+        .weekly-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .weekly-header h1 {
+            font-size: 2.6rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .weekly-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 16px;
+        }
+        .weekly-meta span {
+            background: var(--bg);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            background: white;
+            margin-bottom: 40px;
+        }
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+        .score-table th {
+            background: var(--primary);
+            color: white;
+            padding: 16px 14px;
+            font-weight: 600;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .score-table td {
+            padding: 14px 14px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        .score-table tbody tr:hover {
+            background: #f5f0e6;
+        }
+        .score-table .highlight-top {
+            background: #fdf6e3;
+            font-weight: 700;
+        }
+        .score-table .avg-row {
+            background: #ececec;
+            font-weight: 600;
+            color: var(--primary);
+            border-top: 2px solid var(--accent);
+        }
+        .score-table .avg-row td {
+            font-weight: 700;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity var(--transition);
+        }
+        .back-link:hover {
+            opacity: 0.8;
+        }
+        @media (max-width: 768px) {
+            .weekly-header h1 {
+                font-size: 2rem;
+            }
+            .score-table th, .score-table td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏（与主页一致） -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="/abhmmath.png" alt="奥本海默数学总部图标" class="nav-logo-img">
+                <span class="nav-logo-text">奥本海默组织</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/#history" class="nav-link">创立历程</a></li>
+                <li><a href="/#advantages" class="nav-link">我们的优势</a></li>
+                <li><a href="/#structure" class="nav-link">组织架构</a></li>
+                <li><a href="/#join" class="nav-link">加入我们</a></li>
+                <li><a href="/#contact" class="nav-link">联系方式</a></li>
+                <li><a href="/weekly.html" class="nav-link" style="color: var(--accent); font-weight: 700;">联测成绩</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+                <span class="menu-bar"></span>
+                <span class="menu-bar"></span>
+                <span class="menu-bar"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 成绩表格主体 -->
+    <main class="weekly-container">
+        <div class="weekly-header">
+            <h1>高联联合测试成绩</h1>
+            <div class="weekly-meta">
+                <span>📅 2026年4月22日</span>
+                <span>📝 试卷来源：2025广州市赛</span>
+                <span>📋 编号：ABHM_LCGL_25GZ</span>
+                <span>⏱ 一试 18:50-20:20 / 二试 20:30-21:30</span>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="score-table">
+                <thead>
+                    <tr>
+                        <th>考号</th>
+                        <th>姓名</th>
+                        <th>填空</th>
+                        <th>T11</th>
+                        <th>T12</th>
+                        <th>一试总分</th>
+                        <th>二试 T1</th>
+                        <th>二试 T2</th>
+                        <th>二试总分</th>
+                        <th>总分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight-top">
+                        <td>100001</td>
+                        <td><strong>曾奂霖</strong></td>
+                        <td>56</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td><strong>66</strong></td>
+                        <td>40</td>
+                        <td>10</td>
+                        <td><strong>50</strong></td>
+                        <td><strong>116</strong></td>
+                    </tr>
+                    <tr>
+                        <td>100003</td>
+                        <td>邹宗睿</td>
+                        <td>40</td>
+                        <td>5</td>
+                        <td>0</td>
+                        <td>45</td>
+                        <td>0</td>
+                        <td>40</td>
+                        <td>40</td>
+                        <td>85</td>
+                    </tr>
+                    <tr>
+                        <td>100007</td>
+                        <td>赵哲宇</td>
+                        <td>40</td>
+                        <td>5</td>
+                        <td>0</td>
+                        <td>45</td>
+                        <td>0</td>
+                        <td>20</td>
+                        <td>20</td>
+                        <td>65</td>
+                    </tr>
+                    <tr>
+                        <td>100002</td>
+                        <td>丁致远</td>
+                        <td>48</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>58</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>58</td>
+                    </tr>
+                    <tr>
+                        <td>100006</td>
+                        <td>张浩民</td>
+                        <td>32</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>42</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>42</td>
+                    </tr>
+                    <tr>
+                        <td>100008</td>
+                        <td>李沂铮</td>
+                        <td>32</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>32</td>
+                        <td>0</td>
+                        <td>10</td>
+                        <td>10</td>
+                        <td>42</td>
+                    </tr>
+                    <tr>
+                        <td>100005</td>
+                        <td>何慕</td>
+                        <td>32</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>32</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>32</td>
+                    </tr>
+                    <tr class="avg-row">
+                        <td>900001</td>
+                        <td>平均分</td>
+                        <td>40.0</td>
+                        <td>≈5.7</td>
+                        <td>0.0</td>
+                        <td>≈45.7</td>
+                        <td>≈5.7</td>
+                        <td>≈11.4</td>
+                        <td>≈17.1</td>
+                        <td>≈62.9</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/" class="back-link">← 返回组织主页</a>
+    </main>
+
+    <!-- 页脚（简化版） -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="/abhmmath.png" alt="奥本海默数学总部图标" class="footer-logo-img">
+                <span>奥本海默组织</span>
+            </div>
+            <p class="footer-tagline">培养数学思维 · 拓展数学视野</p>
+            <p class="footer-copy">&copy; 2022-2026 奥本海默组织</p>
+        </div>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>
