@@ -113,10 +113,9 @@ a {
 }
 
 .nav-logo-img {
-    /* 原样式 width: 36px; height: 36px; border-radius: 8px; */
-    height: 40px;          /* 固定高度，宽度自动按比例 */
+    height: 50px;          /* 增大图标，可按需继续调整 */
     width: auto;
-    border-radius: 4px;    /* 可根据需要保留微小圆角 */
+    border-radius: 4px;
     display: block;
 }
 
