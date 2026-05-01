@@ -96,6 +96,74 @@
         .back-link:hover {
             opacity: 0.8;
         }
+
+        /* 点评区域样式 */
+        .review-section {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 36px 32px;
+            margin-top: 40px;
+        }
+        .review-section h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .review-section h2::before {
+            content: "📝";
+        }
+        .overall-review {
+            background: var(--bg);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+        .player-reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .player-card {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--accent);
+            transition: transform var(--transition);
+        }
+        .player-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        .player-card h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .player-card .score-total {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .player-card .comment {
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        .player-card.rank-1 {
+            border-left-color: #e2b04a;
+            background: #fef9e7;
+        }
         @media (max-width: 768px) {
             .weekly-header h1 {
                 font-size: 2rem;
@@ -103,6 +171,9 @@
             .score-table th, .score-table td {
                 padding: 10px 8px;
                 font-size: 0.85rem;
+            }
+            .player-reviews {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -259,6 +330,74 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- ========== 考试点评区域 ========== -->
+        <section class="review-section">
+            <h2>考试总评与考生点评</h2>
+
+            <div class="overall-review">
+                <p><strong>整体表现：</strong>本次联测选用2025年广州市数学竞赛试题，整体难度较大，区分度明显。全卷一试平均45.7分，二试平均17.1分，总分平均62.9分。最高分<strong>曾奂霖116分</strong>，展现了极强的综合实力；多位同学二试得分较低，反映出在时间分配与难题攻克上仍有提升空间。此次联测既检验了常规题型熟练度，也暴露了解题策略的不足，为后续训练指明了方向。</p>
+                <p style="margin-top:12px;">值得关注的是，填空题平均40分，但T12无人得分，说明压轴填空仍是薄弱环节；二试T1仅有曾奂霖一人做出（40分满分），T2邹宗睿（40分）表现突出。整体来看，一试基本功普遍扎实，二试高难度专题需重点突破。</p>
+            </div>
+
+            <div class="player-reviews">
+                <div class="player-card rank-1">
+                    <h3>🏆 曾奂霖 <span style="font-weight:400;font-size:0.9rem;">(100001)</span></h3>
+                    <div class="score-total">总分 116 分（一试66 + 二试50）</div>
+                    <p class="comment">
+                        毫无悬念的全场最佳！一试填空56分、二试T1满分40分，均遥遥领先。解题思路清晰，计算功底深厚，特别是二试T1能够完整拿下，证明已具备冲击省一等奖的硬实力。建议进一步打磨T12类型难题，争取一试满分，并挑战更高难度的二试组合题。
+                    </p>
+                </div>
+
+                <div class="player-card">
+                    <h3>🥈 邹宗睿 <span style="font-weight:400;font-size:0.9rem;">(100003)</span></h3>
+                    <div class="score-total">总分 85 分（一试45 + 二试40）</div>
+                    <p class="comment">
+                        高联部副部长果然名不虚传。二试T2斩获40分，单题得分全场最高，展现了强大的代数或几何证明能力。一试填空题40分、T11得5分，尚有提升空间。若能稳固一试中档题正确率，减少无谓失分，总分有望稳定突破100分大关。
+                    </p>
+                </div>
+
+                <div class="player-card">
+                    <h3>🥉 赵哲宇 <span style="font-weight:400;font-size:0.9rem;">(100007)</span></h3>
+                    <div class="score-total">总分 65 分（一试45 + 二试20）</div>
+                    <p class="comment">
+                        表现稳中有进。一试得分与邹宗睿持平，说明基础模块扎实；二试T2拿下20分，思路部分正确。稍显可惜的是二试T1未能得分，若能在几何或数论板块加强训练，未来同样具备冲击高分的潜力。
+                    </p>
+                </div>
+
+                <div class="player-card">
+                    <h3>🔹 丁致远 <span style="font-weight:400;font-size:0.9rem;">(100002)</span></h3>
+                    <div class="score-total">总分 58 分（一试58 + 二试0）</div>
+                    <p class="comment">
+                        高联部部长本次发挥略显遗憾。一试58分（填空48 + T11满分10）表现不错，但二试未能得分，可能是时间分配失误或选题策略不当。建议后续加强二试专项限时训练，尤其是在“一试结束、体力消耗”后的抗压练习，相信能快速找回状态。
+                    </p>
+                </div>
+
+                <div class="player-card">
+                    <h3>🔸 张浩民 <span style="font-weight:400;font-size:0.9rem;">(100006)</span></h3>
+                    <div class="score-total">总分 42 分（一试42 + 二试0）</div>
+                    <p class="comment">
+                        数学总部副部长，一试拿到42分，T11完成满分10分，可见解题爆发力不错。填空题32分稍低于平均，后续可针对选填提速与准确性进行专项训练。二试虽未得分，但不要气馁，建议从二试T1基础题型入手，逐步积累得分能力。
+                    </p>
+                </div>
+
+                <div class="player-card">
+                    <h3>🔸 李沂铮 <span style="font-weight:400;font-size:0.9rem;">(100008)</span></h3>
+                    <div class="score-total">总分 42 分（一试32 + 二试10）</div>
+                    <p class="comment">
+                        运转部部长跨学科参赛，精神可嘉！二试T2获得10分，证明具备一定攻坚能力。一试填空题32分较为稳定，但T11、T12未得分，可侧重提升解答题的书写规范与踩分技巧。兼顾多部门事务的同时仍能坚持竞赛训练，这份坚持值得所有人学习。
+                    </p>
+                </div>
+
+                <div class="player-card">
+                    <h3>🔹 何慕 <span style="font-weight:400;font-size:0.9rem;">(100005)</span></h3>
+                    <div class="score-total">总分 32 分（一试32 + 二试0）</div>
+                    <p class="comment">
+                        数学总部部长，本次成绩相对保守。一试32分主要来自填空题，解答题遗憾未得分。可能是近期部门管理事务较多，影响了训练时长。建议规划好时间，回归基础题型强化，并利用内部联测机会逐步恢复竞赛手感，重振“三三起义”时期的解题锐气。
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <a href="/" class="back-link">← 返回组织主页</a>
     </main>
