@@ -10,25 +10,26 @@
     <meta property="og:image" content="https://abhm.qzz.io/abhmmath.png">
     <meta property="og:url" content="https://abhm.qzz.io">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="https://abhm.qzz.io/abhmmath.png">
+    <link rel="icon" type="image/png" href="https://abhm.qzz.io/abhmmathgraph.png">
     <link rel="apple-touch-icon" href="https://abhm.qzz.io/abhmmath.png">
-    <title>奥本海默组织 | 综合性学术组织</title>
     <link rel="stylesheet" href="https://abhm.qzz.io/style.css">
+    <title>奥本海默组织 | ABHM</title>
+
 </head>
 <body>
+    <!-- 移动端导航遮罩 -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
     <!-- 导航栏 -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">
                 <img src="https://abhm.qzz.io/abhmmathtext.png" alt="奥本海默组织" class="nav-logo-img">
-            </a>            
+            </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#history" class="nav-link">创立历程</a></li>
-                <li><a href="#advantages" class="nav-link">我们的优势</a></li>
-                <li><a href="#structure" class="nav-link">组织架构</a></li>
+                <li><a href="#history" class="nav-link">了解组织</a></li>
                 <li><a href="#join" class="nav-link">加入我们</a></li>
-                <li><a href="#contact" class="nav-link">联系方式</a></li>
-                <li><a href="/weekly" class="nav-link">联测成绩</a></li>   <!-- 新插入的链接 -->
+                <li><a href="/weekly" class="nav-link">联测成绩</a></li>
             </ul>
             <button class="menu-toggle" id="menuToggle" aria-label="菜单">
                 <span class="menu-bar"></span>
@@ -42,30 +43,33 @@
     <section class="hero" id="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="hero-badge">
-                <img src="https://abhm.qzz.io/abhmmathgraph.png" alt="奥本海默数学总部图标" class="hero-logo">
+            <!-- 水印Logo - 静止不动，作为文字背景 -->
+
+<div class="hero-badge">
+            <img src="https://abhm.qzz.io/abhmmathgraph.png" class="hero-logo">
+        </div>
+            <div class="hero-text-layer">
+                <h1 class="hero-title">奥本海默组织</h1></br>
+                <p class="hero-description">
+                    始于<strong>三三起义</strong>，集合<strong>数学、物理、逻辑学、信息学</strong>等多学科<br>
+                    为一体的综合性学术组织，超<span class="hero-highlight">4年</span>发展历史
+                </p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-number">42万+</span>
+                        <span class="stat-label">B站视频累计播放</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-number">3届</span>
+                        <span class="stat-label">MatheMagics 数学欢乐赛</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-number">2年+</span>
+                        <span class="stat-label">不间断数学讲题分享</span>
+                    </div>
+                </div>
+                <a href="#history" class="hero-cta">了解更多</a>
             </div>
-            <h1 class="hero-title">奥本海默组织</h1>
-            <p class="hero-subtitle">ABHM</p>
-            <p class="hero-description">
-                始于<strong>三三起义</strong>，集合<strong>数学、物理、逻辑学、信息学</strong>等多学科<br>
-                为一体的综合性学术组织，超<span class="hero-highlight">4年</span>历史传承
-            </p>
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="stat-number">42万+</span>
-                    <span class="stat-label">B站视频累计播放</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="stat-number">3届</span>
-                    <span class="stat-label">MatheMagics 数学欢乐赛</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="stat-number">2年+</span>
-                    <span class="stat-label">不间断数学讲题分享</span>
-                </div>
-            </div>
-            <a href="#history" class="hero-cta">了解我们的故事</a>
         </div>
         <div class="hero-scroll-indicator">
             <span></span>
@@ -88,7 +92,7 @@
                     <div class="timeline-content">
                         <div class="timeline-card">
                             <div class="timeline-date">2022年3月3日</div>
-                            <h3 class="timeline-heading">⚡ 三三起义</h3>
+                            <h3 class="timeline-heading">三三起义</h3>
                             <p>下午14:30-16:00，攻占数学课堂，创立组织。与当局达成共识，获每天晚自习前15分钟数学讲题分享时间。</p>
                             <p>主持铁一建校以来<strong>唯一</strong>获班级与年级完全支持、从初一下到初三上持续<strong>超2年不间断</strong>（包括网课期间）的数学讲题分享活动。</p>
                         </div>
@@ -102,7 +106,7 @@
                     <div class="timeline-content">
                         <div class="timeline-card">
                             <div class="timeline-date">2024年以来</div>
-                            <h3 class="timeline-heading">🔬 组织改制与扩展</h3>
+                            <h3 class="timeline-heading">组织改制与扩展</h3>
                             <p>将原奥本海默组织设为<strong>数学总部</strong>（下辖高中数学研究部、高联部、信息学与数学交叉研究部），新设逻辑学部、物理部、运转部与图寻部等部门。</p>
                             <p>如今已发展为集合<strong>多学科多部门</strong>为一体的综合性学术组织。</p>
                         </div>
@@ -116,7 +120,7 @@
                     <div class="timeline-content">
                         <div class="timeline-card">
                             <div class="timeline-date">至今</div>
-                            <h3 class="timeline-heading">🚀 持续发展</h3>
+                            <h3 class="timeline-heading">持续发展</h3>
                             <p>数学分享视频B站累计播放<strong>破42万</strong>，主办<strong>3届</strong>MatheMagics寒/暑假数学欢乐赛，与众多优秀学子共同发展进步。</p>
                             <p>2026年数学省赛与高中数学联合竞赛高二2班参赛成员<strong>全部来自奥本海默组织</strong>。</p>
                         </div>
@@ -130,7 +134,7 @@
     <section class="section advantages-section" id="advantages">
         <div class="section-container">
             <h2 class="section-title">我们的优势</h2>
-            <p class="section-subtitle">为何选择奥本海默组织</p>
+            <p class="section-subtitle">奥本海默组织的优秀之处</p>
 
             <div class="advantages-grid">
                 <div class="advantage-card">
@@ -171,7 +175,7 @@
                 <div class="org-main">
                     <div class="org-node org-node-root">
                         <div class="org-node-header">
-                            <img src="https://abhm.qzz.io/abhmmathgraph.png" alt="图标" class="org-node-icon">
+
                             <div>
                                 <h3>数学总部</h3>
                                 <span class="org-badge org-badge-primary">创始总部</span>
@@ -180,18 +184,15 @@
                         <div class="org-sub-nodes">
                             <div class="org-node org-node-branch">
                                 <h4>高中数学研究部</h4>
-                                <p>部长：何慕</p>
-                                <p>副部长：张浩民</p>
+                                <p>针对高中数学进行研究学习</br>主办高考数学模拟联测计划</br>夯实基础为深度研究沉淀</p>
                             </div>
                             <div class="org-node org-node-branch">
                                 <h4>高联部</h4>
-                                <p>部长：丁致远</p>
-                                <p>副部长：邹宗睿</p>
+                                <p>针对高中数学联合竞赛进行研究</br>主办高中数学联合竞赛模拟联测计划</br>负责数学竞赛备赛</p>
                             </div>
                             <div class="org-node org-node-branch">
                                 <h4>信息学与数学交叉研究部</h4>
-                                <p>部长：于镓赫</p>
-                                <p>副部长：陈可佳</p>
+                                <p>针对信息学与数学进行交叉研究</br>全员获得NOIP广东省一等奖</br>两位部长均为广东省队成员</p>
                             </div>
                         </div>
                     </div>
@@ -201,22 +202,19 @@
                 <div class="org-others">
                     <div class="org-node org-node-other">
                         <h4>⚛️ 物理部</h4>
-                        <p>部长：胡豫洲</p>
-                        <p>副部长：刘嘉悦</p>
+                        <p>部长物理竞赛广东省一</br>由物竞队员构成的优秀部门</p>
                     </div>
                     <div class="org-node org-node-other">
                         <h4>🧠 逻辑学部</h4>
-                        <p>部长：谭靖尧</p>
+                        <p>组织老牌部门之一</br>让思想更有逻辑</p>
                     </div>
                     <div class="org-node org-node-other">
                         <h4>⚙️ 运转部</h4>
-                        <p>部长：李沂铮</p>
-                        <p>副部长：陆海阅</p>
+                        <p>铁路与技术的有机统一</br>专业研究与兴趣探索</p>
                     </div>
                     <div class="org-node org-node-other">
                         <h4>🗺️ 图寻部</h4>
-                        <p>部长：郑培文</p>
-                        <p>副部长：丁致远</p>
+                        <p>不只是图寻，更是地理学</br>知识与娱乐的共同体</p>
                     </div>
                 </div>
             </div>
@@ -227,12 +225,12 @@
     <section class="section join-section" id="join">
         <div class="section-container">
             <h2 class="section-title">加入我们</h2>
-            <p class="section-subtitle">各学部加入条件</p>
+            <p class="section-subtitle">各部门加入条件</p>
 
             <div class="join-grid">
                 <div class="join-card">
                     <div class="join-card-header">
-                        <span class="join-dept-icon">📐</span>
+                        <span class="join-dept-icon"></span>
                         <h3>高中数学研究部</h3>
                     </div>
                     <div class="join-card-body">
@@ -248,7 +246,7 @@
 
                 <div class="join-card">
                     <div class="join-card-header">
-                        <span class="join-dept-icon">🏆</span>
+                        <span class="join-dept-icon"></span>
                         <h3>高联部</h3>
                     </div>
                     <div class="join-card-body">
@@ -264,7 +262,7 @@
 
                 <div class="join-card">
                     <div class="join-card-header">
-                        <span class="join-dept-icon">💻</span>
+                        <span class="join-dept-icon"></span>
                         <h3>信息学与数学交叉研究部</h3>
                     </div>
                     <div class="join-card-body">
@@ -291,36 +289,7 @@
         </div>
     </section>
 
-    <!-- 联系方式 -->
-    <section class="section contact-section" id="contact">
-        <div class="section-container">
-            <h2 class="section-title">联系方式</h2>
-            <p class="section-subtitle">欢迎与我们取得联系</p>
-
-            <div class="contact-grid">
-                <div class="contact-card">
-                    <h3>📐 高中数学研究部</h3>
-                    <p>部长：何慕</p>
-                    <p>副部长：张浩民</p>
-                    <a href="mailto:1324927339@qq.com" class="contact-email">1324927339@qq.com</a>
-                </div>
-                <div class="contact-card">
-                    <h3>🏆 高联部</h3>
-                    <p>部长：丁致远</p>
-                    <p>副部长：邹宗睿</p>
-                    <a href="mailto:ChowFaching@gmail.com" class="contact-email">ChowFaching@gmail.com</a>
-                </div>
-                <div class="contact-card">
-                    <h3>💻 信息学与数学交叉研究部</h3>
-                    <p>部长：于镓赫</p>
-                    <p>副部长：陈可佳</p>
-                    <a href="mailto:2318937516@qq.com" class="contact-email">2318937516@qq.com</a>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
+  
     <!-- 页脚 -->
     <footer class="footer">
         <div class="footer-container">
@@ -328,7 +297,7 @@
                 <span>奥本海默组织</span>
             </div>
             <p class="footer-tagline">培养数学思维 · 拓展数学视野</p>
-            <p class="footer-copy">&copy; 2022-2026 奥本海默组织. 始于三三起义.</p>
+            <p class="footer-copy">&copy; 2022-2026 奥本海默组织</p>
             <p class="footer-domain">abhm.qzz.io</p>
         </div>
     </footer>
@@ -336,6 +305,114 @@
     <!-- 回到顶部按钮 -->
     <button class="back-to-top" id="backToTop" aria-label="回到顶部">↑</button>
 
-    <script src="https://abhm.qzz.io/script.js"></script>
+    <script>
+        (function() {
+            // ===== DOM元素 =====
+            const navbar = document.getElementById('navbar');
+            const navLinks = document.getElementById('navLinks');
+            const menuToggle = document.getElementById('menuToggle');
+            const navOverlay = document.getElementById('navOverlay');
+            const backToTop = document.getElementById('backToTop');
+            const allNavLinks = navLinks.querySelectorAll('.nav-link');
+
+            // ===== 移动端菜单 =====
+            function openMenu() {
+                navLinks.classList.add('active');
+                menuToggle.classList.add('active');
+                navOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                navLinks.classList.remove('active');
+                menuToggle.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            menuToggle.addEventListener('click', function() {
+                if (navLinks.classList.contains('active')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            navOverlay.addEventListener('click', closeMenu);
+
+            // 点击导航链接后关闭菜单
+            allNavLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (navLinks.classList.contains('active')) {
+                        closeMenu();
+                    }
+                });
+            });
+
+            // ESC关闭菜单
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+
+            // ===== 导航栏滚动阴影 =====
+            function updateNavScrollState() {
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollY > 40) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+
+            window.addEventListener('scroll', updateNavScrollState, { passive: true });
+            // 初始化时检查
+            updateNavScrollState();
+
+            // ===== 回到顶部按钮 =====
+            function updateBackToTop() {
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollY > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            }
+
+            window.addEventListener('scroll', updateBackToTop, { passive: true });
+            updateBackToTop();
+
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // ===== 窗口大小改变时关闭菜单（防止桌面端残留） =====
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    if (window.innerWidth > 900 && navLinks.classList.contains('active')) {
+                        closeMenu();
+                    }
+                }, 150);
+            });
+
+            // ===== 确保水印logo无任何动画 =====
+            const watermark = document.querySelector('.hero-watermark');
+            if (watermark) {
+                watermark.style.animation = 'none';
+                watermark.style.transition = 'none';
+                // 防止图片加载后出现意外位移
+                watermark.addEventListener('load', function() {
+                    watermark.style.animation = 'none';
+                    watermark.style.transition = 'none';
+                });
+            }
+        })();
+    </script>
 </body>
 </html>
