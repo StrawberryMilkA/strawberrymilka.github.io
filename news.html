@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="奥本海默组织新闻中心 - 最新动态与公告">
+    <title>组织新闻 | 奥本海默组织</title>
+    <link rel="icon" type="image/png" href="/abhmmath.png">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* ========== 新闻页面专用样式 ========== */
+        .news-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+
+        .news-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .news-header h1 {
+            font-size: 2.6rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .news-header h1::before {
+            content: "📰";
+        }
+        .news-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* 筛选标签 */
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .filter-tag {
+            padding: 8px 20px;
+            border-radius: 24px;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .filter-tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #fef9e7;
+        }
+        .filter-tag.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* 新闻卡片 */
+        .news-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+            overflow: hidden;
+            transition: transform var(--transition), box-shadow var(--transition);
+            border: 1px solid var(--border);
+        }
+        .news-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        .news-card.pinned {
+            border-left: 5px solid var(--accent);
+            position: relative;
+        }
+        .news-card.pinned::before {
+            content: "📌 置顶";
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 2;
+            letter-spacing: 0.5px;
+        }
+
+        /* 新闻头部：发布者信息 */
+        .news-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 24px 28px 0;
+            flex-wrap: wrap;
+        }
+        .publisher-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .publisher-avatar.dept-gaolian {
+            background: #3a6fb5;
+        }
+        .publisher-avatar.dept-math {
+            background: #5c4a7a;
+        }
+        .publisher-avatar.dept-ops {
+            background: #2e8b7b;
+        }
+        .publisher-avatar.dept-admin {
+            background: #b55a3a;
+        }
+        .publisher-info {
+            flex: 1;
+            min-width: 150px;
+        }
+        .publisher-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .publisher-role {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+        .publish-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 新闻正文 */
+        .news-body {
+            padding: 20px 28px;
+            line-height: 1.85;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .news-body h3 {
+            font-size: 1.35rem;
+            color: var(--primary);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+        .news-body p {
+            margin-bottom: 14px;
+        }
+        .news-body p:last-child {
+            margin-bottom: 0;
+        }
+        .news-body .highlight-box {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-left: 4px solid var(--accent);
+            font-weight: 500;
+        }
+        .news-body .tag-inline {
+            display: inline-block;
+            background: #fef3d0;
+            color: #8b6914;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 2px;
+        }
+
+        /* AI 评论区域 */
+        .ai-review {
+            margin: 0 20px 24px;
+            background: linear-gradient(135deg, #f8f7fc 0%, #f0eff8 100%);
+            border: 1.5px dashed #c5bfe0;
+            border-radius: 14px;
+            padding: 20px 22px;
+            position: relative;
+            transition: all var(--transition);
+        }
+        .ai-review:hover {
+            border-color: #a093d4;
+            background: linear-gradient(135deg, #f5f3fb 0%, #ece9f7 100%);
+        }
+        .ai-review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .ai-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c6bc4 0%, #5b4fa8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            animation: ai-pulse 2.5s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(124, 107, 196, 0.5);
+        }
+        @keyframes ai-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(124, 107, 196, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(124, 107, 196, 0);
+            }
+        }
+        .ai-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #5b4fa8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-badge {
+            font-size: 0.7rem;
+            background: #5b4fa8;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .ai-review-body {
+            font-size: 0.95rem;
+            color: #3d3566;
+            line-height: 1.75;
+        }
+        .ai-review-body .ai-highlight {
+            background: #e8e4f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .ai-disclaimer {
+            font-size: 0.75rem;
+            color: #9990c0;
+            margin-top: 10px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 加载更多 */
+        .load-more {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .load-more-btn {
+            padding: 14px 40px;
+            border-radius: 28px;
+            border: 2px solid var(--accent);
+            background: white;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .load-more-btn:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 16px rgba(226, 176, 74, 0.35);
+        }
+
+        /* 返回链接 */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity var(--transition);
+        }
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .news-header h1 {
+                font-size: 1.8rem;
+            }
+            .news-card-header {
+                padding: 18px 16px 0;
+                gap: 12px;
+            }
+            .news-body {
+                padding: 16px 16px;
+                font-size: 0.95rem;
+            }
+            .news-body h3 {
+                font-size: 1.15rem;
+            }
+            .ai-review {
+                margin: 0 12px 18px;
+                padding: 16px 14px;
+            }
+            .news-card.pinned::before {
+                top: 10px;
+                right: 12px;
+                font-size: 0.7rem;
+                padding: 3px 10px;
+            }
+            .publisher-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .filter-tag {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 导航栏（与主页一致） ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="https://abhm.qzz.io/abhmmathtext.png" alt="奥本海默组织" class="nav-logo-img">
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/#history" class="nav-link">了解组织</a></li>
+                <li><a href="/#join" class="nav-link">加入我们</a></li>
+                <li><a href="https://abhm.qzz.io/weekly.html" class="nav-link">联测成绩</a></li>
+                <li><a href="https://abhm.qzz.io/news.html" class="nav-link" style="color: var(--accent); font-weight: 700;">组织新闻</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+                <span class="menu-bar"></span>
+                <span class="menu-bar"></span>
+                <span class="menu-bar"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ========== 新闻主体 ========== -->
+    <main class="news-container">
+        <div class="news-header">
+            <h1>组织新闻</h1>
+            <p class="news-subtitle">📡 奥本海默组织最新动态 · 赛事公告 · 内部通讯</p>
+        </div>
+
+        <!-- 筛选标签 -->
+        <div class="filter-tags">
+            <span class="filter-tag active" data-filter="all">📋 全部</span>
+            <span class="filter-tag" data-filter="announcement">📢 公告</span>
+            <span class="filter-tag" data-filter="event">🏆 赛事</span>
+            <span class="filter-tag" data-filter="internal">🔬 内部通讯</span>
+            <span class="filter-tag" data-filter="history">📜 组织记忆</span>
+        </div>
+
+        <!-- ===== 新闻卡片 1：置顶 - 联测成绩公布 ===== -->
+        <article class="news-card pinned" data-category="announcement event">
+            <div class="news-card-header">
+                <div class="publisher-avatar dept-gaolian">丁</div>
+                <div class="publisher-info">
+                    <div class="publisher-name">
+                        丁致远
+                        <span class="publisher-role">高联部部长</span>
+                    </div>
+                    <div class="publish-time">📅 2026年4月23日 · 发布于联测次日</div>
+                </div>
+            </div>
+            <div class="news-body">
+                <h3>📊 高联模拟联测成绩正式发布——曾奂霖116分强势领跑</h3>
+                <p>各位组织成员：</p>
+                <p>经过紧张阅卷与复核，<strong>ABHM_LCGL_25GZ</strong> 批次联测成绩已于昨日完成统计。本次联测采用<span class="tag-inline">2025广州市赛</span>试卷，整体难度较大，全卷总分平均<strong>62.9分</strong>，区分度显著。</p>
+                <div class="highlight-box">
+                    🏆 <strong>前三名速报：</strong><br>
+                    🥇 曾奂霖（100001）—— <strong>116分</strong>（一试66 + 二试50）<br>
+                    🥈 邹宗睿（100003）—— <strong>85分</strong>（一试45 + 二试40）<br>
+                    🥉 赵哲宇（100007）—— <strong>65分</strong>（一试45 + 二试20）
+                </div>
+                <p>曾奂霖同学在二试T1中拿下<strong>满分40分</strong>，是全场唯一解出该题的选手，展现了极强的综合实力。邹宗睿同学在二试T2斩获40分，单题得分全场最高，代数证明功底深厚。赵哲宇同学稳中有进，一试表现与邹宗睿持平，未来可期。</p>
+                <p>详细成绩表与个人点评已同步更新至<a href="https://abhm.qzz.io/weekly.html" style="color:var(--accent);font-weight:600;">联测成绩页面</a>，欢迎各位查阅与复盘。</p>
+            </div>
+            <!-- AI 评论 -->
+            <div class="ai-review">
+                <div class="ai-review-header">
+                    <div class="ai-icon">🤖</div>
+                    <span class="ai-label">AI 自动评论 <span class="ai-badge">BETA</span></span>
+                </div>
+                <div class="ai-review-body">
+                    <p>本次联测数据呈现出明显的<span class="ai-highlight">"双峰分布"</span>特征：曾奂霖以116分形成第一梯队，邹宗睿85分居于第二梯队，其余选手集中在32-65分区间。这一分布说明组织内部存在<strong>显著的竞技水平分层</strong>，但中段选手差距较小、竞争激烈。</p>
+                    <p>值得关注的是，<span class="ai-highlight">二试T2</span>成为关键区分题——邹宗睿40分、赵哲宇20分、李沂铮10分、曾奂霖10分，其余三位0分。建议后续训练中增加二试专项限时模拟，尤其针对"一试消耗后的抗压解题"场景进行强化。</p>
+                    <p>从历史趋势看，曾奂霖的Rating净增+96，邹宗睿+64，显示出两位选手正处于<strong>快速上升期</strong>。建议组织在下一阶段安排更具挑战性的专题训练，以匹配头部选手的成长速度。</p>
+                </div>
+                <div class="ai-disclaimer">⚡ 此评论由AI自动生成，仅供参考，不代表组织官方立场。</div>
+            </div>
+        </article>
+
+        <!-- ===== 新闻卡片 2：三三起义纪念 ===== -->
+        <article class="news-card" data-category="history internal">
+            <div class="news-card-header">
+                <div class="publisher-avatar dept-math">何</div>
+                <div class="publisher-info">
+                    <div class="publisher-name">
+                        何慕
+                        <span class="publisher-role">高中数学研究部部长</span>
+                    </div>
+                    <div class="publish-time">📅 2026年3月3日 · 三三起义三周年纪念日</div>
+                </div>
+            </div>
+            <div class="news-body">
+                <h3>🔥 纪念"三三起义"三周年——从星火到燎原</h3>
+                <p>三年时光，转瞬即逝。今天，我们共同回望那个改变组织命运的日子——<strong>2023年3月3日</strong>。</p>
+                <p>那一天，奥本海默组织的初创成员们在一次关键的高校数学竞赛中，以<strong>远超预期的整体表现</strong>打破了外界对"业余组织难出成绩"的偏见。赛后，大家围坐在一间普通的自习室里，定下了组织发展的核心纲领：<em>"以赛促学、以学促研、以研促创"</em>。这个事件，后来被我们称为<span class="tag-inline">三三起义</span>。</p>
+                <div class="highlight-box">
+                    📜 <strong>"三三起义"的精神内核：</strong>不畏惧起点低微，不迷信天赋神话，用持续的刻意练习和团队协作，在数学竞赛的荒野中开辟出一条属于自己的道路。
+                </div>
+                <p>三年后的今天，奥本海默组织已从最初的五六人小团体，发展为拥有<strong>高联部、高中数学研究部、运转部</strong>三大部门的稳定架构。联测体系日趋完善，Rating追踪系统上线，成员们在各级竞赛中屡获佳绩。</p>
+                <p>但我们也清醒地认识到：<strong>初心易得，始终难守</strong>。近期的联测数据显示，部分老成员在解题锐气上有所减退。希望大家以"三三起义"精神自勉，重燃当初那份纯粹的解题热情。</p>
+            </div>
+            <!-- AI 评论 -->
+            <div class="ai-review">
+                <div class="ai-review-header">
+                    <div class="ai-icon">🤖</div>
+                    <span class="ai-label">AI 自动评论 <span class="ai-badge">BETA</span></span>
+                </div>
+                <div class="ai-review-body">
+                    <p>从组织发展的视角来看，"三三起义"作为一个<span class="ai-highlight">"创始神话"</span>级别的叙事节点，在凝聚成员认同、传承组织文化方面具有不可替代的价值。何慕部长在文中提到的"解题锐气减退"现象，在业余竞赛组织中颇为常见——当管理事务增多、训练时间被压缩时，竞技状态自然下滑。</p>
+                    <p>AI建议可考虑建立<span class="ai-highlight">"老成员复训机制"</span>：每季度安排一次全模拟联测，要求所有部门负责人必须参加，将成绩纳入内部考核。这既能保持老成员的竞技敏感度，也能为新生代成员树立榜样。毕竟，<strong>最好的领导力示范，就是亲自上阵解题</strong>。</p>
+                </div>
+                <div class="ai-disclaimer">⚡ 此评论由AI自动生成，仅供参考，不代表组织官方立场。</div>
+            </div>
+        </article>
+
+        <!-- ===== 新闻卡片 3：部门协作新机制 ===== -->
+        <article class="news-card" data-category="internal announcement">
+            <div class="news-card-header">
+                <div class="publisher-avatar dept-ops">李</div>
+                <div class="publisher-info">
+                    <div class="publisher-name">
+                        李沂铮
+                        <span class="publisher-role">运转部部长</span>
+                    </div>
+                    <div class="publish-time">📅 2026年4月10日</div>
+                </div>
+            </div>
+            <div class="news-body">
+                <h3>🔗 运转部与高联部协作新机制——联测组织流程全面升级</h3>
+                <p>各位成员好，运转部近期与高联部经过多轮讨论，正式确立了<strong>联测组织协作新机制</strong>，旨在提升每场联测的筹备效率与阅卷质量。</p>
+                <p><strong>新机制核心要点：</strong></p>
+                <p>① <span class="tag-inline">试卷来源轮值制</span>——由高联部与高中数学研究部轮流负责试题遴选，确保题型多样性；</p>
+                <p>② <span class="tag-inline">双盲阅卷流程</span>——运转部负责试卷匿名化处理，阅卷人无法识别考生身份，确保评分公正；</p>
+                <p>③ <span class="tag-inline">48小时出分承诺</span>——联测结束后48小时内完成阅卷、复核与成绩发布，提升反馈效率；</p>
+                <p>④ <span class="tag-inline">AI辅助点评</span>——引入AI自动评论系统，为每场联测生成数据分析报告，辅助人工点评。</p>
+                <div class="highlight-box">
+                    💡 <strong>特别说明：</strong>AI评论系统目前处于<strong>BETA测试阶段</strong>，所有自动生成内容均标注"AI生成"标识。人工点评仍是核心，AI仅作为数据分析和查漏补缺的辅助工具。
+                </div>
+                <p>新机制将从<strong>2026年5月联测</strong>起正式运行。运转部将全程跟进，确保流程顺畅。如有任何建议，欢迎随时向运转部反馈。</p>
+            </div>
+            <!-- AI 评论 -->
+            <div class="ai-review">
+                <div class="ai-review-header">
+                    <div class="ai-icon">🤖</div>
+                    <span class="ai-label">AI 自动评论 <span class="ai-badge">BETA</span></span>
+                </div>
+                <div class="ai-review-body">
+                    <p>李沂铮部长公布的协作新机制，体现了组织在<span class="ai-highlight">流程规范化</span>方面的显著进步。从管理学角度看，"双盲阅卷+48小时出分"的组合，在业余竞赛组织中属于较高标准。</p>
+                    <p>AI特别关注到"试卷来源轮值制"的设计——这一机制能有效避免<span class="ai-highlight">"命题风格固化"</span>的问题。如果高联部偏向组合与几何，而高中数学研究部侧重代数与分析，那么交替命题将迫使所有成员全面提升。建议在未来引入<span class="ai-highlight">"跨部门联合命题"</span>模式，进一步增加试题的综合性。</p>
+                    <p>关于AI辅助点评的引入，作为AI评论员，我表示谨慎乐观。数据分析和模式识别是AI的强项，但<span class="ai-highlight">对解题思路的深度理解仍需人类专家把关</span>。</p>
+                </div>
+                <div class="ai-disclaimer">⚡ 此评论由AI自动生成，仅供参考，不代表组织官方立场。</div>
+            </div>
+        </article>
+
+        <!-- ===== 新闻卡片 4：高联赛季训练计划 ===== -->
+        <article class="news-card" data-category="event announcement">
+            <div class="news-card-header">
+                <div class="publisher-avatar dept-gaolian">邹</div>
+                <div class="publisher-info">
+                    <div class="publisher-name">
+                        邹宗睿
+                        <span class="publisher-role">高联部副部长</span>
+                    </div>
+                    <div class="publish-time">📅 2026年5月5日</div>
+                </div>
+            </div>
+            <div class="news-body">
+                <h3>📅 2026高联赛季训练计划公布——全力备战省赛</h3>
+                <p>随着高联省赛日益临近，高联部制定了<strong>2026赛季专项训练计划</strong>，现正式向全体成员公布。</p>
+                <p><strong>训练周期：</strong>2026年5月12日 — 8月30日（共16周）</p>
+                <p><strong>核心安排：</strong></p>
+                <p>🔹 <span class="tag-inline">每周一试模拟</span>——每周五晚固定进行一试限时训练（90分钟），覆盖填空+解答全题型；</p>
+                <p>🔹 <span class="tag-inline">双周二试攻坚</span>——每两周一次二试专项训练（60分钟），聚焦组合、几何、数论、代数四大板块轮动；</p>
+                <p>🔹 <span class="tag-inline">月度全真联测</span>——每月最后一周进行完整一试+二试联测，模拟真实比赛节奏；</p>
+                <p>🔹 <span class="tag-inline">错题复盘会</span>——每次联测后次周组织线上复盘，由高联部负责人逐题讲解。</p>
+                <div class="highlight-box">
+                    ⚠️ <strong>重要提醒：</strong>省赛报名截止日期预计在<strong>7月中旬</strong>，请有意参赛的成员提前做好准备。训练出勤率将作为<strong>内部推荐名额</strong>的重要参考依据。
+                </div>
+                <p>有志冲击省一等奖的同学，建议额外进行<strong>自主加练</strong>，每周至少攻克2道二试难度题目。高联部将提供精选练习题集，需要的同学请联系我或丁致远部长。</p>
+            </div>
+            <!-- AI 评论 -->
+            <div class="ai-review">
+                <div class="ai-review-header">
+                    <div class="ai-icon">🤖</div>
+                    <span class="ai-label">AI 自动评论 <span class="ai-badge">BETA</span></span>
+                </div>
+                <div class="ai-review-body">
+                    <p>邹宗睿副部长公布的训练计划结构清晰、节奏合理。从训练科学的角度分析：</p>
+                    <p>① <span class="ai-highlight">"每周一试+双周二试"</span>的频率设置恰当，避免了过度训练导致的倦怠；16周的总周期覆盖了整个备赛窗口，时间充裕；</p>
+                    <p>② <span class="ai-highlight">月度全真联测</span>是亮点——完整模拟比赛节奏对于培养"比赛日状态"至关重要，许多选手在单独训练时表现出色，但联测中因时间压力和体力消耗而失分；</p>
+                    <p>③ AI建议在训练中后期（第8-12周）引入<span class="ai-highlight">"压力测试"</span>——刻意缩短模拟时间（如一试压缩至80分钟），以训练选手在极端情况下的应变能力。</p>
+                    <p>总体来看，这是一份<strong>兼顾系统性与灵活性</strong>的优质训练计划，值得全体成员认真执行。</p>
+                </div>
+                <div class="ai-disclaimer">⚡ 此评论由AI自动生成，仅供参考，不代表组织官方立场。</div>
+            </div>
+        </article>
+
+        <!-- 加载更多按钮 -->
+        <div class="load-more">
+            <button class="load-more-btn" id="loadMoreBtn" disabled style="opacity:0.5;cursor:not-allowed;">
+                📭 更多新闻敬请期待
+            </button>
+        </div>
+
+        <!-- 返回链接 -->
+        <a href="/" class="back-link">← 返回组织主页</a>
+    </main>
+
+    <!-- ========== 页脚 ========== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <span>奥本海默组织</span>
+            </div>
+            <p class="footer-tagline">培养数学思维 · 拓展数学视野</p>
+            <p class="footer-copy">&copy; 2022-2026 奥本海默组织</p>
+            <p class="footer-domain">abhm.qzz.io</p>
+        </div>
+    </footer>
+
+    <script src="https://abhm.qzz.io/script.js"></script>
+    <script>
+        (function() {
+            // ========== 筛选标签交互 ==========
+            const filterTags = document.querySelectorAll('.filter-tag');
+            const newsCards = document.querySelectorAll('.news-card');
+
+            filterTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // 更新激活状态
+                    filterTags.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+
+                    // 筛选新闻卡片
+                    newsCards.forEach(card => {
+                        if (filter === 'all') {
+                            card.style.display = '';
+                            // 添加淡入动画
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(10px)';
+                            requestAnimationFrame(() => {
+                                card.style.transition =
+                                    'opacity 0.35s ease, transform 0.35s ease';
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            });
+                        } else {
+                            const categories = card.getAttribute('data-category');
+                            if (categories && categories.includes(filter)) {
+                                card.style.display = '';
+                                card.style.opacity = '0';
+                                card.style.transform = 'translateY(10px)';
+                                requestAnimationFrame(() => {
+                                    card.style.transition =
+                                        'opacity 0.35s ease, transform 0.35s ease';
+                                    card.style.opacity = '1';
+                                    card.style.transform = 'translateY(0)';
+                                });
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+
+            // ========== AI评论折叠/展开（可选交互） ==========
+            const aiReviews = document.querySelectorAll('.ai-review');
+            aiReviews.forEach(review => {
+                const header = review.querySelector('.ai-review-header');
+                const body = review.querySelector('.ai-review-body');
+                const disclaimer = review.querySelector('.ai-disclaimer');
+
+                // 点击AI评论头部可折叠/展开正文
+                header.style.cursor = 'pointer';
+                header.setAttribute('title', '点击折叠/展开AI评论');
+                let collapsed = false;
+
+                header.addEventListener('click', function() {
+                    collapsed = !collapsed;
+                    if (collapsed) {
+                        body.style.display = 'none';
+                        if (disclaimer) disclaimer.style.display = 'none';
+                        header.style.marginBottom = '0';
+                        header.querySelector('.ai-label').textContent = 'AI 自动评论（已折叠）';
+                    } else {
+                        body.style.display = '';
+                        if (disclaimer) disclaimer.style.display = '';
+                        header.style.marginBottom = '12px';
+                        header.querySelector('.ai-label').textContent = 'AI 自动评论';
+                        header.querySelector('.ai-label').appendChild(
+                            header.querySelector('.ai-badge') || (() => {
+                                const badge = document.createElement('span');
+                                badge.className = 'ai-badge';
+                                badge.textContent = 'BETA';
+                                return badge;
+                            })()
+                        );
+                        // 恢复badge
+                        const existingBadge = header.querySelector('.ai-badge');
+                        if (!existingBadge) {
+                            const badge = document.createElement('span');
+                            badge.className = 'ai-badge';
+                            badge.textContent = 'BETA';
+                            header.querySelector('.ai-label').appendChild(badge);
+                        }
+                    }
+                });
+            });
+
+            console.log('📰 奥本海默组织新闻中心已就绪');
+            console.log('🤖 AI自动评论系统 BETA 已激活');
+            console.log('📋 共加载 ' + newsCards.length + ' 条新闻');
+        })();
+    </script>
+</body>
+</html>
