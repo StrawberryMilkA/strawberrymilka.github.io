@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运转计划 CR Schedule - ABHM TRAIN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 25px 20px;
+            margin-bottom: 30px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #2c8df6, #2cf6e3, #f6b72c);
+        }
+        
+        h1 {
+            color: #1a3c6e;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: purple;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle1 {
+            color: green;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle2 {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .author {
+            color: #007CB0;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .import-export {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #2c8df6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1a76e8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #f0f4f8;
+            color: #3a4a5e;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e1e8f0;
+        }
+        
+        .btn-add {
+            background: linear-gradient(90deg, #2c8df6, #2ca8f6);
+            color: white;
+        }
+        
+        .btn-export-img {
+            background: linear-gradient(90deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        
+        .btn-export-img:hover {
+            background: linear-gradient(90deg, #43a047, #1b5e20);
+            transform: translateY(-2px);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c8df6;
+        }
+        
+        .stat-cost {
+            color: #4caf50;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .timeline-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        
+        .timeline-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            background-color: #1a3c6e;
+            color: white;
+            padding: 18px 20px;
+            font-weight: 600;
+        }
+        
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .timeline-item:hover {
+            background-color: #f9fbff;
+        }
+        
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+        
+        .timeline-item.active {
+            background-color: #f0f7ff;
+            border-left: 5px solid #2c8df6;
+        }
+        
+        .timeline-item .segment-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .city-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a3c6e;
+        }
+        
+        .station-name {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .time-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .time {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .date {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 3px;
+        }
+        
+        .train-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .train-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #d32f2f;
+        }
+        
+        .duration {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .notes {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .seat-class {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .seat-class-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #5d4037;
+        }
+        
+        .cost-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .cost-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4caf50;
+        }
+        
+        .cost-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .subway-line {
+            font-size: 0.9rem;
+            color: #ff6b00;
+            margin-top: 3px;
+        }
+        
+        .status-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+        
+        .status.planned {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .status.completed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status.in-progress {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f4f8;
+            color: #3a4a5e;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: #2c8df6;
+            color: white;
+        }
+        
+        .timeline-connector {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateX(-10px);
+            width: 20px;
+            height: 2px;
+            background-color: #2c8df6;
+        }
+        
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 6px solid #2c8df6;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #d0d7e2;
+        }
+        
+        /* 新增：地铁/参观行程样式 */
+        .subway-icon {
+            color: #ff6b00;
+        }
+        
+        .visit-icon {
+            color: #8e24aa;
+        }
+        
+        /* 新增：编辑表单样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: #1a3c6e;
+        }
+        
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .btn-submit {
+            background-color: #2c8df6;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            background-color: #1a76e8;
+        }
+        
+        .btn-cancel {
+            background-color: #f0f4f8;
+            color: #3a4a5e;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #e1e8f0;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .trip-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .trip-type-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .trip-type-btn.active {
+            border-color: #2c8df6;
+            background-color: #e3f2fd;
+        }
+        
+        .trip-type-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* 电脑端站点显示样式 */
+        .desktop-station {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        /* 手机端样式 */
+        .mobile-extra {
+            display: none;
+            margin-top: 6px;
+        }
+        
+        .mobile-time {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4caf50; /* 绿色时间 */
+            margin-bottom: 3px;
+        }
+        
+        .mobile-meta {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+            gap: 6px;
+            margin-bottom: 3px;
+        }
+        
+        .mobile-station-inline {
+            font-size: 0.8em;
+            color: #888;
+            margin-left: 4px;
+        }
+        
+        .mobile-train-info {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 增加车次和时间之间的间距 */
+            margin-bottom: 3px;
+        }
+        
+        .mobile-train-number {
+            font-size: 1.1rem; /* 与时间一样大 */
+            font-weight: 700;
+            color: #d32f2f; /* 红色车次 */
+        }
+        
+        .mobile-subway-line {
+            font-size: 0.9rem;
+            color: #333; /* 黑色地铁线路 */
+            font-weight: 600;
+        }
+        
+        .mobile-actions-container {
+            display: none;
+            flex-direction: row;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .mobile-notes {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        /* 参观类型特殊样式 */
+        .visit-only {
+            /* 参观类型特殊样式 */
+        }
+        
+        /* 导出图片模态框样式 */
+        .export-modal {
+            z-index: 2000;
+        }
+        
+        .export-preview {
+            background: white;
+            border-radius: 10px;
+            width: 800px;
+            max-width: 95vw;
+            max-height: 95vh;
+            overflow: auto;
+        }
+        
+        .export-header {
+            background: linear-gradient(90deg, #1a3c6e, #2c8df6);
+            color: white;
+            padding: 25px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        .export-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .export-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .export-content {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .export-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .export-stat-item {
+            text-align: center;
+        }
+        
+        .export-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a3c6e;
+        }
+        
+        .export-stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .export-trip-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .export-trip-item:last-child {
+            border-bottom: none;
+        }
+        
+        .export-trip-icon {
+            font-size: 1.2rem;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .export-trip-details {
+            flex: 1;
+            padding: 0 15px;
+        }
+        
+        .export-trip-route {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1a3c6e;
+            margin-bottom: 5px;
+        }
+        
+        .export-trip-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .export-trip-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .export-footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.8rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+        
+        .export-option-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .export-option-btn.export-btn {
+            background: linear-gradient(90deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        
+        .export-option-btn.export-btn:hover {
+            background: linear-gradient(90deg, #43a047, #1b5e20);
+        }
+        
+        .export-option-btn.cancel-btn {
+            background: #f0f4f8;
+            color: #3a4a5e;
+        }
+        
+        .export-option-btn.cancel-btn:hover {
+            background: #e1e8f0;
+        }
+        
+        /* 用于导出的隐藏容器 */
+        .export-capture-container {
+            position: fixed;
+            left: -9999px;
+            top: -9999px;
+            width: 800px;
+            background: white;
+            padding: 0 !important; /* 移除内边距，让内容决定高度 */
+            box-sizing: border-box;
+            overflow: visible !important;
+            visibility: hidden;
+        }
+        
+        /* 手机版布局调整 */
+        @media (max-width: 900px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .import-export {
+                margin-left: 0;
+                justify-content: center;
+            }
+            
+            .filter-controls {
+                justify-content: center;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .timeline-header {
+                display: none;
+            }
+            
+            .timeline-item {
+                grid-template-columns: 1fr;
+                padding: 16px;
+                position: relative;
+            }
+            
+            .hide-on-mobile {
+                display: none;
+            }
+            
+            .mobile-extra {
+                display: block;
+            }
+            
+            .mobile-actions-container {
+                display: flex;
+                position: absolute;
+                right: 16px;
+                top: 16px;
+            }
+            
+            .timeline-connector {
+                display: none;
+            }
+            
+            /* 隐藏电脑端站点显示 */
+            .desktop-station {
+                display: none;
+            }
+            
+            /* 确保费用和用时在一行 */
+            .mobile-meta {
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+            
+            /* 调整城市名称显示，为按钮腾出空间 */
+            .segment-info:first-child {
+                padding-right: 100px; /* 为按钮留出空间 */
+            }
+            
+            /* 移动端时间变大 */
+            .mobile-time {
+                font-size: 1.1rem;
+                font-weight: 700;
+            }
+            
+            /* 状态信息放到终点站下面 */
+            .segment-info:last-child {
+                margin-top: 8px;
+            }
+        }
+        
+        @media (min-width: 901px) {
+            /* 电脑端隐藏手机端站点显示 */
+            .mobile-station-inline {
+                display: none;
+            }
+            
+            /* 电脑端显示换行站点信息 */
+            .desktop-station {
+                display: block;
+            }
+            
+            .timeline-header, .timeline-item {
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .timeline-item {
+                padding: 14px;
+            }
+            
+            .mobile-time {
+                font-size: 1.05rem;
+            }
+            
+            .mobile-meta {
+                font-size: 0.85rem;
+            }
+            
+            .mobile-actions-container {
+                right: 14px;
+                top: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-train"></i> 假期铁路运转计划</h1>
+            <p class="subtitle">Holiday CR Schedule</p>
+            <p class="subtitle1" id="currentTimeDisplay">
+                <i class="fas fa-clock"></i> 当前系统时间: <span id="currentTime">正在获取...</span>
+            </p>
+            <p class="author">奥本海默组织运转部研发 | Developed by ABHM TRAIN</p>
+            <p class="subtitle2">按时间顺序排列的假期高铁、地铁和参观行程，支持导入/导出和费用管理</p>
+        </header>
+        
+        <div class="controls">
+            <div class="filter-controls">
+                <button class="btn btn-primary" id="showAll">
+                    <i class="fas fa-list"></i> 全部行程
+                </button>
+                <button class="btn btn-secondary" id="showPlanned">
+                    <i class="far fa-calendar"></i> 计划中
+                </button>
+                <button class="btn btn-secondary" id="showCompleted">
+                    <i class="fas fa-check-circle"></i> 已完成
+                </button>
+                <button class="btn btn-secondary" id="showInProgress">
+                    <i class="fas fa-spinner"></i> 进行中
+                </button>
+            </div>
+            <div class="import-export">
+                <button class="btn btn-secondary" id="importData">
+                    <i class="fas fa-file-import"></i> 导入
+                </button>
+                <button class="btn btn-secondary" id="exportData">
+                    <i class="fas fa-file-export"></i> 导出JSON
+                </button>
+                <button class="btn btn-export-img" id="exportImage">
+                    <i class="fas fa-camera"></i> 导出图片
+                </button>
+                <button class="btn btn-add" id="addTrip">
+                    <i class="fas fa-plus"></i> 添加行程
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalTrips">6</div>
+                <div class="stat-label">总行程数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalDuration">18.5</div>
+                <div class="stat-label">总时长(分钟)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalDistance">2450</div>
+                <div class="stat-label">总距离(公里)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value stat-cost" id="totalCost">985.5</div>
+                <div class="stat-label">总费用(元)</div>
+            </div>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline-header">
+                <div>出发站</div>
+                <div>到达站</div>
+                <div class="hide-on-mobile">车次/时间</div>
+                <div class="hide-on-mobile">席别</div>
+                <div class="hide-on-mobile">费用</div>
+                <div class="hide-on-mobile">状态</div>
+                <div>操作</div>
+            </div>
+            
+            <div id="timelineList">
+                <!-- 行程数据将通过JavaScript动态生成 -->
+            </div>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-train"></i>
+                <h3>暂无行程数据</h3>
+                <p>点击"添加行程"按钮开始规划您的旅程，或导入已有行程数据</p>
+            </div>
+        </div>
+        
+        <!-- 新增：编辑行程模态框 -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle">编辑行程</h3>
+                    <span class="close-btn" id="closeModal">&times;</span>
+                </div>
+                
+                <div class="trip-type-selector">
+                    <button class="trip-type-btn active" data-type="train">
+                        <i class="fas fa-train"></i>
+                        <div>高铁/火车</div>
+                    </button>
+                    <button class="trip-type-btn" data-type="subway">
+                        <i class="fas fa-subway subway-icon"></i>
+                        <div>地铁</div>
+                    </button>
+                    <button class="trip-type-btn" data-type="visit">
+                        <i class="fas fa-landmark visit-icon"></i>
+                        <div>参观</div>
+                    </button>
+                </div>
+                
+                <form id="tripForm">
+                    <input type="hidden" id="tripId">
+                    <input type="hidden" id="tripType" value="train">
+                    
+                    <!-- 高铁/火车和地铁通用字段 -->
+                    <div id="commonFields">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="fromCity" class="form-label">出发城市</label>
+                                    <input type="text" id="fromCity" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="fromStation" class="form-label">出发站点（可选）</label>
+                                    <input type="text" id="fromStation" class="form-control" placeholder="可留空">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="toCity" class="form-label">到达城市</label>
+                                    <input type="text" id="toCity" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="toStation" class="form-label">到达站点（可选）</label>
+                                    <input type="text" id="toStation" class="form-control" placeholder="可留空">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 参观专用字段 -->
+                    <div id="visitCommonFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="visitPlace" class="form-label">参观地点</label>
+                            <input type="text" id="visitPlace" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="visitNotes" class="form-label">备注</label>
+                            <input type="text" id="visitNotes" class="form-control" placeholder="可留空">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="departureDate" class="form-label">出发日期</label>
+                                <input type="date" id="departureDate" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="departureTime" class="form-label">出发时间</label>
+                                <input type="time" id="departureTime" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="arrivalDate" class="form-label">到达日期</label>
+                                <input type="date" id="arrivalDate" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="arrivalTime" class="form-label">到达时间</label>
+                                <input type="time" id="arrivalTime" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="trainFields">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="trainNumber" class="form-label">车次</label>
+                                    <input type="text" id="trainNumber" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="duration" class="form-label">时长</label>
+                                    <input type="text" id="duration" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="distance" class="form-label">距离(公里)</label>
+                                    <input type="number" id="distance" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="seatClass" class="form-label">席别</label>
+                                    <select id="seatClass" class="form-control">
+                                        <option value="二等">二等</option>
+                                        <option value="一等">一等</option>
+                                        <option value="优选一等">优选一等</option>
+                                        <option value="商务">商务</option>
+                                        <option value="动卧">动卧</option>
+                                        <option value="软卧">软卧</option>
+                                        <option value="硬卧">硬卧</option>
+                                        <option value="软座">软座</option>
+                                        <option value="硬座">硬座</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="cost" class="form-label">费用(元)</label>
+                                    <input type="number" id="cost" class="form-control" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="subwayFields" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="subwayLine" class="form-label">地铁线路</label>
+                                    <input type="text" id="subwayLine" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="subwayDuration" class="form-label">时长</label>
+                                    <input type="text" id="subwayDuration" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="subwayDistance" class="form-label">距离(公里)</label>
+                                    <input type="number" id="subwayDistance" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="subwayCost" class="form-label">费用(元)</label>
+                                    <input type="number" id="subwayCost" class="form-control" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="visitFields" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="visitDuration" class="form-label">时长</label>
+                                    <input type="text" id="visitDuration" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="visitCost" class="form-label">费用(元)</label>
+                                    <input type="number" id="visitCost" class="form-control" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status" class="form-label">状态</label>
+                        <select id="status" class="form-control">
+                            <option value="planned">计划中</option>
+                            <option value="in-progress">进行中</option>
+                            <option value="completed">已完成</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelEdit">取消</button>
+                        <button type="submit" class="btn-submit">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 新增：导出图片模态框 -->
+        <div id="exportImageModal" class="modal export-modal">
+            <div class="export-preview" id="exportPreview">
+                <div class="export-header">
+                    <h2 class="export-title"><i class="fas fa-train"></i> 假期铁路运转计划</h2>
+                    <p class="export-subtitle">Holiday CR Schedule - ABHM TRAIN</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">导出时间: <span id="exportTime"></span></p>
+                </div>
+                
+                <div class="export-content">
+                    <div class="export-stats">
+                        <div class="export-stat-item">
+                            <div class="export-stat-value" id="exportTotalTrips">0</div>
+                            <div class="export-stat-label">总行程数</div>
+                        </div>
+                        <div class="export-stat-item">
+                            <div class="export-stat-value" id="exportTotalDuration">0</div>
+                            <div class="export-stat-label">总时长(分钟)</div>
+                        </div>
+                        <div class="export-stat-item">
+                            <div class="export-stat-value" id="exportTotalDistance">0</div>
+                            <div class="export-stat-label">总距离(公里)</div>
+                        </div>
+                        <div class="export-stat-item">
+                            <div class="export-stat-value" id="exportTotalCost">0</div>
+                            <div class="export-stat-label">总费用(元)</div>
+                        </div>
+                    </div>
+                    
+                    <div id="exportTripList">
+                        <!-- 导出行程列表将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <div class="export-footer">
+                        <p>假期高铁运转计划 &copy; 奥本海默组织运转部 ABHM TRAIN 2025</p>
+                        <p>按时间顺序排列的假期高铁、地铁和参观行程</p>
+                    </div>
+                </div>
+                
+                <div class="export-options">
+                    <button class="export-option-btn cancel-btn" id="cancelExport">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                    <button class="export-option-btn export-btn" id="confirmExport">
+                        <i class="fas fa-download"></i> 下载PNG图片
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 隐藏的导出容器，用于生成图片 -->
+        <div id="exportCaptureContainer" class="export-capture-container"></div>
+        
+        <footer>
+            <p>假期高铁运转计划 &copy; 奥本海默组织运转部 ABHM TRAIN 2025 | 最后更新: 2025年12月28日 | 当前系统时间: <span id="footerTime">正在获取...</span></p>
+        </footer>
+    </div>
+    
+    <script>
+        // 示例行程数据
+        let trips = [
+        {
+            "id": 1,
+            "type": "train",
+            "fromCity": "北京",
+            "fromStation": "北京西站",
+            "toCity": "广州",
+            "toStation": "广州南站",
+            "departureDate": "2026-01-01",
+            "departureTime": "10:00",
+            "arrivalDate": "2026-01-01",
+            "arrivalTime": "17:19",
+            "status": "planned",
+            "trainNumber": "G79",
+            "duration": "7时19分",
+            "distance": 2298,
+            "cost": 1033,
+            "seatClass": "二等"
+        }
+        ];
+
+        const STORAGE_KEY = "holiday_train_trips";
+
+        function saveTripsToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(trips));
+        }
+
+        function loadTripsFromStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    trips = JSON.parse(saved);
+                } catch (e) {
+                    console.error("本地行程数据损坏，已忽略");
+                    trips = [];
+                }
+            }
+        }
+        
+        // 状态映射
+        const statusMap = {
+            "planned": { text: "计划中", class: "planned", exportClass: "planned" },
+            "completed": { text: "已完成", class: "completed", exportClass: "completed" },
+            "in-progress": { text: "进行中", class: "in-progress", exportClass: "in-progress" }
+        };
+        
+        // 类型图标映射
+        const typeIconMap = {
+            "train": "fas fa-train",
+            "subway": "fas fa-subway subway-icon",
+            "visit": "fas fa-landmark visit-icon"
+        };
+        
+        // 新增：根据当前时间自动更新行程状态
+        function autoUpdateTripStatus() {
+            const now = new Date();
+            let updated = false;
+            
+            trips.forEach(trip => {
+                // 组合出发和到达的完整日期时间
+                const depDateTime = new Date(`${trip.departureDate}T${trip.departureTime}`);
+                const arrDateTime = new Date(`${trip.arrivalDate}T${trip.arrivalTime}`);
+                
+                let newStatus;
+                
+                if (now < depDateTime) {
+                    // 当前时间在出发时间之前：计划中
+                    newStatus = "planned";
+                } else if (now >= depDateTime && now <= arrDateTime) {
+                    // 当前时间在出发和到达之间：进行中
+                    newStatus = "in-progress";
+                } else {
+                    // 当前时间在到达时间之后：已完成
+                    newStatus = "completed";
+                }
+                
+                // 如果状态发生了变化，则更新
+                if (trip.status !== newStatus) {
+                    trip.status = newStatus;
+                    updated = true;
+                }
+            });
+            
+            // 如果有更新，则保存到本地存储并重新渲染
+            if (updated) {
+                saveTripsToStorage();
+                renderTrips();
+                updateStats();
+            }
+            
+            return updated;
+        }
+        
+        // 新增：更新时间显示和自动状态更新
+        function updateCurrentTime() {
+            const now = new Date();
+            
+            // 格式化时间为中文格式，例如：2025年12月28日 14:30:45 星期日
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            
+            const formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds} ${weekday}`;
+            
+            // 更新页眉的时间显示
+            const timeDisplay = document.getElementById("currentTime");
+            if (timeDisplay) {
+                timeDisplay.textContent = formattedDateTime;
+            }
+            
+            // 更新页脚的时间显示
+            const footerTime = document.getElementById("footerTime");
+            if (footerTime) {
+                footerTime.textContent = formattedDateTime;
+            }
+            
+            // 自动更新行程状态（每5分钟检查一次）
+            autoUpdateTripStatus();
+        }
+        
+        function calculateDuration() {
+            const depDate = document.getElementById("departureDate").value;
+            const depTime = document.getElementById("departureTime").value;
+            const arrDate = document.getElementById("arrivalDate").value;
+            const arrTime = document.getElementById("arrivalTime").value;
+        
+            if (!depDate || !depTime || !arrDate || !arrTime) return;
+        
+            const start = new Date(`${depDate}T${depTime}`);
+            const end = new Date(`${arrDate}T${arrTime}`);
+        
+            if (end <= start) return;
+        
+            const diffMs = end - start;
+            const totalMinutes = Math.floor(diffMs / 60000);
+        
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+        
+            let result = "";
+            if (hours > 0) {
+                result = `${hours}时${minutes}分`;
+            } else {
+                result = `${minutes}分`;
+            }
+        
+            const type = document.getElementById("tripType").value;
+        
+            if (type === "train") {
+                document.getElementById("duration").value = result;
+            } else if (type === "subway") {
+                document.getElementById("subwayDuration").value = result;
+            } else if (type === "visit") {
+                document.getElementById("visitDuration").value = result;
+            }
+        }
+        
+        // 初始化行程列表
+        function renderTrips(filter = "all") {
+            const timelineList = document.getElementById("timelineList");
+            const emptyState = document.getElementById("emptyState");
+            
+            // 过滤行程
+            let filteredTrips = trips;
+            if (filter !== "all") {
+                filteredTrips = trips.filter(trip => trip.status === filter);
+            }
+            
+            // 清空当前列表
+            timelineList.innerHTML = "";
+            
+            // 如果没有行程，显示空状态
+            if (filteredTrips.length === 0) {
+                emptyState.style.display = "block";
+                return;
+            }
+            
+            // 隐藏空状态
+            emptyState.style.display = "none";
+            
+            // 按日期和时间排序
+            filteredTrips.sort((a, b) => {
+                const dateA = new Date(`${a.departureDate} ${a.departureTime}`);
+                const dateB = new Date(`${b.departureDate} ${b.departureTime}`);
+                return dateA - dateB;
+            });
+            
+            // 生成行程列表
+            filteredTrips.forEach((trip, index) => {
+                const tripElement = document.createElement("div");
+                tripElement.className = `timeline-item ${trip.status === "in-progress" ? "active" : ""}`;
+                tripElement.dataset.id = trip.id;
+                
+                const statusInfo = statusMap[trip.status];
+                const typeIcon = typeIconMap[trip.type];
+                
+                // 根据不同类型生成不同的显示内容
+                let trainInfoContent = '';
+                let seatContent = '';
+                let costContent = '';
+                let mobileDisplay = '';
+                let fromCityDisplay = '';
+                let toCityDisplay = '';
+                let fromStationDisplay = '';
+                let toStationDisplay = '';
+                let fromStationInline = '';
+                let toStationInline = '';
+                let fromIcon = '';
+                let toIcon = '';
+                
+                if (trip.type === "train") {
+                    // 电脑端显示
+                    trainInfoContent = `
+                        <div class="train-number">${trip.trainNumber}</div>
+                        <div class="time">${trip.departureTime} - ${trip.arrivalTime}</div>
+                        <div class="duration">${trip.duration}</div>
+                    `;
+                    
+                    // 手机端显示 - 高铁/火车
+                    mobileDisplay = `
+                        <div class="mobile-train-info">
+                            <span class="mobile-train-number">${trip.trainNumber}</span>
+                            <span class="mobile-time">${trip.departureTime} → ${trip.arrivalTime}</span>
+                        </div>
+                    `;
+                    
+                    seatContent = `
+                        <div class="seat-class-value">${trip.seatClass || "二等"}</div>
+                    `;
+                    costContent = `
+                        <div class="cost-value">¥${trip.cost || '--'}</div>
+                        <div class="cost-label">费用</div>
+                    `;
+                    
+                    // 站点显示
+                    if (trip.fromStation && trip.fromStation.trim() !== '') {
+                        fromStationDisplay = `<div class="desktop-station">${trip.fromStation}</div>`;
+                        fromStationInline = `<span class="mobile-station-inline">（${trip.fromStation}）</span>`;
+                    }
+                    
+                    if (trip.toStation && trip.toStation.trim() !== '') {
+                        toStationDisplay = `<div class="desktop-station">${trip.toStation}</div>`;
+                        toStationInline = `<span class="mobile-station-inline">（${trip.toStation}）</span>`;
+                    }
+                    
+                    fromCityDisplay = trip.fromCity;
+                    toCityDisplay = trip.toCity;
+                    fromIcon = `<i class="${typeIcon}"></i>`;
+                    toIcon = `<i class="${typeIcon}"></i>`;
+                    
+                } else if (trip.type === "subway") {
+                    // 电脑端显示
+                    trainInfoContent = `
+                        <div class="train-number">地铁</div>
+                        <div class="subway-line">${trip.subwayLine || '地铁'}</div>
+                        <div class="time">${trip.departureTime} - ${trip.arrivalTime}</div>
+                        <div class="duration">${trip.duration}</div>
+                    `;
+                    
+                    // 手机端显示 - 地铁（不显示红色"地铁"字样，只显示黑色线路）
+                    mobileDisplay = `
+                        <div class="mobile-time">${trip.departureTime} → ${trip.arrivalTime}</div>
+                        <div class="mobile-subway-line">${trip.subwayLine || ''}</div>
+                    `;
+                    
+                    seatContent = `
+                        <div class="seat-class-value">--</div>
+                    `;
+                    costContent = `
+                        <div class="cost-value">¥${trip.cost || '--'}</div>
+                        <div class="cost-label">费用</div>
+                    `;
+                    
+                    // 站点显示
+                    if (trip.fromStation && trip.fromStation.trim() !== '') {
+                        fromStationDisplay = `<div class="desktop-station">${trip.fromStation}</div>`;
+                        fromStationInline = `<span class="mobile-station-inline">（${trip.fromStation}）</span>`;
+                    }
+                    
+                    if (trip.toStation && trip.toStation.trim() !== '') {
+                        toStationDisplay = `<div class="desktop-station">${trip.toStation}</div>`;
+                        toStationInline = `<span class="mobile-station-inline">（${trip.toStation}）</span>`;
+                    }
+                    
+                    fromCityDisplay = trip.fromCity;
+                    toCityDisplay = trip.toCity;
+                    fromIcon = `<i class="${typeIcon}"></i>`;
+                    toIcon = `<i class="${typeIcon}"></i>`;
+                    
+                } else if (trip.type === "visit") {
+                    // 参观类型 - 电脑端显示
+                    trainInfoContent = `
+                        <div class="train-number">参观</div>
+                        <div class="time">${trip.departureTime} - ${trip.arrivalTime}</div>
+                        <div class="notes">${trip.visitNotes || ''}</div>
+                    `;
+                    
+                    // 手机端显示 - 参观
+                    mobileDisplay = `
+                        <div class="mobile-time">${trip.departureTime} → ${trip.arrivalTime}</div>
+                        <div class="mobile-notes">${trip.visitNotes || ''}</div>
+                    `;
+                    
+                    seatContent = `
+                        <div class="seat-class-value">--</div>
+                    `;
+                    costContent = `
+                        <div class="cost-value">¥${trip.cost || '--'}</div>
+                        <div class="cost-label">费用</div>
+                    `;
+                    
+                    // 参观类型只显示参观地点，不显示到达站
+                    fromCityDisplay = trip.visitPlace || trip.fromCity || "参观地点";
+                    toCityDisplay = ""; // 参观类型不显示到达站
+                    // 参观类型只在出发站显示一个图标
+                    fromIcon = `<i class="${typeIcon}"></i>`;
+                    toIcon = ""; // 到达站不显示图标
+                    // 参观类型不显示站点信息
+                }
+                
+                tripElement.innerHTML = `
+                    ${index > 0 ? '<div class="timeline-connector"></div>' : ''}
+
+                    <div class="segment-info">
+                        <div class="city-name">
+                            ${fromIcon}
+                            ${fromCityDisplay}
+                            ${fromStationInline}
+                            ${fromStationDisplay}
+                        </div>
+                        
+                        <div class="mobile-extra">
+                            ${mobileDisplay}
+                            
+                            <div class="mobile-meta">
+                                <span>${trip.duration || ""}</span>
+                                <span class="sep">｜</span>
+                                <span>¥${trip.cost || "--"}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="segment-info">
+                        <div class="city-name">
+                            ${toIcon}
+                            ${trip.type === "visit" ? "" : toCityDisplay}
+                            ${trip.type === "visit" ? "" : toStationInline}
+                            ${trip.type === "visit" ? "" : toStationDisplay}
+                        </div>
+                        
+                        <div class="mobile-extra">
+                            <div class="mobile-line">
+                                <span class="status ${statusInfo.class}">
+                                    ${statusInfo.text}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="train-info hide-on-mobile">
+                        ${trainInfoContent}
+                    </div>
+
+                    <div class="seat-class hide-on-mobile">
+                        ${seatContent}
+                    </div>
+
+                    <div class="cost-info hide-on-mobile">
+                        ${costContent}
+                    </div>
+
+                    <div class="status-info hide-on-mobile">
+                        <span class="status ${statusInfo.class}">
+                            ${statusInfo.text}
+                        </span>
+                        <div class="date">
+                            ${formatDate(trip.departureDate)}
+                        </div>
+                    </div>
+
+                    <div class="actions hide-on-mobile">
+                        <div class="action-btn view-btn" data-id="${trip.id}">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="action-btn edit-btn" data-id="${trip.id}">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="action-btn delete-btn" data-id="${trip.id}">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-actions-container">
+                        <div class="action-btn view-btn" data-id="${trip.id}">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="action-btn edit-btn" data-id="${trip.id}">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="action-btn delete-btn" data-id="${trip.id}">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    </div>
+                `;
+                
+                timelineList.appendChild(tripElement);
+            });
+        }
+        
+        // 格式化日期显示
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getMonth() + 1}月${date.getDate()}日`;
+        }
+        
+        // 更新统计数据
+        function updateStats() {
+            document.getElementById("totalTrips").textContent = trips.length;
+            
+            // 计算总时长
+            let totalHours = 0;
+            trips.forEach(trip => {
+                if (trip.duration) {
+                    const match = trip.duration.match(/(\d+)[时:]?(\d+)?分?/);
+                    if (match) {
+                        const hours = parseInt(match[1]) || 0;
+                        const minutes = parseInt(match[2]) || 0;
+                        totalHours += hours + minutes / 60;
+                    }
+                }
+            });
+            document.getElementById("totalDuration").textContent = totalHours.toFixed(1);
+            
+            // 计算总距离
+            const totalDistance = trips.reduce((sum, trip) => sum + (trip.distance || 0), 0);
+            document.getElementById("totalDistance").textContent = totalDistance;
+            
+            // 计算总费用
+            const totalCost = trips.reduce((sum, trip) => sum + (parseFloat(trip.cost) || 0), 0);
+            document.getElementById("totalCost").textContent = totalCost.toFixed(1);
+        }
+        
+        // 查看行程详情
+        function viewTrip(id) {
+            const trip = trips.find(t => t.id === id);
+            if (trip) {
+                let details = `查看行程详情:\n`;
+                
+                if (trip.type === "train") {
+                    details += `${trip.fromCity} → ${trip.toCity}\n`;
+                    details += `类型: 高铁/火车\n车次: ${trip.trainNumber}\n席别: ${trip.seatClass || "二等"}\n`;
+                } else if (trip.type === "subway") {
+                    details += `${trip.fromCity} → ${trip.toCity}\n`;
+                    details += `类型: 地铁\n线路: ${trip.subwayLine || '未指定'}\n`;
+                } else if (trip.type === "visit") {
+                    details += `参观地点: ${trip.visitPlace || trip.fromCity}\n`;
+                    details += `类型: 参观\n备注: ${trip.visitNotes || "无"}\n`;
+                }
+                
+                details += `时间: ${trip.departureTime} - ${trip.arrivalTime}\n日期: ${trip.departureDate}\n费用: ¥${trip.cost || 0}\n状态: ${statusMap[trip.status].text}`;
+                
+                alert(details);
+            }
+        }
+        
+        // 编辑行程
+        function editTrip(id) {
+            const trip = trips.find(t => t.id === id);
+            if (trip) {
+                // 设置模态框标题
+                document.getElementById("modalTitle").textContent = "编辑行程";
+                
+                // 填充表单数据
+                document.getElementById("tripId").value = trip.id;
+                document.getElementById("tripType").value = trip.type;
+                document.getElementById("departureDate").value = trip.departureDate;
+                document.getElementById("departureTime").value = trip.departureTime;
+                document.getElementById("arrivalDate").value = trip.arrivalDate;
+                document.getElementById("arrivalTime").value = trip.arrivalTime;
+                document.getElementById("status").value = trip.status;
+                
+                // 设置行程类型按钮状态
+                document.querySelectorAll(".trip-type-btn").forEach(btn => {
+                    btn.classList.remove("active");
+                    if (btn.dataset.type === trip.type) {
+                        btn.classList.add("active");
+                    }
+                });
+                
+                // 根据类型显示/隐藏字段并填充数据
+                if (trip.type === "train") {
+                    document.getElementById("commonFields").style.display = "block";
+                    document.getElementById("visitCommonFields").style.display = "none";
+                    document.getElementById("trainFields").style.display = "block";
+                    document.getElementById("subwayFields").style.display = "none";
+                    document.getElementById("visitFields").style.display = "none";
+                    
+                    document.getElementById("fromCity").value = trip.fromCity || "";
+                    document.getElementById("fromStation").value = trip.fromStation || "";
+                    document.getElementById("toCity").value = trip.toCity || "";
+                    document.getElementById("toStation").value = trip.toStation || "";
+                    document.getElementById("trainNumber").value = trip.trainNumber || "";
+                    document.getElementById("duration").value = trip.duration || "";
+                    document.getElementById("distance").value = trip.distance || "";
+                    document.getElementById("cost").value = trip.cost || "";
+                    document.getElementById("seatClass").value = trip.seatClass || "二等";
+                } else if (trip.type === "subway") {
+                    document.getElementById("commonFields").style.display = "block";
+                    document.getElementById("visitCommonFields").style.display = "none";
+                    document.getElementById("trainFields").style.display = "none";
+                    document.getElementById("subwayFields").style.display = "block";
+                    document.getElementById("visitFields").style.display = "none";
+                    
+                    document.getElementById("fromCity").value = trip.fromCity || "";
+                    document.getElementById("fromStation").value = trip.fromStation || "";
+                    document.getElementById("toCity").value = trip.toCity || "";
+                    document.getElementById("toStation").value = trip.toStation || "";
+                    document.getElementById("subwayLine").value = trip.subwayLine || "";
+                    document.getElementById("subwayDuration").value = trip.duration || "";
+                    document.getElementById("subwayDistance").value = trip.distance || "";
+                    document.getElementById("subwayCost").value = trip.cost || "";
+                } else if (trip.type === "visit") {
+                    document.getElementById("commonFields").style.display = "none";
+                    document.getElementById("visitCommonFields").style.display = "block";
+                    document.getElementById("trainFields").style.display = "none";
+                    document.getElementById("subwayFields").style.display = "none";
+                    document.getElementById("visitFields").style.display = "block";
+                    
+                    document.getElementById("visitPlace").value = trip.visitPlace || trip.fromCity || "";
+                    document.getElementById("visitNotes").value = trip.visitNotes || "";
+                    document.getElementById("visitDuration").value = trip.duration || "";
+                    document.getElementById("visitCost").value = trip.cost || "";
+                }
+                
+                calculateDuration();
+                
+                // 显示模态框
+                document.getElementById("editModal").style.display = "flex";
+            }
+        }
+        
+        // 删除行程
+        function deleteTrip(id) {
+            if (confirm("确定要删除这个行程吗？")) {
+                const index = trips.findIndex(t => t.id === id);
+                if (index !== -1) {
+                    trips.splice(index, 1);
+                    renderTrips();
+                    updateStats();
+                    saveTripsToStorage();
+                }
+            }
+        }
+        
+        // 添加新行程
+        function addTrip() {
+            // 设置模态框标题
+            document.getElementById("modalTitle").textContent = "添加新行程";
+            
+            // 重置表单
+            document.getElementById("tripForm").reset();
+            document.getElementById("tripId").value = "";
+            document.getElementById("tripType").value = "train";
+            
+            // 设置默认状态为"计划中"
+            document.getElementById("status").value = "planned";
+            
+            // 设置默认席别为"二等"
+            document.getElementById("seatClass").value = "二等";
+            
+            // 设置行程类型按钮状态
+            document.querySelectorAll(".trip-type-btn").forEach(btn => {
+                btn.classList.remove("active");
+                if (btn.dataset.type === "train") {
+                    btn.classList.add("active");
+                }
+            });
+            
+            // 显示高铁/火车字段，隐藏其他字段
+            document.getElementById("commonFields").style.display = "block";
+            document.getElementById("visitCommonFields").style.display = "none";
+            document.getElementById("trainFields").style.display = "block";
+            document.getElementById("subwayFields").style.display = "none";
+            document.getElementById("visitFields").style.display = "none";
+            
+            // 显示模态框
+            document.getElementById("editModal").style.display = "flex";
+        }
+        
+        // 保存行程
+        function saveTrip(event) {
+            event.preventDefault();
+            
+            // 获取表单数据
+            const idStr = document.getElementById("tripId").value;
+            const id = idStr ? parseInt(idStr) : null;
+            const type = document.getElementById("tripType").value;
+            const departureDate = document.getElementById("departureDate").value;
+            const departureTime = document.getElementById("departureTime").value;
+            const arrivalDate = document.getElementById("arrivalDate").value;
+            const arrivalTime = document.getElementById("arrivalTime").value;
+            const status = document.getElementById("status").value;
+            
+            // 创建行程对象
+            const trip = {
+                id: id || (trips.length > 0 ? Math.max(...trips.map(t => t.id)) + 1 : 1),
+                type,
+                departureDate,
+                departureTime,
+                arrivalDate,
+                arrivalTime,
+                status
+            };
+            
+            // 根据类型添加额外字段
+            if (type === "train") {
+                trip.fromCity = document.getElementById("fromCity").value;
+                trip.fromStation = document.getElementById("fromStation").value;
+                trip.toCity = document.getElementById("toCity").value;
+                trip.toStation = document.getElementById("toStation").value;
+                trip.trainNumber = document.getElementById("trainNumber").value;
+                trip.duration = document.getElementById("duration").value;
+                trip.distance = parseInt(document.getElementById("distance").value) || 0;
+                trip.cost = parseFloat(document.getElementById("cost").value) || 0;
+                trip.seatClass = document.getElementById("seatClass").value || "二等";
+            } else if (type === "subway") {
+                trip.fromCity = document.getElementById("fromCity").value;
+                trip.fromStation = document.getElementById("fromStation").value;
+                trip.toCity = document.getElementById("toCity").value;
+                trip.toStation = document.getElementById("toStation").value;
+                trip.subwayLine = document.getElementById("subwayLine").value;
+                trip.duration = document.getElementById("subwayDuration").value;
+                trip.distance = parseInt(document.getElementById("subwayDistance").value) || 0;
+                trip.cost = parseFloat(document.getElementById("subwayCost").value) || 0;
+            } else if (type === "visit") {
+                // 参观类型
+                trip.visitPlace = document.getElementById("visitPlace").value;
+                trip.visitNotes = document.getElementById("visitNotes").value;
+                trip.duration = document.getElementById("visitDuration").value;
+                trip.cost = parseFloat(document.getElementById("visitCost").value) || 0;
+                // 为了兼容性，同时保存到fromCity
+                trip.fromCity = trip.visitPlace;
+                // 参观类型不需要toCity和站点
+                trip.toCity = "";
+                trip.toStation = "";
+                trip.fromStation = "";
+            }
+            
+            // 更新或添加行程
+            if (id) {
+                const index = trips.findIndex(t => t.id === id);
+                if (index !== -1) {
+                    trips[index] = trip;
+                }
+            } else {
+                trips.push(trip);
+            }
+            
+            // 重新渲染列表
+            renderTrips();
+            updateStats();
+            saveTripsToStorage();
+            
+            // 自动更新状态
+            autoUpdateTripStatus();
+            
+            // 关闭模态框
+            document.getElementById("editModal").style.display = "none";
+        }
+        
+        // 切换行程类型
+        function changeTripType(type) {
+            document.getElementById("tripType").value = type;
+            
+            if (type === "train") {
+                document.getElementById("commonFields").style.display = "block";
+                document.getElementById("visitCommonFields").style.display = "none";
+                document.getElementById("trainFields").style.display = "block";
+                document.getElementById("subwayFields").style.display = "none";
+                document.getElementById("visitFields").style.display = "none";
+            } else if (type === "subway") {
+                document.getElementById("commonFields").style.display = "block";
+                document.getElementById("visitCommonFields").style.display = "none";
+                document.getElementById("trainFields").style.display = "none";
+                document.getElementById("subwayFields").style.display = "block";
+                document.getElementById("visitFields").style.display = "none";
+            } else if (type === "visit") {
+                document.getElementById("commonFields").style.display = "none";
+                document.getElementById("visitCommonFields").style.display = "block";
+                document.getElementById("trainFields").style.display = "none";
+                document.getElementById("subwayFields").style.display = "none";
+                document.getElementById("visitFields").style.display = "block";
+            }
+        }
+        
+        // 处理导入数据，为高铁行程添加默认席别
+        function processImportedTrips(importedTrips) {
+            return importedTrips.map(trip => {
+                // 如果是高铁/火车类型且没有seatClass字段，则添加默认席别
+                if (trip.type === "train" && !trip.seatClass) {
+                    trip.seatClass = "二等";
+                }
+                // 确保ID是数字类型
+                if (trip.id) {
+                    trip.id = parseInt(trip.id);
+                }
+                return trip;
+            });
+        }
+        
+        // 导出行程数据
+        function exportTrips() {
+            saveTripsToStorage();
+            const dataStr = JSON.stringify(trips, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = '高铁行程规划_' + new Date().toISOString().slice(0,10) + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        // 导入行程数据
+        function importTrips() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json,application/json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                
+                reader.onload = event => {
+                    try {
+                        let importedTrips = JSON.parse(event.target.result);
+                        if (Array.isArray(importedTrips)) {
+                            // 验证导入的数据结构
+                            const isValid = importedTrips.every(trip => 
+                                trip.hasOwnProperty('type')
+                            );
+                            
+                            if (isValid) {
+                                // 处理导入的数据，为高铁行程添加默认席别
+                                importedTrips = processImportedTrips(importedTrips);
+                                
+                                trips = importedTrips;
+                                saveTripsToStorage();
+                                
+                                // 确保每个行程都有唯一的ID
+                                trips.forEach((trip, index) => {
+                                    if (!trip.id) {
+                                        trip.id = index + 1;
+                                    }
+                                });
+                                
+                                // 自动更新状态
+                                autoUpdateTripStatus();
+                                
+                                renderTrips("all");
+                                updateActiveFilter("showAll");
+                                updateStats();
+                                alert(`成功导入 ${importedTrips.length} 条行程数据`);
+                            } else {
+                                alert('导入失败：文件格式不正确，缺少必要的行程字段');
+                            }
+                        } else {
+                            alert('导入失败：文件格式不正确，需要JSON数组格式');
+                        }
+                    } catch (error) {
+                        alert('导入失败：' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        // 新增：准备导出图片的预览
+        function prepareExportPreview() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+            document.getElementById("exportTime").textContent = formattedDateTime;
+            
+            // 更新导出统计
+            document.getElementById("exportTotalTrips").textContent = trips.length;
+            
+            // 计算总时长
+            let totalHours = 0;
+            trips.forEach(trip => {
+                if (trip.duration) {
+                    const match = trip.duration.match(/(\d+)[时:]?(\d+)?分?/);
+                    if (match) {
+                        const hours = parseInt(match[1]) || 0;
+                        const minutes = parseInt(match[2]) || 0;
+                        totalHours += hours + minutes / 60;
+                    }
+                }
+            });
+            document.getElementById("exportTotalDuration").textContent = totalHours.toFixed(1);
+            
+            // 计算总距离
+            const totalDistance = trips.reduce((sum, trip) => sum + (trip.distance || 0), 0);
+            document.getElementById("exportTotalDistance").textContent = totalDistance;
+            
+            // 计算总费用
+            const totalCost = trips.reduce((sum, trip) => sum + (parseFloat(trip.cost) || 0), 0);
+            document.getElementById("exportTotalCost").textContent = totalCost.toFixed(1);
+            
+            // 生成导出行程列表
+            const exportTripList = document.getElementById("exportTripList");
+            exportTripList.innerHTML = "";
+            
+            // 按日期和时间排序
+            const sortedTrips = [...trips].sort((a, b) => {
+                const dateA = new Date(`${a.departureDate} ${a.departureTime}`);
+                const dateB = new Date(`${b.departureDate} ${b.departureTime}`);
+                return dateA - dateB;
+            });
+            
+            sortedTrips.forEach(trip => {
+                const statusInfo = statusMap[trip.status];
+                const tripElement = document.createElement("div");
+                tripElement.className = "export-trip-item";
+                
+                let icon = "";
+                let route = "";
+                let info = "";
+                
+                if (trip.type === "train") {
+                    icon = '<i class="fas fa-train" style="color: #d32f2f;"></i>';
+                    route = `${trip.fromCity}（${trip.fromStation}） → ${trip.toCity}（${trip.toStation}）`;
+                    info = `${trip.trainNumber} | ${trip.departureTime} - ${trip.arrivalTime} | ${trip.duration} | ${trip.seatClass || "二等"} | ¥${trip.cost || 0}`;
+                } else if (trip.type === "subway") {
+                    icon = '<i class="fas fa-subway" style="color: #ff6b00;"></i>';
+                    route = `${trip.fromCity}（${trip.fromStation}） → ${trip.toCity}（${trip.toStation}）`;
+                    info = `${trip.subwayLine || "地铁"} | ${trip.departureTime} - ${trip.arrivalTime} | ${trip.duration} | ¥${trip.cost || 0}`;
+                } else if (trip.type === "visit") {
+                    icon = '<i class="fas fa-landmark" style="color: #8e24aa;"></i>';
+                    route = `${trip.visitPlace || trip.fromCity}`;
+                    info = `${trip.departureTime} - ${trip.arrivalTime} | ${trip.duration} | ${trip.visitNotes || ""} | ¥${trip.cost || 0}`;
+                }
+                
+                tripElement.innerHTML = `
+                    <div class="export-trip-icon">${icon}</div>
+                    <div class="export-trip-details">
+                        <div class="export-trip-route">${route}</div>
+                        <div class="export-trip-info">${info}</div>
+                    </div>
+                    <div class="export-trip-status ${statusInfo.exportClass}">${statusInfo.text}</div>
+                `;
+                
+                exportTripList.appendChild(tripElement);
+            });
+            
+            // 显示导出模态框
+            document.getElementById("exportImageModal").style.display = "flex";
+        }
+        
+        // 新增：创建用于导出的内容（不包含按钮）
+        function createExportContentForCapture() {
+            const captureContainer = document.getElementById("exportCaptureContainer");
+            captureContainer.innerHTML = "";
+            
+            // 创建导出内容的HTML结构
+            const exportContent = document.createElement("div");
+            exportContent.style.background = "white";
+            exportContent.style.padding = "30px";
+            exportContent.style.boxSizing = "border-box";
+            exportContent.style.width = "800px";
+            exportContent.style.fontFamily = "'Segoe UI', 'Microsoft YaHei', sans-serif";
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+            
+            // 计算统计数据
+            let totalHours = 0;
+            trips.forEach(trip => {
+                if (trip.duration) {
+                    const match = trip.duration.match(/(\d+)[时:]?(\d+)?分?/);
+                    if (match) {
+                        const hours = parseInt(match[1]) || 0;
+                        const minutes = parseInt(match[2]) || 0;
+                        totalHours += hours + minutes / 60;
+                    }
+                }
+            });
+            
+            const totalDistance = trips.reduce((sum, trip) => sum + (trip.distance || 0), 0);
+            const totalCost = trips.reduce((sum, trip) => sum + (parseFloat(trip.cost) || 0), 0);
+            
+            // 按日期和时间排序
+            const sortedTrips = [...trips].sort((a, b) => {
+                const dateA = new Date(`${a.departureDate} ${a.departureTime}`);
+                const dateB = new Date(`${b.departureDate} ${b.departureTime}`);
+                return dateA - dateB;
+            });
+            
+            // 生成行程列表HTML
+            let tripsHTML = "";
+            sortedTrips.forEach(trip => {
+                const statusInfo = statusMap[trip.status];
+                const statusColor = trip.status === 'planned' ? '#1565c0' : 
+                                   trip.status === 'completed' ? '#2e7d32' : 
+                                   '#ef6c00';
+                const statusBg = trip.status === 'planned' ? '#e3f2fd' : 
+                                trip.status === 'completed' ? '#e8f5e9' : 
+                                '#fff3e0';
+                
+                let icon = "";
+                let route = "";
+                let info = "";
+                
+                if (trip.type === "train") {
+                    icon = '<i class="fas fa-train" style="color: #d32f2f; font-size: 1.2rem;"></i>';
+                    route = `${trip.fromCity}（${trip.fromStation}） → ${trip.toCity}（${trip.toStation}）`;
+                    info = `${trip.trainNumber} | ${trip.departureTime} - ${trip.arrivalTime} | ${trip.duration} | ${trip.seatClass || "二等"} | ¥${trip.cost || 0}`;
+                } else if (trip.type === "subway") {
+                    icon = '<i class="fas fa-subway" style="color: #ff6b00; font-size: 1.2rem;"></i>';
+                    route = `${trip.fromCity} （${trip.fromStation}）→ ${trip.toCity}（${trip.toStation}）`;
+                    info = `${trip.subwayLine || "地铁"} | ${trip.departureTime} - ${trip.arrivalTime} | ${trip.duration} | ¥${trip.cost || 0}`;
+                } else if (trip.type === "visit") {
+                    icon = '<i class="fas fa-landmark" style="color: #8e24aa; font-size: 1.2rem;"></i>';
+                    route = `${trip.visitPlace || trip.fromCity}`;
+                    info = `${trip.departureTime} - ${trip.arrivalTime} | ${trip.duration} | ${trip.visitNotes || ""} | ¥${trip.cost || 0}`;
+                }
+                
+                tripsHTML += `
+                    <div style="border-bottom: 1px solid #eee; padding: 15px 0; display: flex; align-items: center;">
+                        <div style="font-size: 1.2rem; width: 40px; text-align: center;">${icon}</div>
+                        <div style="flex: 1; padding: 0 15px;">
+                            <div style="font-size: 1.2rem; font-weight: bold; color: #1a3c6e; margin-bottom: 5px;">${route}</div>
+                            <div style="font-size: 0.9rem; color: #666;">${info}</div>
+                        </div>
+                        <div style="padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; min-width: 70px; text-align: center; background-color: ${statusBg}; color: ${statusColor};">${statusInfo.text}</div>
+                    </div>
+                `;
+            });
+            
+            // 构建完整的导出内容
+            exportContent.innerHTML = `
+                <div style="background: linear-gradient(90deg, #1a3c6e, #2c8df6); color: white; padding: 25px; border-radius: 10px 10px 0 0; text-align: center; margin-bottom: 0;">
+                    <h2 style="font-size: 2rem; margin-bottom: 10px;"><i class="fas fa-train"></i> 假期铁路运转计划</h2>
+                    <p style="font-size: 1.2rem; opacity: 0.9;">Holiday CR Schedule - ABHM TRAIN</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">导出时间: ${formattedDateTime}</p>
+                </div>
+                
+                <div style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #1a3c6e;">${trips.length}</div>
+                            <div style="font-size: 0.9rem; color: #666;">总行程数</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #1a3c6e;">${totalHours.toFixed(1)}</div>
+                            <div style="font-size: 0.9rem; color: #666;">总时长(分钟)</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #1a3c6e;">${totalDistance}</div>
+                            <div style="font-size: 0.9rem; color: #666;">总距离(公里)</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #4caf50;">${totalCost.toFixed(1)}</div>
+                            <div style="font-size: 0.9rem; color: #666;">总费用(元)</div>
+                        </div>
+                    </div>
+                    
+                    ${tripsHTML}
+                    
+                    <div style="text-align: center; padding: 20px; color: #888; font-size: 0.8rem; border-top: 1px solid #eee; margin-top: 20px;">
+                        <p>假期高铁运转计划 &copy; 奥本海默组织运转部 ABHM TRAIN 2025</p>
+                        <p>按时间顺序排列的假期高铁、地铁和参观行程</p>
+                    </div>
+                </div>
+            `;
+            
+            captureContainer.appendChild(exportContent);
+            
+            // 返回用于截图的元素
+            return exportContent;
+        }
+        
+        // 新增：恢复容器样式
+        function restoreContainerStyles(container, originalStyles) {
+            container.style.position = originalStyles.position || 'fixed';
+            container.style.left = originalStyles.left || '-9999px';
+            container.style.top = originalStyles.top || '-9999px';
+            container.style.width = originalStyles.width || '800px';
+            container.style.zIndex = originalStyles.zIndex || '';
+            container.style.opacity = originalStyles.opacity || '1';
+            container.style.visibility = originalStyles.visibility || 'visible';
+        }
+        
+        // 新增：恢复按钮状态
+        function restoreExportButton(btn, originalText) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+        
+        // 新增：导出图片功能
+        function exportAsPNG() {
+            // 创建专门用于导出的内容
+            const captureElement = createExportContentForCapture();
+            
+            // 显示加载提示
+            const exportBtn = document.getElementById("confirmExport");
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 生成图片中...';
+            exportBtn.disabled = true;
+            
+            // 将容器临时移动到可见位置（但透明）
+            const captureContainer = document.getElementById("exportCaptureContainer");
+            const originalStyles = {
+                position: captureContainer.style.position,
+                left: captureContainer.style.left,
+                top: captureContainer.style.top,
+                zIndex: captureContainer.style.zIndex,
+                opacity: captureContainer.style.opacity
+            };
+            
+            captureContainer.style.position = 'fixed';
+            captureContainer.style.left = '0';
+            captureContainer.style.top = '0';
+            captureContainer.style.width = '800px';
+            captureContainer.style.zIndex = '9999';
+            captureContainer.style.opacity = '0';
+            captureContainer.style.visibility = 'visible';
+            
+            // 确保DOM更新
+            setTimeout(() => {
+                // 动态加载html2canvas库
+                if (typeof html2canvas === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+                    script.onload = function() {
+                        captureAndDownload(captureElement, exportBtn, originalText, originalStyles);
+                    };
+                    script.onerror = function() {
+                        alert('无法加载html2canvas库，请检查网络连接');
+                        restoreExportButton(exportBtn, originalText);
+                        restoreContainerStyles(captureContainer, originalStyles);
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    captureAndDownload(captureElement, exportBtn, originalText, originalStyles);
+                }
+            }, 100);
+        }
+        
+        // 新增：执行截图和下载
+        function captureAndDownload(captureElement, exportBtn, originalText, originalStyles) {
+            const captureContainer = document.getElementById("exportCaptureContainer");
+            
+            // 计算容器完整高度
+            const contentHeight = captureElement.scrollHeight;
+            const containerHeight = Math.max(contentHeight, 600); // 最小600px高度
+            
+            // 设置容器高度
+            captureContainer.style.height = containerHeight + 'px';
+            captureElement.style.height = 'auto';
+            
+            // 等待一小段时间确保渲染完成
+            setTimeout(() => {
+                // 使用html2canvas截图
+                html2canvas(captureElement, {
+                    scale: 2, // 2倍分辨率
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    allowTaint: true,
+                    width: 800,
+                    height: captureElement.scrollHeight,
+                    windowWidth: 800,
+                    windowHeight: captureElement.scrollHeight,
+                    onclone: function(clonedDoc) {
+                        // 确保克隆的元素也应用正确样式
+                        const clonedElement = clonedDoc.querySelector('#exportCaptureContainer > div');
+                        if (clonedElement) {
+                            clonedElement.style.width = '800px';
+                            clonedElement.style.height = 'auto';
+                            clonedElement.style.overflow = 'visible';
+                        }
+                    }
+                }).then(canvas => {
+                    // 将canvas转换为图片
+                    const imgData = canvas.toDataURL('image/png', 1.0);
+                    
+                    // 创建下载链接
+                    const link = document.createElement('a');
+                    const fileName = `运转计划_${new Date().toISOString().slice(0,10).replace(/-/g, '')}.png`;
+                    
+                    link.download = fileName;
+                    link.href = imgData;
+                    
+                    // 触发下载
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // 恢复容器样式
+                    restoreContainerStyles(captureContainer, originalStyles);
+                    
+                    // 恢复按钮状态
+                    restoreExportButton(exportBtn, originalText);
+                    
+                    // 关闭模态框
+                    document.getElementById("exportImageModal").style.display = "none";
+                    
+                    alert('图片导出成功！');
+                }).catch(error => {
+                    console.error('导出图片失败:', error);
+                    alert('导出图片失败：' + (error.message || '未知错误'));
+                    
+                    // 恢复容器样式
+                    restoreContainerStyles(captureContainer, originalStyles);
+                    
+                    // 恢复按钮状态
+                    restoreExportButton(exportBtn, originalText);
+                });
+            }, 200);
+        }
+        
+        // 初始化页面
+        document.addEventListener("DOMContentLoaded", function() {
+            //优先从本地存储加载
+            loadTripsFromStorage();
+            
+            // 初始渲染
+            renderTrips();
+            updateStats();
+            
+            // 更新当前时间显示
+            updateCurrentTime();
+            
+            // 设置定时器，每1s更新一次时间显示
+            setInterval(updateCurrentTime, 1000); // 每1s更新一次
+            
+            // 设置定时器，每15s自动更新一次行程状态
+            setInterval(autoUpdateTripStatus, 15000); // 每15s更新一次
+            
+            ["departureDate", "departureTime", "arrivalDate", "arrivalTime"].forEach(id => {
+                document.getElementById(id).addEventListener("change", calculateDuration);
+            });
+            
+            // 绑定按钮事件
+            document.getElementById("showAll").addEventListener("click", () => {
+                renderTrips("all");
+                updateActiveFilter("showAll");
+            });
+            
+            document.getElementById("showPlanned").addEventListener("click", () => {
+                renderTrips("planned");
+                updateActiveFilter("showPlanned");
+            });
+            
+            document.getElementById("showCompleted").addEventListener("click", () => {
+                renderTrips("completed");
+                updateActiveFilter("showCompleted");
+            });
+            
+            document.getElementById("showInProgress").addEventListener("click", () => {
+                renderTrips("in-progress");
+                updateActiveFilter("showInProgress");
+            });
+            
+            document.getElementById("addTrip").addEventListener("click", addTrip);
+            
+            // 绑定导入导出按钮事件
+            document.getElementById("exportData").addEventListener("click", exportTrips);
+            document.getElementById("importData").addEventListener("click", importTrips);
+            
+            // 绑定导出图片按钮事件
+            document.getElementById("exportImage").addEventListener("click", prepareExportPreview);
+            
+            // 绑定模态框事件
+            document.getElementById("closeModal").addEventListener("click", () => {
+                document.getElementById("editModal").style.display = "none";
+            });
+            
+            document.getElementById("cancelEdit").addEventListener("click", () => {
+                document.getElementById("editModal").style.display = "none";
+            });
+            
+            document.getElementById("cancelExport").addEventListener("click", () => {
+                document.getElementById("exportImageModal").style.display = "none";
+            });
+            
+            document.getElementById("confirmExport").addEventListener("click", exportAsPNG);
+            
+            document.getElementById("tripForm").addEventListener("submit", saveTrip);
+            
+            // 绑定行程类型切换事件
+            document.querySelectorAll(".trip-type-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".trip-type-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    changeTripType(btn.dataset.type);
+                });
+            });
+            
+            // 事件委托处理编辑、查看、删除按钮
+            document.getElementById('timelineList').addEventListener('click', function(e) {
+                const target = e.target;
+                
+                // 处理编辑按钮点击
+                if (target.closest('.edit-btn')) {
+                    const btn = target.closest('.edit-btn');
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    editTrip(id);
+                }
+                
+                // 处理查看按钮点击
+                if (target.closest('.view-btn')) {
+                    const btn = target.closest('.view-btn');
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    viewTrip(id);
+                }
+                
+                // 处理删除按钮点击
+                if (target.closest('.delete-btn')) {
+                    const btn = target.closest('.delete-btn');
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    deleteTrip(id);
+                }
+            });
+            
+            // 设置默认激活的过滤器
+            updateActiveFilter("showAll");
+        });
+        
+        // 更新活动过滤器按钮样式
+        function updateActiveFilter(activeId) {
+            // 移除所有过滤器按钮的活动状态
+            document.querySelectorAll(".filter-controls .btn").forEach(btn => {
+                btn.className = btn.className.replace("btn-primary", "btn-secondary");
+            });
+            
+            // 为当前活动过滤器添加活动状态
+            const activeBtn = document.getElementById(activeId);
+            activeBtn.className = activeBtn.className.replace("btn-secondary", "btn-primary");
+        }
+    </script>
+</body>
+</html>

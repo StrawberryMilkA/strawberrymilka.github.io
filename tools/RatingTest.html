@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>联测 Rating 系统 - Elo 算法</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <style>
+    body { padding-bottom: 5rem; }
+    .table-hover tbody tr { cursor: pointer; }
+    .rating-up { color: green; }
+    .rating-down { color: red; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="#">📊 联测 Rating 系统</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active" href="#" data-page="dashboard">📈 仪表盘</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="students">👥 学生</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="exams">📝 考试记录</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="add-exam">➕ 录入成绩</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-page="import">📂 导入 / 导出</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" id="app-content"></div>
+
+  <!-- 模态框：Excel 列映射 -->
+  <div class="modal fade" id="mappingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Excel 列映射 & 预览</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label>考号列</label>
+              <select id="col-id" class="form-select"></select>
+            </div>
+            <div class="col-md-4">
+              <label>姓名列</label>
+              <select id="col-name" class="form-select"></select>
+            </div>
+            <div class="col-md-4">
+              <label>总分列</label>
+              <select id="col-score" class="form-select"></select>
+            </div>
+          </div>
+          <div class="table-responsive" style="max-height: 400px;">
+            <table class="table table-bordered table-sm" id="preview-table"></table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="confirm-import">确认导入</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function() {
+      // ---------- 数据管理 ----------
+      const STORAGE_KEY = 'rating_system_data';
+      const INITIAL_RATING = 1500;
+      const K_FACTOR = 32;
+
+      function getDefaultData() {
+        return {
+          students: {},
+          exams: []
+        };
+      }
+
+      function loadData() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          try { return JSON.parse(raw); } catch (e) { return getDefaultData(); }
+        }
+        return getDefaultData();
+      }
+
+      function saveData(data) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      // ---------- Elo 重算 ----------
+      function recalcAllRatings(data) {
+        const students = {};
+        for (const id in data.students) {
+          const s = data.students[id];
+          students[id] = {
+            id: s.id,
+            name: s.name,
+            rating: INITIAL_RATING,
+            ratingHistory: []
+          };
+        }
+        for (const exam of data.exams) {
+          const participants = exam.results
+            .map(r => ({ ...r, student: students[r.studentId] }))
+            .filter(p => p.student);
+          if (participants.length < 2) continue;
+          const totalS = {}, totalE = {};
+          participants.forEach(p => { totalS[p.studentId] = 0; totalE[p.studentId] = 0; });
+          for (let i = 0; i < participants.length; i++) {
+            const pi = participants[i];
+            for (let j = i + 1; j < participants.length; j++) {
+              const pj = participants[j];
+              const ri = pi.student.rating, rj = pj.student.rating;
+              const ei = 1.0 / (1.0 + Math.pow(10, (rj - ri) / 400)), ej = 1.0 - ei;
+              let si, sj;
+              if (pi.score > pj.score) { si = 1; sj = 0; }
+              else if (pi.score < pj.score) { si = 0; sj = 1; }
+              else { si = 0.5; sj = 0.5; }
+              totalS[pi.studentId] += si; totalS[pj.studentId] += sj;
+              totalE[pi.studentId] += ei; totalE[pj.studentId] += ej;
+            }
+          }
+          for (const p of participants) {
+            const delta = K_FACTOR * (totalS[p.studentId] - totalE[p.studentId]);
+            p.student.rating += delta;
+            p.student.ratingHistory.push({
+              value: p.student.rating,
+              date: exam.date || new Date(exam.id).toLocaleDateString(),
+              examId: exam.id
+            });
+          }
+        }
+        data.students = students;
+        saveData(data);
+        return data;
+      }
+
+      // ---------- 初始化数据 ----------
+      let AppData = loadData();
+      if (Object.keys(AppData.students).length > 0 || AppData.exams.length > 0) {
+        AppData = recalcAllRatings(AppData);
+      }
+
+      // ---------- 路由 ----------
+      const contentDiv = document.getElementById('app-content');
+      const navLinks = document.querySelectorAll('[data-page]');
+
+      function navigate(page) {
+        navLinks.forEach(link => link.classList.remove('active'));
+        document.querySelector(`[data-page="${page}"]`).classList.add('active');
+        switch (page) {
+          case 'dashboard': renderDashboard(); break;
+          case 'students': renderStudents(); break;
+          case 'exams': renderExams(); break;
+          case 'add-exam': renderAddExam(); break;
+          case 'import': renderImportExport(); break;
+        }
+      }
+      navLinks.forEach(link => {
+        link.addEventListener('click', e => { e.preventDefault(); navigate(link.dataset.page); });
+      });
+      navigate('dashboard');
+
+      // ---------- 页面渲染 ----------
+      function renderDashboard() {
+        let html = `<h3>📊 Rating 排行榜</h3>`;
+        const students = Object.values(AppData.students);
+        if (students.length === 0) {
+          html += `<div class="alert alert-info">还没有任何学生，请先录入数据。</div>`;
+        } else {
+          const sorted = [...students].sort((a, b) => b.rating - a.rating);
+          html += `<table class="table table-striped table-hover">
+            <thead><tr><th>排名</th><th>考号</th><th>姓名</th><th>Rating</th><th>历史</th></tr></thead><tbody>`;
+          sorted.forEach((s, idx) => {
+            html += `<tr>
+              <td>${idx+1}</td><td>${s.id}</td><td>${s.name}</td>
+              <td>${s.rating.toFixed(2)}</td><td>${s.ratingHistory.length} 场</td>
+            </tr>`;
+          });
+          html += `</tbody></table>`;
+        }
+        contentDiv.innerHTML = html;
+      }
+
+      function renderStudents() {
+        let html = `<h3>👥 学生管理</h3>
+          <button class="btn btn-primary mb-3" id="btn-add-student">添加学生</button>
+          <table class="table table-bordered"><thead><tr><th>考号</th><th>姓名</th><th>当前 Rating</th><th>操作</th></tr></thead><tbody>`;
+        for (const id in AppData.students) {
+          const s = AppData.students[id];
+          html += `<tr>
+            <td>${s.id}</td><td>${s.name}</td><td>${s.rating.toFixed(2)}</td>
+            <td><button class="btn btn-sm btn-danger btn-del-student" data-id="${id}">删除</button></td>
+          </tr>`;
+        }
+        html += `</tbody></table>`;
+        contentDiv.innerHTML = html;
+        document.getElementById('btn-add-student').addEventListener('click', () => {
+          const id = prompt('请输入考号：'); if (!id) return;
+          if (AppData.students[id]) { alert('该考号已存在！'); return; }
+          const name = prompt('请输入姓名：'); if (!name) return;
+          AppData.students[id] = { id, name, rating: INITIAL_RATING, ratingHistory: [] };
+          saveData(AppData); recalcAllRatings(AppData); renderStudents();
+        });
+        document.querySelectorAll('.btn-del-student').forEach(btn => {
+          btn.addEventListener('click', e => {
+            const id = e.target.dataset.id;
+            if (confirm(`确定要删除学生 ${AppData.students[id].name} 吗？`)) {
+              delete AppData.students[id];
+              AppData.exams.forEach(exam => exam.results = exam.results.filter(r => r.studentId !== id));
+              saveData(AppData); recalcAllRatings(AppData); renderStudents();
+            }
+          });
+        });
+      }
+
+      function renderExams() {
+        let html = `<h3>📝 考试记录</h3>`;
+        if (AppData.exams.length === 0) {
+          html += `<div class="alert alert-info">暂无考试记录。</div>`;
+        } else {
+          html += `<table class="table table-bordered"><thead><tr><th>日期</th><th>来源</th><th>编号</th><th>人数</th><th>操作</th></tr></thead><tbody>`;
+          AppData.exams.forEach((exam, idx) => {
+            html += `<tr>
+              <td>${exam.date||''}</td><td>${exam.source||''}</td><td>${exam.code||''}</td><td>${exam.results.length}</td>
+              <td>
+                <button class="btn btn-sm btn-info btn-view-exam" data-index="${idx}">查看成绩</button>
+                <button class="btn btn-sm btn-danger btn-del-exam" data-index="${idx}">删除</button>
+              </td>
+            </tr>`;
+          });
+          html += `</tbody></table>`;
+        }
+        contentDiv.innerHTML = html;
+        document.querySelectorAll('.btn-view-exam').forEach(btn => {
+          btn.addEventListener('click', e => {
+            const exam = AppData.exams[e.target.dataset.index];
+            let detail = `<h5>考试详情</h5><p>日期:${exam.date} 来源:${exam.source} 编号:${exam.code}</p>
+              <table class="table table-sm"><thead><tr><th>考号</th><th>姓名</th><th>总分</th></tr></thead><tbody>`;
+            exam.results.forEach(r => {
+              const s = AppData.students[r.studentId];
+              detail += `<tr><td>${r.studentId}</td><td>${s? s.name:'未知'}</td><td>${r.score}</td></tr>`;
+            });
+            detail += `</tbody></table><button class="btn btn-secondary" onclick="this.closest('.modal').remove()">关闭</button>`;
+            const modal = document.createElement('div');
+            modal.className = 'modal fade show d-block';
+            modal.innerHTML = `<div class="modal-dialog"><div class="modal-content"><div class="modal-body">${detail}</div></div></div>`;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+          });
+        });
+        document.querySelectorAll('.btn-del-exam').forEach(btn => {
+          btn.addEventListener('click', e => {
+            if (confirm('确定删除这场考试吗？')) {
+              AppData.exams.splice(e.target.dataset.index, 1);
+              saveData(AppData); recalcAllRatings(AppData); renderExams();
+            }
+          });
+        });
+      }
+
+      function renderAddExam() {
+        let html = `<h3>➕ 录入新考试成绩</h3>
+          <div class="row mb-3">
+            <div class="col-md-3"><input class="form-control" id="exam-date" type="date" placeholder="日期"></div>
+            <div class="col-md-3"><input class="form-control" id="exam-source" placeholder="试卷来源"></div>
+            <div class="col-md-3"><input class="form-control" id="exam-code" placeholder="试卷编号"></div>
+          </div>
+          <h5>成绩录入</h5><div id="score-entries"></div>
+          <button class="btn btn-primary mt-2" id="add-score-row">+ 添加学生成绩</button>
+          <button class="btn btn-success mt-2" id="submit-exam">✅ 提交考试</button>`;
+        contentDiv.innerHTML = html;
+        const container = document.getElementById('score-entries');
+        function addRow() {
+          const row = document.createElement('div');
+          row.className = 'row mb-2 score-row align-items-center';
+          row.innerHTML = `
+            <div class="col-md-4">
+              <select class="form-select student-select">
+                <option value="">-- 选择学生 --</option>
+                ${Object.values(AppData.students).map(s => `<option value="${s.id}">${s.id} - ${s.name}</option>`).join('')}
+              </select>
+            </div>
+            <div class="col-md-4"><input class="form-control score-input" type="number" step="0.5" placeholder="总分"></div>
+            <div class="col-md-2"><button class="btn btn-outline-danger btn-remove-row">删除</button></div>`;
+          container.appendChild(row);
+          row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
+        }
+        document.getElementById('add-score-row').addEventListener('click', addRow);
+        for (let i=0; i<5; i++) addRow();
+        document.getElementById('submit-exam').addEventListener('click', () => {
+          const date = document.getElementById('exam-date').value || new Date().toISOString().slice(0,10);
+          const source = document.getElementById('exam-source').value.trim() || '手动录入';
+          const code = document.getElementById('exam-code').value.trim();
+          const rows = document.querySelectorAll('.score-row');
+          const results = []; const used = new Set();
+          rows.forEach(row => {
+            const id = row.querySelector('.student-select').value;
+            const score = parseFloat(row.querySelector('.score-input').value);
+            if (!id || isNaN(score)) return;
+            if (used.has(id)) { alert(`学生 ${id} 重复！`); return; }
+            used.add(id); results.push({ studentId: id, score });
+          });
+          if (results.length < 2) { alert('至少需要2名学生的成绩！'); return; }
+          results.forEach(r => {
+            if (!AppData.students[r.studentId]) {
+              AppData.students[r.studentId] = { id: r.studentId, name: r.studentId, rating: INITIAL_RATING, ratingHistory: [] };
+            }
+          });
+          AppData.exams.push({ id: Date.now(), date, source, code, results });
+          saveData(AppData); recalcAllRatings(AppData);
+          alert('考试已提交，Rating 已更新！');
+          navigate('dashboard');
+        });
+      }
+
+      function renderImportExport() {
+        let html = `<h3>📂 导入与导出</h3>
+          <div class="card mb-4"><div class="card-header">📤 导出配置</div><div class="card-body">
+            <button class="btn btn-outline-secondary" id="btn-export-json">导出 JSON 备份文件</button>
+          </div></div>
+          <div class="card mb-4"><div class="card-header">📥 导入 JSON 备份</div><div class="card-body">
+            <input class="form-control" type="file" id="file-json-import" accept=".json">
+            <button class="btn btn-warning mt-2" id="btn-import-json">导入并替换全部数据</button>
+            <div class="alert alert-danger mt-2">⚠️ 将覆盖当前所有数据！</div>
+          </div></div>
+          <div class="card"><div class="card-header">📊 从 Excel 批量导入</div><div class="card-body">
+            <input class="form-control" type="file" id="file-xlsx" accept=".xlsx, .xls">
+            <button class="btn btn-primary mt-2" id="btn-parse-xlsx">解析预览</button>
+            <div class="mt-3" id="xlsx-preview-area"></div>
+          </div></div>`;
+        contentDiv.innerHTML = html;
+
+        document.getElementById('btn-export-json').addEventListener('click', () => {
+          const blob = new Blob([JSON.stringify(AppData, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `rating_backup_${new Date().toISOString().slice(0,10)}.json`;
+          a.click();
+        });
+
+        document.getElementById('btn-import-json').addEventListener('click', () => {
+          const file = document.getElementById('file-json-import').files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = e => {
+            try {
+              const imported = JSON.parse(e.target.result);
+              if (!imported.students || !imported.exams) throw new Error('格式错误');
+              if (confirm('覆盖当前数据？')) {
+                AppData = imported; saveData(AppData); recalcAllRatings(AppData);
+                alert('导入成功！'); navigate('dashboard');
+              }
+            } catch (err) { alert('无效的备份文件！'); }
+          };
+          reader.readAsText(file);
+        });
+
+        // =========== Excel 导入核心（已修复） ===========
+        const mappingModal = new bootstrap.Modal(document.getElementById('mappingModal'));
+        let excelHeaders = [];
+        let excelRows = [];
+
+        document.getElementById('btn-parse-xlsx').addEventListener('click', () => {
+          const file = document.getElementById('file-xlsx').files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = e => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            // raw: false 让公式显示计算结果
+            const json = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false });
+            excelHeaders = json[0].map(h => String(h).trim());
+            excelRows = json.slice(1).filter(row => row.some(cell => cell !== ''));
+
+            // 填充列选择器
+            ['col-id','col-name','col-score'].forEach(sid => {
+              const sel = document.getElementById(sid);
+              sel.innerHTML = '<option value="">-- 自动选择 --</option>';
+              excelHeaders.forEach((h, i) => sel.innerHTML += `<option value="${i}">${h||'(空)'}</option>`);
+            });
+            // 自动匹配
+            const autoMatch = patterns => {
+              for (let i=0; i<excelHeaders.length; i++) 
+                if (patterns.some(p => excelHeaders[i].includes(p))) return i;
+              return '';
+            };
+            document.getElementById('col-id').value = autoMatch(['考号','学号','id']);
+            document.getElementById('col-name').value = autoMatch(['姓名','名字','name']);
+            document.getElementById('col-score').value = autoMatch(['总分','总成绩','score','得分']);
+
+            updatePreview();
+            mappingModal.show();
+          };
+          reader.readAsArrayBuffer(file);
+        });
+
+        function updatePreview() {
+          let html = '<thead><tr>';
+          excelHeaders.forEach(h => html += `<th>${h}</th>`);
+          html += '</tr></thead><tbody>';
+          excelRows.slice(0,10).forEach(row => {
+            html += '<tr>';
+            row.forEach(cell => html += `<td>${cell}</td>`);
+            html += '</tr>';
+          });
+          html += '</tbody>';
+          document.getElementById('preview-table').innerHTML = html;
+        }
+
+        document.getElementById('col-id').addEventListener('change', updatePreview);
+        document.getElementById('col-name').addEventListener('change', updatePreview);
+        document.getElementById('col-score').addEventListener('change', updatePreview);
+
+        document.getElementById('confirm-import').addEventListener('click', () => {
+          const colId = parseInt(document.getElementById('col-id').value);
+          const colName = parseInt(document.getElementById('col-name').value);
+          const colScore = parseInt(document.getElementById('col-score').value);
+          if (isNaN(colId) || isNaN(colName) || isNaN(colScore)) {
+            return alert('请完整选择考号、姓名、总分对应的列！');
+          }
+
+          // 提取场次列索引（可选）
+          const examColIdx = excelHeaders.findIndex(h => h.includes('场次'));
+
+          const examMap = new Map(); // key -> results[]
+          const globalResults = [];
+          let lastExamKey = '';
+
+          for (const row of excelRows) {
+            const id = String(row[colId]).trim();
+            const name = String(row[colName]).trim();
+            // 解析总分：移除常见中文说明，保留数字和点
+            const rawScore = String(row[colScore]).replace(/[^\d.]/g, '');
+            const score = parseFloat(rawScore);
+            if (!id || isNaN(score)) continue;
+            // 排除明显非学生行（平均分、合计、考号900001等）
+            if (id.includes('平均') || id.includes('合计') || id === '900001') continue;
+
+            // 处理场次填充（合并单元格导致后续行为空）
+            let examKey = '';
+            if (examColIdx !== -1) {
+              const cellVal = String(row[examColIdx]).trim();
+              if (cellVal) lastExamKey = cellVal;
+              examKey = lastExamKey;
+            }
+
+            if (examKey) {
+              if (!examMap.has(examKey)) examMap.set(examKey, []);
+              examMap.get(examKey).push({ studentId: id, name, score });
+            } else {
+              globalResults.push({ studentId: id, name, score });
+            }
+          }
+
+          const examsToAdd = [];
+          if (examColIdx !== -1 && examMap.size > 0) {
+            for (const [key, results] of examMap) {
+              if (results.length >= 2) {
+                examsToAdd.push({
+                  id: Date.now() + Math.random(),
+                  date: new Date().toISOString().slice(0,10),
+                  source: 'Excel导入',
+                  code: key,
+                  results: results.map(r => ({ studentId: r.studentId, score: r.score }))
+                });
+              }
+            }
+          } else if (globalResults.length >= 2) {
+            examsToAdd.push({
+              id: Date.now(),
+              date: new Date().toISOString().slice(0,10),
+              source: 'Excel导入',
+              code: '批量',
+              results: globalResults.map(r => ({ studentId: r.studentId, score: r.score }))
+            });
+          }
+
+          if (examsToAdd.length === 0) {
+            const total = examColIdx !== -1 
+              ? Array.from(examMap.values()).reduce((s, a) => s + a.length, 0) 
+              : globalResults.length;
+            return alert(`没有有效的考试记录。共识别 ${total} 条有效成绩，每场至少需要2人。请检查列映射。`);
+          }
+
+          // 将学生加入库
+          for (const exam of examsToAdd) {
+            for (const r of exam.results) {
+              if (!AppData.students[r.studentId]) {
+                const name = excelRows.find(row => String(row[colId]).trim() === r.studentId)?.[colName] || r.studentId;
+                AppData.students[r.studentId] = { id: r.studentId, name, rating: INITIAL_RATING, ratingHistory: [] };
+              }
+            }
+          }
+
+          AppData.exams.push(...examsToAdd);
+          saveData(AppData);
+          recalcAllRatings(AppData);
+          mappingModal.hide();
+          alert(`成功导入 ${examsToAdd.length} 场考试，共 ${examsToAdd.reduce((s,e)=>s+e.results.length,0)} 条成绩！`);
+          navigate('dashboard');
+        });
+      }
+
+      window.addEventListener('storage', e => {
+        if (e.key === STORAGE_KEY) {
+          AppData = loadData();
+          const active = document.querySelector('.nav-link.active')?.dataset.page || 'dashboard';
+          navigate(active);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
