@@ -1,9 +1,5 @@
 ---
 layout: default
-extra_head: |
-  <link rel="stylesheet" href="/assets/css/news.css">
-extra_scripts: |
-  <script src="/assets/js/news.js"></script>
 ---
 <main class="news-container">
     <article class="news-card{% if page.pinned %} pinned{% endif %}">
@@ -35,7 +31,7 @@ extra_scripts: |
         {% endif %}
     </article>
 
-    {% assign news_comments = site.data.news_comments | where: "news_id", page.id | first %}
+    {% assign news_comments = site.data.news_comments | where: "news_id", page.news_id | first %}
     <section class="user-comments">
         <h3>💬 用户评论 ({{ news_comments.comments | size }})</h3>
         {% if news_comments.comments %}

@@ -1,5 +1,5 @@
 ---
-id: 2
+news_id: 2
 pinned: false
 categories: []
 publisher:
@@ -14,6 +14,8 @@ ai_review:
   body: "<p>从组织发展的视角来看，“三三起义”作为一个<span class=\"ai-highlight\">“创始神话”</span>级别的叙事节点，在凝聚成员认同、传承组织文化方面具有不可替代的价值。何慕部长在文中提到的“解题锐气减退”现象，在业余竞赛组织中颇为常见——当管理事务增多、训练时间被压缩时，竞技状态自然下滑。</p><p>AI建议可考虑建立<span class=\"ai-highlight\">“老成员复训机制”</span>：每季度安排一次全模拟联测，要求所有部门负责人必须参加，将成绩纳入内部考核。这既能保持老成员的竞技敏感度，也能为新生代成员树立榜样。毕竟，<strong>最好的领导力示范，就是亲自上阵解题</strong>。</p>"
 layout: news
 permalink: /news/2.html
+extra_head: '<link rel="stylesheet" href="/assets/css/news.css">'
+extra_scripts: '<script src="/assets/js/news.js"></script>'
 ---
 
 三年时光，转瞬即逝。今天，我们共同回望那个改变组织命运的日子——**2023年3月3日**。
