@@ -10,7 +10,7 @@ layout: default
                     {{ page.publisher.name }}
                     <span class="publisher-role">{{ page.publisher.role }}</span>
                 </div>
-                <div class="publish-time">📅 {{ page.date }}{% if page.date_note %} · {{ page.date_note }}{% endif %}</div>
+                <div class="publish-time">📅 {{ page.date | date: "%Y年%-m月%-d日" }}{% if page.date_note %} · {{ page.date_note }}{% endif %}</div>
             </div>
         </div>
         <div class="news-body">

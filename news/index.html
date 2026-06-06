@@ -3,7 +3,7 @@ layout: default
 pagination:
   enabled: true
   collection: news
-  sort_field: 'date_iso'
+  sort_field: 'date'
   sort_reverse: true
   per_page: 2
   filters:
@@ -17,7 +17,7 @@ pagination:
     </div>
 
     {% if paginator.page == 1 %}
-        {% assign pinned_news = site.news | where: "pinned", true | sort: "date_iso" | reverse %}
+        {% assign pinned_news = site.news | where: "pinned", true | sort: "date" | reverse %}
         {% for item in pinned_news %}
             <article class="news-card pinned">
                 <div class="news-card-header">
@@ -27,7 +27,7 @@ pagination:
                             {{ item.publisher.name }}
                             <span class="publisher-role">{{ item.publisher.role }}</span>
                         </div>
-                        <div class="publish-time">📅 {{ item.date }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                        <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
                     </div>
                 </div>
                 <div class="news-body">
@@ -49,7 +49,7 @@ pagination:
                         {{ item.publisher.name }}
                         <span class="publisher-role">{{ item.publisher.role }}</span>
                     </div>
-                    <div class="publish-time">📅 {{ item.date }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                    <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
                 </div>
             </div>
             <div class="news-body">

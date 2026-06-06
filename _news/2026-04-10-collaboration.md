@@ -7,8 +7,7 @@ publisher:
   role: "运转部部长"
   avatar: "李"
   dept_class: "dept-ops"
-date: "2026年4月10日"
-date_iso: "2026-04-10"
+date: 2026-04-10
 date_note: ""
 title: "🔗 运转部与高联部协作新机制——联测组织流程全面升级"
 ai_review:

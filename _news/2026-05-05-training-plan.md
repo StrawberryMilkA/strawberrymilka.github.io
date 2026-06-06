@@ -7,8 +7,7 @@ publisher:
   role: "高联部副部长"
   avatar: "邹"
   dept_class: "dept-gaolian"
-date: "2026年5月5日"
-date_iso: "2026-05-05"
+date: 2026-05-05
 date_note: ""
 title: "📅 2026高联赛季训练计划公布——全力备战省赛"
 ai_review:
