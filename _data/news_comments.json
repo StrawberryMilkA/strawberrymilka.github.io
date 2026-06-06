@@ -1,12 +1,6 @@
 [
     {
       "news_id": 1,
-      "comments": [
-        {
-          "author": "李沂铮",
-          "date": "2026-06-05 19:07",
-          "content": "支持"
-        }
-      ]
+      "comments": [ ]
     }
   ]
