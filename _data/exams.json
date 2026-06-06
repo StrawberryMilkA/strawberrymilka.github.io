@@ -1,0 +1,18 @@
+[
+    {
+      "id": "1",
+      "date": "2026.4.22",
+      "time": "一试 18:50-20:20 二试 20:30-21:30",
+      "source": "2025广州市赛",
+      "code": "ABHM_LCGL_25GZ",
+      "results": [
+        { "studentId": "100001", "name": "曾奂霖", "fill": 56, "t11": 10, "t12": 0, "trial1_total": 66, "trial2_t1": 40, "trial2_t2": 10, "trial2_total": 50, "total": 116 },
+        { "studentId": "100003", "name": "邹宗睿", "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 40, "trial2_total": 40, "total": 85 },
+        { "studentId": "100007", "name": "赵哲宇", "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 20, "trial2_total": 20, "total": 65 },
+        { "studentId": "100002", "name": "丁致远", "fill": 48, "t11": 10, "t12": 0, "trial1_total": 58, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 58 },
+        { "studentId": "100006", "name": "张浩民", "fill": 32, "t11": 10, "t12": 0, "trial1_total": 42, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 42 },
+        { "studentId": "100008", "name": "李沂铮", "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 10, "trial2_total": 10, "total": 42 },
+        { "studentId": "100005", "name": "何慕", "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 32 }
+      ]
+    }
+  ]
