@@ -4,12 +4,8 @@
             <img src="{{ '/assets/images/abhmmathtext.png' | relative_url }}" alt="奥本海默组织" class="nav-logo-img">
         </a>
         <ul class="nav-links" id="navLinks">
-            <li><a href="{{ '/#history' | relative_url }}" class="nav-link">创立历程</a></li>
-            <li><a href="{{ '/#advantages' | relative_url }}" class="nav-link">我们的优势</a></li>
-            <li><a href="{{ '/#structure' | relative_url }}" class="nav-link">组织架构</a></li>
-            <li><a href="{{ '/#join' | relative_url }}" class="nav-link">加入我们</a></li>
-            <li><a href="{{ '/#contact' | relative_url }}" class="nav-link">联系方式</a></li>
-            <li><a href="{{ '/weekly' | relative_url }}" class="nav-link" style="color: var(--accent); font-weight: 700;">联测成绩</a></li>
+            <li><a href="{{ '/' | relative_url }}" class="nav-link{% if page.url == '/' or page.url == '/index' or page.url == '/index.html' %} active{% endif %}">组织介绍</a></li>
+            <li><a href="{{ '/weekly' | relative_url }}" class="nav-link{% if page.url == '/weekly.html' or page.url == '/weekly' %} active{% endif %}">联测成绩</a></li>
         </ul>
         <button class="menu-toggle" id="menuToggle" aria-label="菜单">
             <span class="menu-bar"></span>

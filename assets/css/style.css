@@ -133,6 +133,11 @@ ul {
     background: var(--surface-alt);
 }
 
+.nav-link.active {
+    color: var(--accent) !important;
+    font-weight: 700;
+}
+
 .menu-toggle {
     display: none;
     flex-direction: column;
