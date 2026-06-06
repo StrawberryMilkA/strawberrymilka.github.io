@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 高联联测成绩
+active_nav: weekly
 extra_head: |
   <style>
     /* 成绩页面专属样式（表格、点评卡片、图表容器） */
@@ -37,6 +38,7 @@ extra_head: |
   </style>
 extra_scripts: |
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
 ---
 {% assign exam = site.data.exams | first %}
 {% assign ratings = site.data.ratings.students %}
@@ -174,4 +176,3 @@ extra_scripts: |
     ]
   };
 </script>
-<script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
