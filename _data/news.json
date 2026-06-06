@@ -2,7 +2,7 @@
     {
       "id": 1,
       "pinned": true,
-      "categories": ["announcement", "event"],
+      "categories": ["announcement"],
       "publisher": {
         "name": "丁致远",
         "role": "高联部部长",
@@ -22,7 +22,7 @@
     {
       "id": 2,
       "pinned": false,
-      "categories": ["history", "internal"],
+      "categories": [ ],
       "publisher": {
         "name": "何慕",
         "role": "高中数学研究部部长",
@@ -42,7 +42,7 @@
     {
       "id": 3,
       "pinned": false,
-      "categories": ["internal", "announcement"],
+      "categories": ["announcement"],
       "publisher": {
         "name": "李沂铮",
         "role": "运转部部长",
@@ -62,7 +62,7 @@
     {
       "id": 4,
       "pinned": false,
-      "categories": ["event", "announcement"],
+      "categories": ["announcement"],
       "publisher": {
         "name": "邹宗睿",
         "role": "高联部副部长",
