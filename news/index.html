@@ -32,7 +32,7 @@ extra_scripts: |
                             {{ item.publisher.name }}
                             <span class="publisher-role">{{ item.publisher.role }}</span>
                         </div>
-                        <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                        <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
                     </div>
                 </div>
                 <div class="news-body">
@@ -54,7 +54,7 @@ extra_scripts: |
                         {{ item.publisher.name }}
                         <span class="publisher-role">{{ item.publisher.role }}</span>
                     </div>
-                    <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                    <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
                 </div>
             </div>
             <div class="news-body">

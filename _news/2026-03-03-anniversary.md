@@ -2,12 +2,13 @@
 news_id: 2
 pinned: false
 categories: []
+active_nav: news
 publisher:
   name: "何慕"
   role: "高中数学研究部部长"
   avatar: "何"
   dept_class: "dept-math"
-date: 2026-03-03
+date: 2026-03-03 09:00
 date_note: "三三起义三周年纪念日"
 title: "🔥 纪念“三三起义”三周年——从星火到燎原"
 ai_review:

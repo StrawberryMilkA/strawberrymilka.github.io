@@ -2,12 +2,13 @@
 news_id: 3
 pinned: false
 categories: ["announcement"]
+active_nav: news
 publisher:
   name: "李沂铮"
   role: "运转部部长"
   avatar: "李"
   dept_class: "dept-ops"
-date: 2026-04-10
+date: 2026-04-10 14:30
 date_note: ""
 title: "🔗 运转部与高联部协作新机制——联测组织流程全面升级"
 ai_review:

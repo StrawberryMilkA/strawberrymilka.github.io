@@ -2,12 +2,13 @@
 news_id: 1
 pinned: true
 categories: ["announcement"]
+active_nav: news
 publisher:
   name: "丁致远"
   role: "高联部部长"
   avatar: "丁"
   dept_class: "dept-gaolian"
-date: 2026-04-23
+date: 2026-04-23 10:00
 date_note: "发布于联测次日"
 title: "📊 高联模拟联测成绩正式发布——曾奂霖116分强势领跑"
 ai_review:
