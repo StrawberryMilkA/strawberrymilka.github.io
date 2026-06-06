@@ -161,7 +161,9 @@ extra_scripts: |
   <a href="{{ '/' | relative_url }}" class="back-link">← 返回组织主页</a>
 </div>
 
-<!-- 将 Rating 数据输出为 JavaScript 变量，供 weekly.js 使用 -->
+<!-- 加载 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- 定义 Rating 数据 -->
 <script>
   const ratingData = {
     labels: ["初始 Rating", "{{ exam.date }} 联测"],
@@ -176,3 +178,5 @@ extra_scripts: |
     ]
   };
 </script>
+<!-- 绘图脚本 -->
+<script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
