@@ -1,6 +1,9 @@
 ---
 layout: default
 ---
+{% assign extra_head_content = '<link rel="stylesheet" href="' | append: '/assets/css/news.css' | append: '">' %}
+{% assign page.extra_head = page.extra_head | append: extra_head_content %}
+
 <main class="news-container">
     <article class="news-card{% if page.pinned %} pinned{% endif %}">
         <div class="news-card-header">
@@ -53,3 +56,6 @@ layout: default
 
     <a href="{{ '/news/' | relative_url }}" class="back-link">← 返回新闻列表</a>
 </main>
+
+<script src="{{ '/assets/js/news.js' | relative_url }}"></script>
+{{ page.extra_scripts }}
