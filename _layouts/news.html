@@ -1,6 +1,22 @@
 ---
 layout: default
 active_nav: news
+extra_head: |
+  <link rel="stylesheet" href="/assets/katex/katex.min.css">
+extra_scripts: |
+  <script src="/assets/katex/katex.min.js"></script>
+  <script src="/assets/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
 ---
 <main class="news-container">
     <article class="news-card{% if page.pinned %} pinned{% endif %}">

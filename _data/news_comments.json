@@ -2,5 +2,9 @@
     {
       "news_id": 1,
       "comments": [ ]
+    },
+    {
+      "news_id": 2,
+      "comments": [ ]
     }
   ]
