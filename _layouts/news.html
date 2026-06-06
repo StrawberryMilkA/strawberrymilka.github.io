@@ -1,0 +1,55 @@
+---
+layout: default
+---
+<main class="news-container">
+    <article class="news-card{% if page.pinned %} pinned{% endif %}">
+        <div class="news-card-header">
+            <div class="publisher-avatar {{ page.publisher.dept_class }}">{{ page.publisher.avatar }}</div>
+            <div class="publisher-info">
+                <div class="publisher-name">
+                    {{ page.publisher.name }}
+                    <span class="publisher-role">{{ page.publisher.role }}</span>
+                </div>
+                <div class="publish-time">📅 {{ page.date }}{% if page.date_note %} · {{ page.date_note }}{% endif %}</div>
+            </div>
+        </div>
+        <div class="news-body">
+            <h3>{{ page.title }}</h3>
+            {{ content }}
+        </div>
+        {% if page.ai_review %}
+        <div class="ai-review">
+            <div class="ai-review-header">
+                <div class="ai-icon">🤖</div>
+                <span class="ai-label">AI 自动评论 <span class="ai-badge">BETA</span></span>
+            </div>
+            <div class="ai-review-body">
+                {{ page.ai_review.body }}
+            </div>
+            <div class="ai-disclaimer">⚡ 此评论由AI自动生成，仅供参考，不代表组织官方立场。</div>
+        </div>
+        {% endif %}
+    </article>
+
+    {% assign news_comments = site.data.news_comments | where: "news_id", page.id | first %}
+    <section class="user-comments">
+        <h3>💬 用户评论 ({{ news_comments.comments | size }})</h3>
+        {% if news_comments.comments %}
+        <ul class="comment-list">
+            {% for comment in news_comments.comments %}
+            <li class="comment-item">
+                <div class="comment-meta">
+                    <span class="comment-author">{{ comment.author }}</span>
+                    <span class="comment-date">{{ comment.date }}</span>
+                </div>
+                <p class="comment-content">{{ comment.content }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-comments">暂无评论，来抢沙发吧！</p>
+        {% endif %}
+    </section>
+
+    <a href="{{ '/news/' | relative_url }}" class="back-link">← 返回新闻列表</a>
+</main>

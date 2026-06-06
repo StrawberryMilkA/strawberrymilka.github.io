@@ -1,0 +1,81 @@
+---
+layout: default
+pagination:
+  enabled: true
+  collection: news
+  sort_field: 'date_iso'
+  sort_reverse: true
+  per_page: 2
+  filters:
+    - field: 'pinned'
+      value: false
+---
+<main class="news-container">
+    <div class="news-header">
+        <h1>组织新闻</h1>
+        <p class="news-subtitle">📡 奥本海默组织最新动态 · 赛事公告 · 内部通讯</p>
+    </div>
+
+    {% if paginator.page == 1 %}
+        {% assign pinned_news = site.news | where: "pinned", true | sort: "date_iso" | reverse %}
+        {% for item in pinned_news %}
+            <article class="news-card pinned">
+                <div class="news-card-header">
+                    <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+                    <div class="publisher-info">
+                        <div class="publisher-name">
+                            {{ item.publisher.name }}
+                            <span class="publisher-role">{{ item.publisher.role }}</span>
+                        </div>
+                        <div class="publish-time">📅 {{ item.date }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                    </div>
+                </div>
+                <div class="news-body">
+                    <h3>{{ item.title }}</h3>
+                    {% assign excerpt = item.content | strip_html %}
+                    <p>{{ excerpt | truncate: 150 }}</p>
+                    <a href="{{ item.url | relative_url }}" class="read-more-link">阅读全文 →</a>
+                </div>
+            </article>
+        {% endfor %}
+    {% endif %}
+
+    {% for item in paginator.posts %}
+        <article class="news-card">
+            <div class="news-card-header">
+                <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+                <div class="publisher-info">
+                    <div class="publisher-name">
+                        {{ item.publisher.name }}
+                        <span class="publisher-role">{{ item.publisher.role }}</span>
+                    </div>
+                    <div class="publish-time">📅 {{ item.date }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                </div>
+            </div>
+            <div class="news-body">
+                <h3>{{ item.title }}</h3>
+                {% assign excerpt = item.content | strip_html %}
+                <p>{{ excerpt | truncate: 150 }}</p>
+                <a href="{{ item.url | relative_url }}" class="read-more-link">阅读全文 →</a>
+            </div>
+        </article>
+    {% endfor %}
+
+    <nav class="pagination">
+        {% if paginator.previous_page %}
+            <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-btn">← 上一页</a>
+        {% else %}
+            <span class="pagination-btn disabled">← 上一页</span>
+        {% endif %}
+
+        <span class="pagination-info">第 {{ paginator.page }} / {{ paginator.total_pages }} 页</span>
+
+        {% if paginator.next_page %}
+            <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-btn">下一页 →</a>
+        {% else %}
+            <span class="pagination-btn disabled">下一页 →</span>
+        {% endif %}
+    </nav>
+
+    <a href="{{ '/' | relative_url }}" class="back-link">← 返回组织主页</a>
+</main>

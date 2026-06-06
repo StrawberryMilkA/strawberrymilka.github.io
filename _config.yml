@@ -3,7 +3,25 @@ title: 奥本海默组织
 description: 集合数学、物理、逻辑学等多学科为一体的综合性学术组织
 baseurl: ""
 url: "https://abhm.qzz.io"
-permalink: pretty
+
+collections:
+  news:
+    output: true
+    permalink: /news/:name.html
+
+pagination:
+  enabled: true
+  collection: news
+  per_page: 2
+  sort_field: 'date_iso'
+  sort_reverse: true
+  filters:
+    - field: 'pinned'
+      value: false
+  trail:
+    before: 2
+    after: 2
+    
 exclude:
   - README.md
   - .gitignore
