@@ -14,7 +14,7 @@ title: "📅 2026高联赛季训练计划公布——全力备战省赛"
 ai_review:
   body: "<p>邹宗睿副部长公布的训练计划结构清晰、节奏合理。从训练科学的角度分析：</p><p>① <span class=\"ai-highlight\">“每周一试+双周二试”</span>的频率设置恰当，避免了过度训练导致的倦怠；16周的总周期覆盖了整个备赛窗口，时间充裕；</p><p>② <span class=\"ai-highlight\">月度全真联测</span>是亮点——完整模拟比赛节奏对于培养“比赛日状态”至关重要，许多选手在单独训练时表现出色，但联测中因时间压力和体力消耗而失分；</p><p>③ AI建议在训练中后期（第8-12周）引入<span class=\"ai-highlight\">“压力测试”</span>——刻意缩短模拟时间（如一试压缩至80分钟），以训练选手在极端情况下的应变能力。</p><p>总体来看，这是一份<strong>兼顾系统性与灵活性</strong>的优质训练计划，值得全体成员认真执行。</p>"
 layout: news
-permalink: /news/4.html
+permalink: /news/4
 extra_head: '<link rel="stylesheet" href="/assets/css/news.css">'
 extra_scripts: '<script src="/assets/js/news.js"></script>'
 ---

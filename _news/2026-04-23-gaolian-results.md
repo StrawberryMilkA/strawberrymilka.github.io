@@ -14,7 +14,7 @@ title: "📊 高联模拟联测成绩正式发布——曾奂霖116分强势领�
 ai_review:
   body: "<p>本次联测数据呈现出明显的<span class=\"ai-highlight\">“双峰分布”</span>特征：曾奂霖以116分形成第一梯队，邹宗睿85分居于第二梯队，其余选手集中在32-65分区间。这一分布说明组织内部存在<strong>显著的竞技水平分层</strong>，但中段选手差距较小、竞争激烈。</p><p>值得关注的是，<span class=\"ai-highlight\">二试T2</span>成为关键区分题——邹宗睿40分、赵哲宇20分、李沂铮10分、曾奂霖10分，其余三位0分。建议后续训练中增加二试专项限时模拟，尤其针对“一试消耗后的抗压解题”场景进行强化。</p><p>从历史趋势看，曾奂霖的Rating净增+96，邹宗睿+64，显示出两位选手正处于<strong>快速上升期</strong>。建议组织在下一阶段安排更具挑战性的专题训练，以匹配头部选手的成长速度。</p>"
 layout: news
-permalink: /news/1.html
+permalink: /news/1
 extra_head: '<link rel="stylesheet" href="/assets/css/news.css">'
 extra_scripts: '<script src="/assets/js/news.js"></script>'
 ---
