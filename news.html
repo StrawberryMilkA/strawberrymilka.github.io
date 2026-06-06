@@ -7,7 +7,9 @@ extra_head: |
 extra_scripts: |
   <script src="{{ '/assets/js/news.js' | relative_url }}"></script>
 ---
-{% assign news_list = site.data.news | sort: "pinned" | reverse %}
+{% assign pinned_news = site.data.news | where: "pinned", true %}
+{% assign unpinned_news = site.data.news | where: "pinned", false %}
+{% assign news_list = pinned_news | concat: unpinned_news %}
 <main class="news-container">
     <div class="news-header">
         <h1>组织新闻</h1>
