@@ -1,7 +1,7 @@
 ---
 news_id: 2
 pinned: true
-categories: ["announcement"]
+categories: [ ]
 active_nav: news
 publisher:
   name: "丁致远"
