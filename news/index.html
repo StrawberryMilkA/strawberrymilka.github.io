@@ -64,7 +64,7 @@ extra_scripts: |
         {% endfor %}
     {% endif %}
 
-    {% for item in paginator.posts %}
+    {% for item in paginator.documents %}
         <article class="news-card" data-category="{{ item.categories | join: ' ' }}">
             <div class="news-card-header">
                 <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
