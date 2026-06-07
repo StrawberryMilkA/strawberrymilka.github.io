@@ -149,6 +149,10 @@ extra_scripts: |
 <script>
 (function() {
   const ctx = document.getElementById('examRatingChart').getContext('2d');
+
+  {% assign prev_idx = exam.rating_index | minus: 1 %}
+  {% assign curr_idx = exam.rating_index %}
+
   const data = {
     labels: [
       {% for r in exam.results %}
@@ -162,7 +166,7 @@ extra_scripts: |
       {% for r in exam.results %}
         {% assign rating = ratings | where: "id", r.studentId | first %}
         {% if rating %}
-          {{ rating.ratingHistory[exam.rating_index | minus: 1] }}{% unless forloop.last %},{% endunless %}
+          {{ rating.ratingHistory[prev_idx] }}{% unless forloop.last %},{% endunless %}
         {% endif %}
       {% endfor %}
     ],
@@ -170,7 +174,7 @@ extra_scripts: |
       {% for r in exam.results %}
         {% assign rating = ratings | where: "id", r.studentId | first %}
         {% if rating %}
-          {{ rating.ratingHistory[exam.rating_index] }}{% unless forloop.last %},{% endunless %}
+          {{ rating.ratingHistory[curr_idx] }}{% unless forloop.last %},{% endunless %}
         {% endif %}
       {% endfor %}
     ]
