@@ -97,7 +97,7 @@ extra_scripts:
     <div class="overall-review">{{ exam.overall_review }}</div>
     <div class="player-reviews">
       {% for r in results %}
-        {% assign student = students_data | where: "id", r.studentId | first %}
+      {% assign results_raw = exam.results %}  <!-- 使用原始顺序 -->
         {% if student %}
         <div class="player-card">
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
