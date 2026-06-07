@@ -9,33 +9,26 @@ extra_head: |
       margin: 0 auto;
       padding: 120px 24px 80px;
     }
-
     .weekly-header {
       text-align: center;
       margin-bottom: 48px;
     }
-
     .weekly-header h1 {
       font-size: 2.4rem;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 8px;
-      letter-spacing: -0.02em;
     }
-
     .weekly-header .subtitle {
       font-size: 1.05rem;
       color: var(--text-muted);
     }
-
-    /* 卡片网格 */
     .exam-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
       margin-bottom: 40px;
     }
-
     .exam-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -49,13 +42,11 @@ extra_head: |
       flex-direction: column;
       gap: 12px;
     }
-
     .exam-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 28px rgba(0,0,0,0.12);
       border-color: var(--accent);
     }
-
     .exam-card .card-date {
       display: inline-flex;
       align-items: center;
@@ -68,7 +59,6 @@ extra_head: |
       border-radius: 20px;
       width: fit-content;
     }
-
     .exam-card .card-title {
       font-size: 1.25rem;
       font-weight: 700;
@@ -76,7 +66,6 @@ extra_head: |
       line-height: 1.4;
       margin: 0;
     }
-
     .exam-card .card-meta {
       display: flex;
       flex-wrap: wrap;
@@ -84,20 +73,12 @@ extra_head: |
       font-size: 0.85rem;
       color: var(--text-secondary);
     }
-
-    .exam-card .card-meta span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
     .exam-card .card-desc {
       font-size: 0.9rem;
       color: var(--text-secondary);
       line-height: 1.6;
       flex: 1;
     }
-
     .exam-card .card-link {
       margin-top: auto;
       font-weight: 600;
@@ -108,12 +89,9 @@ extra_head: |
       font-size: 0.9rem;
       transition: gap 0.2s;
     }
-
     .exam-card:hover .card-link {
       gap: 12px;
     }
-
-    /* 分页导航 */
     .pagination {
       display: flex;
       justify-content: center;
@@ -122,9 +100,7 @@ extra_head: |
       margin-top: 48px;
       flex-wrap: wrap;
     }
-
-    .pagination a,
-    .pagination span {
+    .pagination a, .pagination span {
       display: inline-block;
       padding: 10px 18px;
       border-radius: 10px;
@@ -136,25 +112,21 @@ extra_head: |
       font-size: 0.9rem;
       transition: all 0.2s;
     }
-
     .pagination a:hover {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
     }
-
     .pagination .disabled {
       opacity: 0.4;
       pointer-events: none;
     }
-
     .pagination .current-page {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
       font-weight: 700;
     }
-
     .back-link {
       display: inline-flex;
       align-items: center;
@@ -166,11 +138,9 @@ extra_head: |
       text-decoration: none;
       transition: color 0.2s;
     }
-
     .back-link:hover {
       color: var(--text);
     }
-
     @media (max-width: 700px) {
       .exam-grid {
         grid-template-columns: 1fr;
@@ -178,7 +148,7 @@ extra_head: |
     }
   </style>
 ---
-{% assign exams_sorted = site.exams | sort: "sort_date" | reverse %}
+{% assign exams_sorted = site.exams | sort: "date" | reverse %}
 
 <div class="weekly-container">
   <div class="weekly-header">
@@ -190,15 +160,9 @@ extra_head: |
     {% for exam in exams_sorted %}
       <a href="{{ exam.url | relative_url }}" class="exam-card">
         <div class="card-date">
-          📅 
-          {% assign date_parts = exam.date | split: '.' %}
-          {% if date_parts.size == 3 %}
-            {{ date_parts[0] }}年{{ date_parts[1] }}月{{ date_parts[2] }}日
-          {% else %}
-            {{ exam.date }}
-          {% endif %}
+          📅 {{ exam.date | date: "%Y年%-m月%-d日" }}
         </div>
-        <h2 class="card-title">{{ exam.title | default: exam.date | append: " 联测" }}</h2>
+        <h2 class="card-title">{{ exam.title | default: (exam.date | date: "%Y年%-m月%-d日") | append: " 联测" }}</h2>
         <div class="card-meta">
           {% if exam.source %}
             <span>📝 {{ exam.source }}</span>
@@ -247,7 +211,6 @@ extra_head: |
       } else {
         html += '<span class="disabled">← 上一页</span>';
       }
-
       for (let i = 1; i <= totalPages; i++) {
         if (i === page) {
           html += `<span class="current-page">${i}</span>`;
@@ -255,13 +218,11 @@ extra_head: |
           html += `<a href="#" class="pagination-btn" data-page="${i}">${i}</a>`;
         }
       }
-
       if (page < totalPages) {
         html += `<a href="#" class="pagination-btn" data-page="${page+1}">下一页 →</a>`;
       } else {
         html += '<span class="disabled">下一页 →</span>';
       }
-
       paginationContainer.innerHTML = html;
     }
 
