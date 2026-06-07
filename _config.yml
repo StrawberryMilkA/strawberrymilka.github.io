@@ -4,7 +4,7 @@ baseurl: ""
 url: "https://abhm.qzz.io"
 
 pagination:
-  enabled: false
+  enabled: true
 
 collections:
   news:
