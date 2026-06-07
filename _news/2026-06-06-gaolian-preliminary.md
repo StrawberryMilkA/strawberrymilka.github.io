@@ -1,6 +1,6 @@
 ---
 news_id: 2
-pinned: true
+pinned: false
 categories: [ ]
 active_nav: news
 publisher:
