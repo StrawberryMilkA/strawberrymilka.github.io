@@ -21,6 +21,12 @@ extra_scripts: |
         <p class="news-subtitle">📡 奥本海默组织最新动态 · 赛事公告 · 内部通讯</p>
     </div>
 
+    <!-- 筛选标签 -->
+    <div class="filter-tags">
+        <span class="filter-tag active" data-filter="all">📋 全部</span>
+        <span class="filter-tag" data-filter="announcement">📢 公告</span>
+    </div>
+
     {% if paginator.page == 1 %}
         {% assign pinned_news = site.news | where: "pinned", true | sort: "date" | reverse %}
         {% for item in pinned_news %}
