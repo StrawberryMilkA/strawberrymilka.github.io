@@ -6,6 +6,9 @@ pagination:
   per_page: 2
   sort_field: 'date'
   sort_reverse: true
+  filters:
+    - field: 'pinned'
+      value: false
   permalink: '/news/page/:num/'
 active_nav: news
 extra_head: |
@@ -34,30 +37,32 @@ extra_scripts: |
     <p class="news-subtitle">📡 奥本海默组织最新动态 · 赛事公告 · 内部通讯</p>
   </div>
 
-  <!-- 置顶新闻（手动循环，不分页） -->
+  <!-- 置顶新闻（始终显示，不分页） -->
   {% assign pinned_news = site.news | where: "pinned", true | sort: "date" | reverse %}
-  {% for item in pinned_news %}
-    <article class="news-card pinned">
-      <div class="news-card-header">
-        <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
-        <div class="publisher-info">
-          <div class="publisher-name">
-            {{ item.publisher.name }}
-            <span class="publisher-role">{{ item.publisher.role }}</span>
+  {% if pinned_news.size > 0 %}
+    {% for item in pinned_news %}
+      <article class="news-card pinned">
+        <div class="news-card-header">
+          <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+          <div class="publisher-info">
+            <div class="publisher-name">
+              {{ item.publisher.name }}
+              <span class="publisher-role">{{ item.publisher.role }}</span>
+            </div>
+            <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
           </div>
-          <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
         </div>
-      </div>
-      <div class="news-body">
-        <h3>{{ item.title }}</h3>
-        {% assign excerpt = item.content | strip_html %}
-        <p>{{ excerpt | truncate: 150 }}</p>
-        <a href="{{ item.url | relative_url }}" class="read-more-link">阅读全文 →</a>
-      </div>
-    </article>
-  {% endfor %}
+        <div class="news-body">
+          <h3>{{ item.title }}</h3>
+          {% assign excerpt = item.content | strip_html %}
+          <p>{{ excerpt | truncate: 150 }}</p>
+          <a href="{{ item.url | relative_url }}" class="read-more-link">阅读全文 →</a>
+        </div>
+      </article>
+    {% endfor %}
+  {% endif %}
 
-  <!-- 分页新闻列表 -->
+  <!-- 普通新闻分页列表 -->
   {% if paginator.documents %}
     {% for item in paginator.documents %}
       <article class="news-card" data-category="{{ item.categories | join: ' ' }}">
