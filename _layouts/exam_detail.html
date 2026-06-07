@@ -91,6 +91,7 @@ extra_scripts: |
       <span>⏱ {{ exam.time }}</span>
     </div>
   </div>
+
   <!-- 成绩表格 -->
   <div class="table-wrapper">
     <table class="score-table">
@@ -136,10 +137,13 @@ extra_scripts: |
       </tbody>
     </table>
   </div>
-  <!-- 点评 -->
+
+  <!-- 考试总评 + 考生单独点评 -->
   <section class="review-section">
     <h2>📋 考试总评与考生点评</h2>
-    <div class="overall-review">{{ exam.overall_review }}</div>
+    <div class="overall-review">
+      {{ exam.overall_review }}
+    </div>
     <div class="player-reviews">
       {% for r in results %}
         {% assign student = students_data | where: "id", r.studentId | first %}
@@ -147,18 +151,23 @@ extra_scripts: |
         <div class="player-card">
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
           <div class="score-total">总分 {{ r.total }} 分（一试{{ r.trial1_total }} + 二试{{ r.trial2_total }}）</div>
-          <p class="comment">{{ student.reviews[exam.id] }}</p>
+          <p class="comment">
+            {% assign review_key = exam.id | downcase %}
+            {{ student.reviews[review_key] | default: "暂无单独点评" }}
+          </p>
         </div>
         {% endif %}
       {% endfor %}
     </div>
   </section>
-  <!-- 图表区 -->
+
+  <!-- Rating 变化图表 -->
   <section class="rating-compare">
     <h2>📈 本场 Elo Rating 变化</h2>
     <div class="chart-container"><canvas id="examRatingChart"></canvas></div>
     <p style="text-align:center;color:var(--text-muted);margin-top:12px;">显示每位参赛选手在本场考试前后的 Rating 变化</p>
   </section>
+
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
 </div>
 {% endif %}
