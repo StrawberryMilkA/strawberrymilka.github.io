@@ -31,8 +31,8 @@ extra_head: |
 <div class="weekly-index">
   <h1>📋 联测成绩一览</h1>
 
-  {% if paginator.posts.size > 0 %}
-    {% for doc in paginator.posts %}
+  {% if paginator and paginator.documents %}
+    {% for doc in paginator.documents %}
       {% assign exam = site.data.exams | where: "id", doc.exam_id | first %}
       <a href="{{ doc.url | relative_url }}" class="exam-card">
         <div class="exam-date">{{ exam.date }}</div>
