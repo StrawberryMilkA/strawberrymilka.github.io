@@ -30,11 +30,19 @@ extra_scripts: |
     <p class="news-subtitle">📡 奥本海默组织最新动态 · 赛事公告 · 内部通讯</p>
   </div>
 
-  <!-- 置顶新闻（始终显示） -->
+  <!-- 置顶新闻（始终显示，不分页） -->
   {% for item in pinned_news %}
     <article class="news-card pinned">
-      <!-- 新闻卡片内容，保持原样 -->
-      <div class="news-card-header">...</div>
+      <div class="news-card-header">
+        <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+        <div class="publisher-info">
+          <div class="publisher-name">
+            {{ item.publisher.name }}
+            <span class="publisher-role">{{ item.publisher.role }}</span>
+          </div>
+          <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+        </div>
+      </div>
       <div class="news-body">
         <h3>{{ item.title }}</h3>
         <p>{{ item.content | strip_html | truncate: 150 }}</p>
@@ -43,12 +51,20 @@ extra_scripts: |
     </article>
   {% endfor %}
 
-  <!-- 普通新闻列表，通过 JS 分页 -->
+  <!-- 普通新闻列表（JS分页） -->
   <div id="news-list">
     {% for item in normal_news %}
       <article class="news-card" data-news-id="{{ forloop.index0 }}">
-        <!-- 卡片内容同上 -->
-        <div class="news-card-header">...</div>
+        <div class="news-card-header">
+          <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+          <div class="publisher-info">
+            <div class="publisher-name">
+              {{ item.publisher.name }}
+              <span class="publisher-role">{{ item.publisher.role }}</span>
+            </div>
+            <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+          </div>
+        </div>
         <div class="news-body">
           <h3>{{ item.title }}</h3>
           <p>{{ item.content | strip_html | truncate: 150 }}</p>
@@ -58,10 +74,8 @@ extra_scripts: |
     {% endfor %}
   </div>
 
-  <!-- 分页导航（JS生成） -->
-  <nav id="pagination-container" class="pagination">
-    <!-- JS动态填充 -->
-  </nav>
+  <!-- 分页导航（JS动态生成） -->
+  <nav id="pagination-container" class="pagination"></nav>
 
   <a href="{{ '/' | relative_url }}" class="back-link">← 返回组织主页</a>
 </main>
@@ -71,7 +85,10 @@ extra_scripts: |
     const perPage = 2;
     const articles = Array.from(document.querySelectorAll('#news-list .news-card'));
     const paginationContainer = document.getElementById('pagination-container');
-    if (!articles.length) return;
+    if (!articles.length) {
+      if (paginationContainer) paginationContainer.innerHTML = '<span class="pagination-info">暂无新闻</span>';
+      return;
+    }
 
     let currentPage = 1;
     const totalPages = Math.ceil(articles.length / perPage);
@@ -85,14 +102,17 @@ extra_scripts: |
 
     function renderPagination(page) {
       let html = '';
-      if (page > 1) html += `<a href="#" class="pagination-btn" data-page="${page-1}">← 上一页</a>`;
-      else html += `<span class="pagination-btn disabled">← 上一页</span>`;
-
+      if (page > 1) {
+        html += `<a href="#" class="pagination-btn" data-page="${page-1}">← 上一页</a>`;
+      } else {
+        html += '<span class="pagination-btn disabled">← 上一页</span>';
+      }
       html += `<span class="pagination-info">第 ${page} / ${totalPages} 页</span>`;
-
-      if (page < totalPages) html += `<a href="#" class="pagination-btn" data-page="${page+1}">下一页 →</a>`;
-      else html += `<span class="pagination-btn disabled">下一页 →</span>`;
-
+      if (page < totalPages) {
+        html += `<a href="#" class="pagination-btn" data-page="${page+1}">下一页 →</a>`;
+      } else {
+        html += '<span class="pagination-btn disabled">下一页 →</span>';
+      }
       paginationContainer.innerHTML = html;
     }
 
@@ -108,7 +128,6 @@ extra_scripts: |
       }
     });
 
-    // 初始化
     showPage(1);
   })();
 </script>
