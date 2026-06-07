@@ -1,0 +1,76 @@
+---
+layout: default
+extra_head: |
+  <style>
+    .student-container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
+    .student-header { text-align: center; margin-bottom: 40px; }
+    .student-header h1 { font-size: 2.2rem; }
+    .student-dept { font-size: 1rem; color: var(--text-muted); margin-top: 8px; }
+    .chart-box { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 32px 24px; }
+    .chart-container { width: 100%; height: 400px; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
+  </style>
+extra_scripts: |
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+---
+{% assign student_id = page.student_id %}
+{% assign student = site.data.student | where: "id", student_id | first %}
+{% assign rating = site.data.ratings.students | where: "id", student_id | first %}
+{% assign exams_sorted = site.data.exams | sort: "date" %}
+
+<div class="student-container">
+  <div class="student-header">
+    <h1>{{ student.name }}</h1>
+    <p class="student-dept">所属部门：{{ student.dept }} | 学号：{{ student.id }}</p>
+  </div>
+
+  <div class="chart-box">
+    <h2 style="margin-bottom: 16px; font-size: 1.4rem;">📈 Elo Rating 变化历史</h2>
+    <div class="chart-container">
+      <canvas id="ratingHistoryChart"></canvas>
+    </div>
+  </div>
+
+  <a href="javascript:history.back()" class="back-link">← 返回上一页</a>
+</div>
+
+{% if rating %}
+<script>
+(function() {
+  const ctx = document.getElementById('ratingHistoryChart').getContext('2d');
+  const labels = ["初始"
+    {% for exam in exams_sorted %}
+      ,"{{ exam.date }}"{% endfor %}
+  ];
+  const data = {{ rating.ratingHistory | jsonify }};
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Rating',
+        data: data,
+        borderColor: '#c7923e',
+        backgroundColor: 'rgba(199,146,62,0.1)',
+        pointBackgroundColor: '#c7923e',
+        tension: 0.2,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero: false, min: 1300 }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+})();
+</script>
+{% else %}
+<p>暂无 Rating 数据。</p>
+{% endif %}
