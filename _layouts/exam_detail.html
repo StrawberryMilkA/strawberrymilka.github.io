@@ -28,7 +28,6 @@ extra_head: |
   </style>
 extra_scripts: |
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="/assets/js/weekly.js"></script>
 ---
 {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
 {% if exam == nil %}
@@ -111,7 +110,10 @@ extra_scripts: |
   <!-- 图表区 -->
   <section class="rating-compare">
     <h2>📈 本场 Elo Rating 变化</h2>
-    <div class="chart-container"><canvas id="examRatingChart"></canvas></div>
+    <p style="text-align:center; color: var(--text-light); margin-bottom: 8px;">基于每场联测成绩动态更新，初始 Rating = 1500</p>
+    <div class="chart-container">
+      <canvas id="ratingChart"></canvas>
+    </div>
     <p style="text-align:center;color:var(--text-muted);margin-top:12px;">显示每位参赛选手在本场考试前后的 Rating 变化</p>
   </section>
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
