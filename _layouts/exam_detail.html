@@ -48,7 +48,8 @@ extra_scripts:
     </div>
   </div>
 
-  <!-- 成绩表格（动态列） -->
+  <!-- 成绩表格（动态列，按总分降序） -->
+  {% assign results = exam.results | sort: "total" | reverse %}
   <div class="table-wrapper">
     <table class="score-table">
       <thead>
@@ -61,7 +62,6 @@ extra_scripts:
         </tr>
       </thead>
       <tbody>
-        {% assign results = exam.results | sort: "total" | reverse %}
         {% for r in results %}
         <tr {% if forloop.first %}style="font-weight:600; background:#fbf5e8;"{% endif %}>
           <td>{{ r.studentId }}</td>
@@ -91,13 +91,13 @@ extra_scripts:
     </table>
   </div>
 
-  <!-- 点评（含个人 Rating 链接） -->
+  <!-- 点评（按原始书写顺序，含个人 Rating 链接） -->
   <section class="review-section">
     <h2>📋 考试总评与考生点评</h2>
     <div class="overall-review">{{ exam.overall_review }}</div>
     <div class="player-reviews">
-      {% for r in results %}
-      {% assign results_raw = exam.results %}  <!-- 使用原始顺序 -->
+      {% for r in exam.results %}
+        {% assign student = students_data | where: "id", r.studentId | first %}
         {% if student %}
         <div class="player-card">
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
