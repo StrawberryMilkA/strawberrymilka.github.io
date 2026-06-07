@@ -3,22 +3,27 @@ layout: default
 pagination:
   enabled: true
   collection: news
+  per_page: 2
   sort_field: 'date'
   sort_reverse: true
-  per_page: 2
   permalink: '/news/page/:num/'
 active_nav: news
+extra_head: |
+  <link rel="stylesheet" href="/assets/css/news.css">
 ---
-<div style="padding:100px; font-family:monospace; background:#fff;">
-  <h2>分页调试信息</h2>
-  <p><strong>paginator 对象是否为 nil？</strong> {{ paginator | jsonify | truncate: 200 }}</p>
-  <p><strong>total_documents:</strong> {{ paginator.total_documents }}</p>
-  <p><strong>page:</strong> {{ paginator.page }} / {{ paginator.total_pages }}</p>
-  <p><strong>documents 数量:</strong> {{ paginator.documents | size }}</p>
-  <p><strong>site.news 总数:</strong> {{ site.news | size }}</p>
-  <hr>
+
+<div style="padding:100px; background:white;">
+  <h1>新闻索引测试</h1>
+  <p>文档总数：{{ site.news | size }}</p>
+  <p>分页页码：{{ paginator.page }} / {{ paginator.total_pages }}</p>
+  <p>本文档数：{{ paginator.documents | size }}</p>
+
   {% for doc in paginator.documents %}
-    <p>📄 {{ doc.title }} ({{ doc.date }})</p>
+    <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+      <h3>{{ doc.title }}</h3>
+      <p>{{ doc.date }}</p>
+    </div>
+  {% else %}
+    <p>没找到文档，请检查集合和分页配置。</p>
   {% endfor %}
-  <p>循环结束11111111111111111111111111111111111111111111111111111</p>
-</div>      
+</div>

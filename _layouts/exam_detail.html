@@ -30,6 +30,74 @@ extra_head: |
   </style>
 extra_scripts: |
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    (function() {
+      const ctx = document.getElementById('examRatingChart').getContext('2d');
+
+      {% assign prev_idx = exam.rating_index | minus: 1 %}
+      {% assign curr_idx = exam.rating_index %}
+
+      const data = {
+        labels: [
+          {% for r in exam.results %}
+            {% assign rating = ratings | where: "id", r.studentId | first %}
+            {% if rating %}
+              "{{ r.name }}"{% unless forloop.last %},{% endunless %}
+            {% endif %}
+          {% endfor %}
+        ],
+        before: [
+          {% for r in exam.results %}
+            {% assign rating = ratings | where: "id", r.studentId | first %}
+            {% if rating %}
+              {{ rating.ratingHistory[prev_idx] }}{% unless forloop.last %},{% endunless %}
+            {% endif %}
+          {% endfor %}
+        ],
+        after: [
+          {% for r in exam.results %}
+            {% assign rating = ratings | where: "id", r.studentId | first %}
+            {% if rating %}
+              {{ rating.ratingHistory[curr_idx] }}{% unless forloop.last %},{% endunless %}
+            {% endif %}
+          {% endfor %}
+        ]
+      };
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: '本场前 Rating',
+              data: data.before,
+              backgroundColor: 'rgba(100, 100, 120, 0.6)',
+              borderColor: 'rgba(100, 100, 120, 1)',
+              borderWidth: 1
+            },
+            {
+              label: '本场后 Rating',
+              data: data.after,
+              backgroundColor: 'rgba(199, 146, 62, 0.7)',
+              borderColor: 'rgba(199, 146, 62, 1)',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: false, min: 1300 }
+          },
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    })();
+  </script>
 ---
 {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
 {% if exam == nil %}
@@ -133,7 +201,7 @@ extra_scripts: |
     </div>
   </section>
 
-  <!-- 本场 Rating 前后对比 -->
+  <!-- 本场 Rating 前后对比图表（canvas 由 extra_scripts 中的脚本绘制） -->
   <section class="rating-compare">
     <h2>📈 本场 Elo Rating 变化</h2>
     <div class="chart-container">
@@ -144,74 +212,4 @@ extra_scripts: |
 
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
 </div>
-
-<!-- Rating 对比图表脚本 -->
-<script>
-(function() {
-  const ctx = document.getElementById('examRatingChart').getContext('2d');
-
-  {% assign prev_idx = exam.rating_index | minus: 1 %}
-  {% assign curr_idx = exam.rating_index %}
-
-  const data = {
-    labels: [
-      {% for r in exam.results %}
-        {% assign rating = ratings | where: "id", r.studentId | first %}
-        {% if rating %}
-          "{{ r.name }}"{% unless forloop.last %},{% endunless %}
-        {% endif %}
-      {% endfor %}
-    ],
-    before: [
-      {% for r in exam.results %}
-        {% assign rating = ratings | where: "id", r.studentId | first %}
-        {% if rating %}
-          {{ rating.ratingHistory[prev_idx] }}{% unless forloop.last %},{% endunless %}
-        {% endif %}
-      {% endfor %}
-    ],
-    after: [
-      {% for r in exam.results %}
-        {% assign rating = ratings | where: "id", r.studentId | first %}
-        {% if rating %}
-          {{ rating.ratingHistory[curr_idx] }}{% unless forloop.last %},{% endunless %}
-        {% endif %}
-      {% endfor %}
-    ]
-  };
-
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: data.labels,
-      datasets: [
-        {
-          label: '本场前 Rating',
-          data: data.before,
-          backgroundColor: 'rgba(100, 100, 120, 0.6)',
-          borderColor: 'rgba(100, 100, 120, 1)',
-          borderWidth: 1
-        },
-        {
-          label: '本场后 Rating',
-          data: data.after,
-          backgroundColor: 'rgba(199, 146, 62, 0.7)',
-          borderColor: 'rgba(199, 146, 62, 1)',
-          borderWidth: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: { beginAtZero: false, min: 1300 }
-      },
-      plugins: {
-        legend: { position: 'bottom' }
-      }
-    }
-  });
-})();
-</script>
 {% endif %}
