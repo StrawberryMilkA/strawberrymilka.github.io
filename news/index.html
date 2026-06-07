@@ -7,18 +7,100 @@ pagination:
   sort_reverse: true
   per_page: 2
   permalink: '/news/page/:num/'
+  filters:
+    - field: 'pinned'
+      value: false
 active_nav: news
+extra_head: |
+  <link rel="stylesheet" href="/assets/css/news.css">
+  <link rel="stylesheet" href="/assets/katex/katex.min.css">
+extra_scripts: |
+  <script src="/assets/js/news.js"></script>
+  <script src="/assets/katex/katex.min.js"></script>
+  <script src="/assets/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
 ---
-<div style="padding:100px; font-family:monospace; background:#fff;">
-  <h2>分页调试信息</h2>
-  <p><strong>paginator 对象是否为 nil？</strong> {{ paginator | jsonify | truncate: 200 }}</p>
-  <p><strong>total_documents:</strong> {{ paginator.total_documents }}</p>
-  <p><strong>page:</strong> {{ paginator.page }} / {{ paginator.total_pages }}</p>
-  <p><strong>documents 数量:</strong> {{ paginator.documents | size }}</p>
-  <p><strong>site.news 总数:</strong> {{ site.news | size }}</p>
-  <hr>
-  {% for doc in paginator.documents %}
-    <p>📄 {{ doc.title }} ({{ doc.date }})</p>
-  {% endfor %}
-  <p>循环结束</p>
-</div>
+<main class="news-container">
+    <div class="news-header">
+        <h1>组织新闻</h1>
+        <p class="news-subtitle">📡 奥本海默组织最新动态 · 赛事公告 · 内部通讯</p>
+    </div>
+
+    <div class="filter-tags">
+        <span class="filter-tag active" data-filter="all">📋 全部</span>
+        <span class="filter-tag" data-filter="announcement">📢 公告</span>
+    </div>
+
+    {% if paginator.page == 1 %}
+        {% assign pinned_news = site.news | where: "pinned", true | sort: "date" | reverse %}
+        {% for item in pinned_news %}
+            <article class="news-card pinned" data-category="{{ item.categories | join: ' ' }}">
+                <div class="news-card-header">
+                    <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+                    <div class="publisher-info">
+                        <div class="publisher-name">
+                            {{ item.publisher.name }}
+                            <span class="publisher-role">{{ item.publisher.role }}</span>
+                        </div>
+                        <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                    </div>
+                </div>
+                <div class="news-body">
+                    <h3>{{ item.title }}</h3>
+                    {% assign excerpt = item.content | strip_html %}
+                    <p>{{ excerpt | truncate: 150 }}</p>
+                    <a href="{{ item.url | relative_url }}" class="read-more-link">阅读全文 →</a>
+                </div>
+            </article>
+        {% endfor %}
+    {% endif %}
+
+    {% for item in paginator.documents %}
+        <article class="news-card" data-category="{{ item.categories | join: ' ' }}">
+            <div class="news-card-header">
+                <div class="publisher-avatar {{ item.publisher.dept_class }}">{{ item.publisher.avatar }}</div>
+                <div class="publisher-info">
+                    <div class="publisher-name">
+                        {{ item.publisher.name }}
+                        <span class="publisher-role">{{ item.publisher.role }}</span>
+                    </div>
+                    <div class="publish-time">📅 {{ item.date | date: "%Y年%-m月%-d日 %H:%M" }}{% if item.date_note %} · {{ item.date_note }}{% endif %}</div>
+                </div>
+            </div>
+            <div class="news-body">
+                <h3>{{ item.title }}</h3>
+                {% assign excerpt = item.content | strip_html %}
+                <p>{{ excerpt | truncate: 150 }}</p>
+                <a href="{{ item.url | relative_url }}" class="read-more-link">阅读全文 →</a>
+            </div>
+        </article>
+    {% endfor %}
+
+    <nav class="pagination">
+        {% if paginator.previous_page %}
+            <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-btn">← 上一页</a>
+        {% else %}
+            <span class="pagination-btn disabled">← 上一页</span>
+        {% endif %}
+
+        <span class="pagination-info">第 {{ paginator.page }} / {{ paginator.total_pages }} 页</span>
+
+        {% if paginator.next_page %}
+            <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-btn">下一页 →</a>
+        {% else %}
+            <span class="pagination-btn disabled">下一页 →</span>
+        {% endif %}
+    </nav>
+
+    <a href="{{ '/' | relative_url }}" class="back-link">← 返回组织主页</a>
+</main>

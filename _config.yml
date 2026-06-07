@@ -1,16 +1,19 @@
-# 原有部分保持不变
 title: 奥本海默组织
 description: 集合数学、物理、逻辑学等多学科为一体的综合性学术组织
 baseurl: ""
 url: "https://abhm.qzz.io"
 
+# 必须添加 —— 激活分页插件的总开关
+pagination:
+  enabled: true
+
 collections:
   news:
     output: true
-    permalink: /news/:name/
+    permalink: /news/:name.html
   exams:
     output: true
-    permalink: /weekly/:name/       # 生成 /weekly/1/ 等
+    permalink: /weekly/:name/
   students:
     output: true
-    permalink: /students/:name/    # 生成 /students/100001/ 等
+    permalink: /students/:name/
