@@ -28,51 +28,7 @@ extra_head: |
   </style>
 extra_scripts: |
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
-  {% assign ratings = site.data.ratings.students %}
-  {% if exam and ratings %}
-  {% assign prev_idx = exam.rating_index | minus: 1 %}
-  {% assign curr_idx = exam.rating_index %}
-  <script>
-    (function() {
-      const ctx = document.getElementById('examRatingChart').getContext('2d');
-      const data = {
-        labels: [
-          {% for r in exam.results %}
-            {% assign rating = ratings | where: "id", r.studentId | first %}
-            {% if rating %}"{{ r.name }}"{% unless forloop.last %},{% endunless %}{% endif %}
-          {% endfor %}
-        ],
-        before: [
-          {% for r in exam.results %}
-            {% assign rating = ratings | where: "id", r.studentId | first %}
-            {% if rating %}{{ rating.ratingHistory[prev_idx] }}{% unless forloop.last %},{% endunless %}{% endif %}
-          {% endfor %}
-        ],
-        after: [
-          {% for r in exam.results %}
-            {% assign rating = ratings | where: "id", r.studentId | first %}
-            {% if rating %}{{ rating.ratingHistory[curr_idx] }}{% unless forloop.last %},{% endunless %}{% endif %}
-          {% endfor %}
-        ]
-      };
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: data.labels,
-          datasets: [
-            { label: '本场前 Rating', data: data.before, backgroundColor: 'rgba(100,100,120,0.6)', borderColor: 'rgba(100,100,120,1)', borderWidth: 1 },
-            { label: '本场后 Rating', data: data.after, backgroundColor: 'rgba(199,146,62,0.7)', borderColor: 'rgba(199,146,62,1)', borderWidth: 1 }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: { y: { beginAtZero: false, min: 1300 } },
-          plugins: { legend: { position: 'bottom' } }
-        }
-      });
-    })();
-  </script>
+  <script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
   {% endif %}
 ---
 {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
@@ -91,7 +47,6 @@ extra_scripts: |
       <span>⏱ {{ exam.time }}</span>
     </div>
   </div>
-
   <!-- 成绩表格 -->
   <div class="table-wrapper">
     <table class="score-table">
@@ -137,13 +92,10 @@ extra_scripts: |
       </tbody>
     </table>
   </div>
-
-  <!-- 考试总评 + 考生单独点评 -->
+  <!-- 点评 -->
   <section class="review-section">
     <h2>📋 考试总评与考生点评</h2>
-    <div class="overall-review">
-      {{ exam.overall_review }}
-    </div>
+    <div class="overall-review">{{ exam.overall_review }}</div>
     <div class="player-reviews">
       {% for r in results %}
         {% assign student = students_data | where: "id", r.studentId | first %}
@@ -151,23 +103,41 @@ extra_scripts: |
         <div class="player-card">
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
           <div class="score-total">总分 {{ r.total }} 分（一试{{ r.trial1_total }} + 二试{{ r.trial2_total }}）</div>
-          <p class="comment">
-            {% assign review_key = exam.id | downcase %}
-            {{ student.reviews[review_key] | default: "暂无单独点评" }}
-          </p>
+          <p class="comment">{{ student.reviews[exam.id] }}</p>
         </div>
         {% endif %}
       {% endfor %}
     </div>
   </section>
-
-  <!-- Rating 变化图表 -->
+  <!-- 图表区 -->
   <section class="rating-compare">
     <h2>📈 本场 Elo Rating 变化</h2>
     <div class="chart-container"><canvas id="examRatingChart"></canvas></div>
     <p style="text-align:center;color:var(--text-muted);margin-top:12px;">显示每位参赛选手在本场考试前后的 Rating 变化</p>
   </section>
-
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
 </div>
+
+
+<!-- 加载 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- 定义 Rating 数据 -->
+<script>
+  const ratingData = {
+    labels: ["初始 Rating", "{{ exam.date }} 联测"],
+    students: [
+      {% for s in ratings %}
+      {
+        id: "{{ s.id }}",
+        name: "{{ site.data.students | where: 'id', s.id | first | map: 'name' }}",
+        ratingHistory: {{ s.ratingHistory | jsonify }}
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  };
+</script>
+<!-- 绘图脚本 -->
+<script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
+
+
 {% endif %}
