@@ -10,8 +10,7 @@ extra_head: |
     .chart-container { width: 100%; height: 400px; }
     .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
   </style>
-extra_scripts: |
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+extra_scripts:
 ---
 {% assign student_id = page.student_id %}
 {% assign student = site.data.student | where: "id", student_id | first %}
@@ -35,6 +34,10 @@ extra_scripts: |
 </div>
 
 {% if rating %}
+
+<!-- 加载 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- 定义 Rating 数据 -->
 <script>
 (function() {
   const ctx = document.getElementById('ratingHistoryChart').getContext('2d');
@@ -71,6 +74,9 @@ extra_scripts: |
   });
 })();
 </script>
+
 {% else %}
+
 <p>暂无 Rating 数据。</p>
+
 {% endif %}
