@@ -9,14 +9,24 @@
     "sort_date": "2026-04-22",
     "rating_index": 1,
     "overall_review": "<p><strong>整体表现：</strong>本次联测选用2025年广州市数学竞赛试题，整体难度较大，区分度明显。最高分<strong>曾奂霖116分</strong>，展现了极强的综合实力；多位同学二试得分较低，反映出在时间分配与难题攻克上仍有提升空间。此次联测既检验了常规题型熟练度，也暴露了解题策略的不足，为后续训练指明了方向。</p><p style='margin-top:12px;'>值得关注的是，T12无人得分，压轴填空仍是薄弱环节；二试T1仅有曾奂霖一人做出，T2邹宗睿表现突出。整体来看，一试基本功普遍扎实，二试高难度专题需重点突破。</p>",
+    "columns_def": [
+      { "field": "fill", "title": "填空", "is_subtotal": false },
+      { "field": "t11", "title": "T11", "is_subtotal": false },
+      { "field": "t12", "title": "T12", "is_subtotal": false },
+      { "field": "trial1_total", "title": "一试总分", "is_subtotal": true },
+      { "field": "trial2_t1", "title": "二试 T1", "is_subtotal": false },
+      { "field": "trial2_t2", "title": "二试 T2", "is_subtotal": false },
+      { "field": "trial2_total", "title": "二试总分", "is_subtotal": true },
+      { "field": "total", "title": "总分", "is_subtotal": true }
+    ],
     "results": [
-      { "studentId": "100001", "name": "曾奂霖", "fill": 56, "t11": 10, "t12": 0, "trial1_total": 66, "trial2_t1": 40, "trial2_t2": 10, "trial2_total": 50, "total": 116 },
-      { "studentId": "100003", "name": "邹宗睿", "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 40, "trial2_total": 40, "total": 85 },
-      { "studentId": "100007", "name": "赵哲宇", "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 20, "trial2_total": 20, "total": 65 },
-      { "studentId": "100002", "name": "丁致远", "fill": 48, "t11": 10, "t12": 0, "trial1_total": 58, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 58 },
-      { "studentId": "100006", "name": "张浩民", "fill": 32, "t11": 10, "t12": 0, "trial1_total": 42, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 42 },
-      { "studentId": "100008", "name": "李沂铮", "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 10, "trial2_total": 10, "total": 42 },
-      { "studentId": "100005", "name": "何慕", "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 32 }
+      { "studentId": "100001", "name": "曾奂霖", "columns": { "fill": 56, "t11": 10, "t12": 0, "trial1_total": 66, "trial2_t1": 40, "trial2_t2": 10, "trial2_total": 50, "total": 116 } },
+      { "studentId": "100003", "name": "邹宗睿", "columns": { "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 40, "trial2_total": 40, "total": 85 } },
+      { "studentId": "100007", "name": "赵哲宇", "columns": { "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 20, "trial2_total": 20, "total": 65 } },
+      { "studentId": "100002", "name": "丁致远", "columns": { "fill": 48, "t11": 10, "t12": 0, "trial1_total": 58, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 58 } },
+      { "studentId": "100006", "name": "张浩民", "columns": { "fill": 32, "t11": 10, "t12": 0, "trial1_total": 42, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 42 } },
+      { "studentId": "100008", "name": "李沂铮", "columns": { "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 10, "trial2_total": 10, "total": 42 } },
+      { "studentId": "100005", "name": "何慕", "columns": { "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 32 } }
     ]
   }
 ]
