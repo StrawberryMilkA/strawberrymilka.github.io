@@ -8,7 +8,7 @@ pagination:
   per_page: 5
   sort_field: 'sort_date'
   sort_reverse: true
-  permalink: '/weekly/page/:num/'
+  permalink: '/weekly/list/:num/'
   trail:
     before: 2
     after: 2
@@ -58,7 +58,7 @@ extra_head: |
         {% elsif page == 1 %}
           <a href="{{ '/weekly/' | relative_url }}">{{ page }}</a>
         {% else %}
-          <a href="{{ site.pagination.permalinks | replace: ':num', page | relative_url }}">{{ page }}</a>
+          <a href="{{ '/weekly/list/' | append: page | relative_url }}">{{ page }}</a>
         {% endif %}
       {% endfor %}
       {% if paginator.next_page %}
