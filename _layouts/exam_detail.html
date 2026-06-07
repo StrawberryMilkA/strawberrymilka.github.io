@@ -17,10 +17,12 @@ extra_head: |
     .review-section { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
     .overall-review { background: var(--surface-alt); padding: 24px; border-radius: 12px; line-height: 1.8; font-size: 1.05rem; margin-bottom: 32px; }
     .player-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-    .player-card { background: var(--surface-alt); border-radius: 12px; padding: 20px; border-left: 4px solid var(--accent); }
+    .player-card { background: var(--surface-alt); border-radius: 12px; padding: 20px; border-left: 4px solid var(--accent); display: flex; flex-direction: column; }
     .player-card h3 { font-size: 1.15rem; color: var(--text); margin-bottom: 6px; }
-    .player-card .score-total { font-weight: 700; color: var(--accent); margin-bottom: 10px; }
-    .player-card .comment { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+    .player-card .score-total { font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+    .player-card .comment { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; }
+    .player-card .rating-link { margin-top: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 0.9rem; font-weight: 500; color: var(--accent); text-decoration: none; transition: color 0.2s; }
+    .player-card .rating-link:hover { color: #b07d2e; text-decoration: underline; }
     .rating-compare { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
     .rating-compare h2 { font-size: 1.8rem; color: var(--text); margin-bottom: 24px; }
     .chart-container { max-width: 700px; margin: 0 auto; height: 350px; }
@@ -89,7 +91,7 @@ extra_scripts:
     </table>
   </div>
 
-  <!-- 点评（保持原样） -->
+  <!-- 点评（含个人 Rating 链接） -->
   <section class="review-section">
     <h2>📋 考试总评与考生点评</h2>
     <div class="overall-review">{{ exam.overall_review }}</div>
@@ -101,13 +103,14 @@ extra_scripts:
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
           <div class="score-total">总分 {{ r.columns.total }} 分（一试{{ r.columns.trial1_total }} + 二试{{ r.columns.trial2_total }}）</div>
           <p class="comment">{{ student.reviews[exam.id] }}</p>
+          <a href="{{ '/students/' | append: r.studentId | append: '/' | relative_url }}" class="rating-link">📈 查看 Rating 变化历史 →</a>
         </div>
         {% endif %}
       {% endfor %}
     </div>
   </section>
 
-  <!-- 图表区（完全保留你的代码） -->
+  <!-- 图表区（完全保留） -->
   <section class="rating-compare">
     <h2>📈 本场 Elo Rating 变化</h2>
     <p style="text-align:center; color: var(--text-light); margin-bottom: 8px;">基于每场联测成绩动态更新，初始 Rating = 1500</p>
