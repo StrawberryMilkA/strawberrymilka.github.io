@@ -4,9 +4,12 @@ pagination:
   enabled: true
   collection: news
   per_page: 2
-  sort_field: 'title'
+  sort_field: 'date'
   sort_reverse: true
-  permalink: '/news/page/:num/'
+  filters:
+    - field: 'pinned'
+      value: false
+  permalink: '/news/page/:num/'      # 隔离路径
 active_nav: news
 extra_head: |
   <link rel="stylesheet" href="/assets/css/news.css">

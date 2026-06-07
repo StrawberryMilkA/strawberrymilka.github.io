@@ -8,7 +8,7 @@ publisher:
   role: "数学总部部长"
   avatar: "曾"
   dept_class: "dept-math"
-date: 2026-06-05 19:00
+date: 2026-06-05 19:00:00 +0800
 date_note: ""
 title: "奥本海默组织第五届四部全会顺利召开"
 ai_review:
