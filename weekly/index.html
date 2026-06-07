@@ -26,10 +26,6 @@ extra_head: |
     .weekly-header .subtitle {
       font-size: 1.05rem;
       color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
 
     /* 卡片网格 */
@@ -187,16 +183,20 @@ extra_head: |
 <div class="weekly-container">
   <div class="weekly-header">
     <h1>📋 联测成绩一览</h1>
-    <p class="subtitle">
-      <span>📊 数学高联联合测试记录</span>
-    </p>
+    <p class="subtitle">📊 数学高联联合测试记录</p>
   </div>
 
   <div id="exam-list" class="exam-grid">
     {% for exam in exams_sorted %}
       <a href="{{ exam.url | relative_url }}" class="exam-card">
         <div class="card-date">
-          📅 {{ exam.date }}
+          📅 
+          {% assign date_parts = exam.date | split: '.' %}
+          {% if date_parts.size == 3 %}
+            {{ date_parts[0] }}年{{ date_parts[1] }}月{{ date_parts[2] }}日
+          {% else %}
+            {{ exam.date }}
+          {% endif %}
         </div>
         <h2 class="card-title">{{ exam.title | default: exam.date | append: " 联测" }}</h2>
         <div class="card-meta">
@@ -221,7 +221,7 @@ extra_head: |
 
 <script>
   (function() {
-    const perPage = 6; // 每页显示6场考试
+    const perPage = 6;
     const cards = Array.from(document.querySelectorAll('#exam-list .exam-card'));
     const paginationContainer = document.getElementById('pagination-container');
     
@@ -242,14 +242,12 @@ extra_head: |
 
     function renderPagination(page) {
       let html = '';
-      // 上一页按钮
       if (page > 1) {
         html += `<a href="#" class="pagination-btn" data-page="${page-1}">← 上一页</a>`;
       } else {
         html += '<span class="disabled">← 上一页</span>';
       }
 
-      // 页码
       for (let i = 1; i <= totalPages; i++) {
         if (i === page) {
           html += `<span class="current-page">${i}</span>`;
@@ -258,7 +256,6 @@ extra_head: |
         }
       }
 
-      // 下一页按钮
       if (page < totalPages) {
         html += `<a href="#" class="pagination-btn" data-page="${page+1}">下一页 →</a>`;
       } else {
