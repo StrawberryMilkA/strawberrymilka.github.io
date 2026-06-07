@@ -39,40 +39,43 @@ extra_scripts:
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <!-- 定义 Rating 数据 -->
 <script>
-(function() {
-  const ctx = document.getElementById('ratingHistoryChart').getContext('2d');
-  const labels = ["初始"
-    {% for exam in exams_sorted %}
-      ,"{{ exam.date }}"{% endfor %}
-  ];
-  const data = {{ rating.ratingHistory | jsonify }};
+  // 设置网页标题
+  document.title = "{{ student.name }}的Rating历史 | {{ site.title }}";
 
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Rating',
-        data: data,
-        borderColor: '#c7923e',
-        backgroundColor: 'rgba(199,146,62,0.1)',
-        pointBackgroundColor: '#c7923e',
-        tension: 0.2,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: { beginAtZero: false, min: 1300 }
+  (function() {
+    const ctx = document.getElementById('ratingHistoryChart').getContext('2d');
+    const labels = ["初始"
+      {% for exam in exams_sorted %}
+        ,"{{ exam.date }}"{% endfor %}
+    ];
+    const data = {{ rating.ratingHistory | jsonify }};
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Rating',
+          data: data,
+          borderColor: '#c7923e',
+          backgroundColor: 'rgba(199,146,62,0.1)',
+          pointBackgroundColor: '#c7923e',
+          tension: 0.2,
+          fill: true
+        }]
       },
-      plugins: {
-        legend: { display: false }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: false, min: 1300 }
+        },
+        plugins: {
+          legend: { display: false }
+        }
       }
-    }
-  });
-})();
+    });
+  })();
 </script>
 
 {% else %}
