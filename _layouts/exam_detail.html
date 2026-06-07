@@ -26,8 +26,7 @@ extra_head: |
     .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
     @media (max-width: 768px) { .player-reviews { grid-template-columns: 1fr; } }
   </style>
-extra_scripts: |
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+extra_scripts:
 ---
 {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
 {% if exam == nil %}
@@ -120,6 +119,8 @@ extra_scripts: |
 </div>
 
 
+<!-- 加载 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <!-- 定义 Rating 数据 -->
 <script>
   const ratingData = {
