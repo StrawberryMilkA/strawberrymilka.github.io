@@ -2,70 +2,26 @@
 layout: default
 title: 联测成绩
 active_nav: weekly
-pagination:
-  enabled: true
-  collection: exams
-  per_page: 5
-  sort_field: 'sort_date'
-  sort_reverse: true
-  permalink: '/weekly/list/:num/'    # 隔离路径，避免与 /weekly/1/ 冲突
-  trail:
-    before: 2
-    after: 2
 extra_head: |
   <style>
-    .weekly-index { max-width: 900px; margin: 0 auto; padding: 120px 24px 80px; }
-    .weekly-index h1 { text-align: center; font-size: 2.2rem; margin-bottom: 40px; }
-    .exam-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--card-shadow); transition: transform 0.2s; display: block; color: inherit; text-decoration: none; }
-    .exam-card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
-    .exam-card .exam-date { font-size: 0.9rem; color: var(--accent); font-weight: 600; }
-    .exam-card h2 { font-size: 1.3rem; margin: 8px 0 10px; color: var(--text); }
-    .exam-card .exam-desc { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
-    .pagination { display: flex; justify-content: center; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
-    .pagination a, .pagination span { padding: 8px 16px; border-radius: 8px; background: var(--surface-alt); color: var(--text-secondary); text-decoration: none; font-weight: 500; }
-    .pagination a:hover { background: var(--accent); color: #fff; }
-    .pagination .active { background: var(--accent); color: #fff; font-weight: 700; }
+    /* 你的原有样式 */
   </style>
 ---
-
-<div class="weekly-index">
-  <h1>📋 联测成绩一览</h1>
-
-  {% if paginator and paginator.documents %}
-    {% for doc in paginator.documents %}
-      {% assign exam = site.data.exams | where: "id", doc.exam_id | first %}
-      <a href="{{ doc.url | relative_url }}" class="exam-card">
+{% assign exams = site.exams | sort: "sort_date" | reverse %}
+<div class="weekly-container">
+  <h1>联测成绩一览</h1>
+  <div id="exam-list">
+    {% for exam in exams %}
+      <a href="{{ exam.url | relative_url }}" class="exam-card">
         <div class="exam-date">{{ exam.date }}</div>
-        <h2>{{ doc.title | default: exam.date | append: " 联测" }}</h2>
-        <div class="exam-desc">
-          {% if doc.content and doc.content != '' %}
-            {{ doc.excerpt | strip_html | truncate: 150 }}
-          {% else %}
-            {{ exam.overall_review | strip_html | truncate: 150 }}
-          {% endif %}
-        </div>
+        <h2>{{ exam.title }}</h2>
+        <p>{{ exam.excerpt | strip_html | truncate: 150 }}</p>
       </a>
     {% endfor %}
-
-    <!-- 分页导航 -->
-    <div class="pagination">
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path | relative_url }}">上一页</a>
-      {% endif %}
-      {% for page in (1..paginator.total_pages) %}
-        {% if page == paginator.page %}
-          <span class="active">{{ page }}</span>
-        {% elsif page == 1 %}
-          <a href="{{ '/weekly/' | relative_url }}">{{ page }}</a>
-        {% else %}
-          <a href="{{ '/weekly/list/' | append: page | relative_url }}">{{ page }}</a>
-        {% endif %}
-      {% endfor %}
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path | relative_url }}">下一页</a>
-      {% endif %}
-    </div>
-  {% else %}
-    <p style="text-align:center; color: var(--text-muted);">暂无联测记录。</p>
-  {% endif %}
+  </div>
+  <nav id="pagination-container" class="pagination"></nav>
 </div>
+
+<script>
+  // 同上逻辑，perPage = 5
+</script>
