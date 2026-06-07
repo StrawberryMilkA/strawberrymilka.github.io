@@ -1,11 +1,11 @@
 {
     "students": [
-      { "id": "100001", "ratingHistory": [1500, 1596] },
-      { "id": "100002", "ratingHistory": [1500, 1500] },
-      { "id": "100003", "ratingHistory": [1500, 1564] },
-      { "id": "100005", "ratingHistory": [1500, 1404] },
-      { "id": "100006", "ratingHistory": [1500, 1452] },
-      { "id": "100007", "ratingHistory": [1500, 1532] },
-      { "id": "100008", "ratingHistory": [1500, 1452] }
+      { "id": "100001", "ratingHistory": [1500, 1596, 1] },
+      { "id": "100002", "ratingHistory": [1500, 1500, 1] },
+      { "id": "100003", "ratingHistory": [1500, 1564, 1] },
+      { "id": "100005", "ratingHistory": [1500, 1404, 1] },
+      { "id": "100006", "ratingHistory": [1500, 1452, 1] },
+      { "id": "100007", "ratingHistory": [1500, 1532, 1] },
+      { "id": "100008", "ratingHistory": [1500, 1452, 1] }
     ]
   }

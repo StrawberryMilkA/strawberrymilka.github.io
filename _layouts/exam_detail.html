@@ -122,70 +122,22 @@ extra_scripts:
 
 <!-- 加载 Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-{% assign prev_idx = exam.rating_index | minus: 1 %}
-{% assign curr_idx = exam.rating_index %}
-
-{% comment %} 只收集本场参赛选手的前后 Rating {% endcomment %}
-{% assign chart_labels = "" %}
-{% assign chart_before = "" %}
-{% assign chart_after = "" %}
-
-{% for r in exam.results %}
-  {% assign rating = ratings | where: "id", r.studentId | first %}
-  {% if rating %}
-    {% assign before = rating.ratingHistory[prev_idx] %}
-    {% assign after = rating.ratingHistory[curr_idx] %}
-    {% assign chart_labels = chart_labels | append: r.name | append: "|" %}
-    {% assign chart_before = chart_before | append: before | append: "|" %}
-    {% assign chart_after = chart_after | append: after | append: "|" %}
-  {% endif %}
-{% endfor %}
-
-{% assign chart_labels_array = chart_labels | split: "|" %}
-{% assign chart_before_array = chart_before | split: "|" %}
-{% assign chart_after_array = chart_after | split: "|" %}
-
+<!-- 定义 Rating 数据 -->
 <script>
-  (function() {
-    const ctx = document.getElementById('ratingChart').getContext('2d');
-    const labels = {{ chart_labels_array | jsonify }};
-    const before = [{% for val in chart_before_array %}{% if val != "" %}{{ val }}{% unless forloop.last %},{% endunless %}{% endif %}{% endfor %}];
-    const after  = [{% for val in chart_after_array %}{% if val != "" %}{{ val }}{% unless forloop.last %},{% endunless %}{% endif %}{% endfor %}];
-
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: '本场前 Rating',
-            data: before,
-            backgroundColor: 'rgba(100,100,120,0.6)',
-            borderColor: 'rgba(100,100,120,1)',
-            borderWidth: 1
-          },
-          {
-            label: '本场后 Rating',
-            data: after,
-            backgroundColor: 'rgba(199,146,62,0.7)',
-            borderColor: 'rgba(199,146,62,1)',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: false, min: 1300 }
-        },
-        plugins: {
-          legend: { position: 'bottom' }
-        }
-      }
-    });
-  })();
+  const ratingData = {
+    labels: ["更新前 Rating", "{{ exam.date }} 联测"],
+    students: [
+      {% for s in ratings %}
+      {
+        id: "{{ s.id }}",
+        name: "{{ site.data.student | where: 'id', s.id | first | map: 'name' }}",
+        ratingHistory: {{ s.ratingHistory | jsonify }}
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  };
 </script>
+<!-- 绘图脚本 -->
+<script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
 
 {% endif %}
