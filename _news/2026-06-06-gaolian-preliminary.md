@@ -8,7 +8,7 @@ publisher:
   role: "高联部部长"
   avatar: "丁"
   dept_class: "dept-gaolian"
-date: 2026-06-05 19:00
+date: 2026-06-06 23:30
 date_note: "高联预赛回忆"
 title: "草台班子，赛博人机"
 ai_review:
