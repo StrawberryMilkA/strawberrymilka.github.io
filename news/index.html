@@ -28,6 +28,20 @@ extra_scripts: |
   </script>
 ---
 
+<p style="color:red; background:#fff; padding:20px;">
+  集合新闻总数：{{ site.news | size }}<br/>
+  分页文档数：{{ paginator.documents | size }}<br/>
+  分页总文档数：{{ paginator.total_documents }}<br/>
+  分页页码：{{ paginator.page }} / {{ paginator.total_pages }}<br/>
+</p>
+
+<h3>所有新闻：</h3>
+<ul>
+  {% for doc in site.news %}
+    <li>{{ doc.title }} — date: {{ doc.date }} — pinned: {{ doc.pinned }}</li>
+  {% endfor %}
+</ul>
+
 <main class="news-container">
   <div class="news-header">
     <h1>组织新闻</h1>
