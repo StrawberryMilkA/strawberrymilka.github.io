@@ -162,7 +162,7 @@ extra_head: |
         <div class="card-date">
           📅 {{ exam.date | date: "%Y年%-m月%-d日" }}
         </div>
-        <h2 class="card-title">{{ exam.title | default: (exam.date | date: "%Y年%-m月%-d日") | append: " 联测" }}</h2>
+        <h2 class="card-title">{{ exam.title }}</h2>
         <div class="card-meta">
           {% if exam.source %}
             <span>📝 {{ exam.source }}</span>
