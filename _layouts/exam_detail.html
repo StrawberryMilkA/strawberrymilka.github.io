@@ -49,7 +49,7 @@ extra_scripts:
   </div>
 
   <!-- 成绩表格（动态列，按总分降序） -->
-  {% assign results = exam.results | sort: "total" | reverse %}
+  {% assign results = exam.results | sort: "total" %}
   <div class="table-wrapper">
     <table class="score-table">
       <thead>
