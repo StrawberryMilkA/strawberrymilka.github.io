@@ -552,6 +552,90 @@ ul {
     }
 }
 
+/* ---------- 核心领导 ---------- */
+.leadership-section {
+    background: var(--bg);
+}
+
+.leaders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.leader-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.leader-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-3px);
+}
+
+.leader-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 18px;
+    flex-shrink: 0;
+}
+
+.leader-body {
+    flex: 1;
+}
+
+.leader-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.leader-role {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(199, 146, 62, 0.1);
+    padding: 2px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.leader-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 260px;
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .leaders-grid {
+        grid-template-columns: 1fr;
+    }
+    .leader-card {
+        padding: 24px 20px;
+    }
+}
+
 /* ---------- 优势卡片 ---------- */
 .advantages-section {
     background: var(--bg);

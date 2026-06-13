@@ -77,8 +77,8 @@
         });
     }, observerOptions);
 
-    // 需要观察的元素
-    const animateElements = document.querySelectorAll('.timeline-card, .advantage-card, .join-card, .contact-card, .org-node-other');
+    // 需要观察的元素（加入 .leader-card）
+    const animateElements = document.querySelectorAll('.timeline-card, .advantage-card, .leader-card, .join-card, .contact-card, .org-node-other');
     animateElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
