@@ -5,6 +5,12 @@
     },
     {
       "news_id": 2,
-      "comments": [ ]
+      "comments": [
+        {
+          "author": "何慕",
+          "date": "2026-06-14 13:07",
+          "content": "不催更"
+        }
+      ]
     }
   ]
