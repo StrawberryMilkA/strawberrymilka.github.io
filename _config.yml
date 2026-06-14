@@ -2,6 +2,7 @@ title: 奥本海默组织
 description: 集合数学、物理、逻辑学等多学科为一体的综合性学术组织
 baseurl: ""
 url: "https://abhm.qzz.io"
+timezone: Asia/Shanghai
 
 
 collections:
