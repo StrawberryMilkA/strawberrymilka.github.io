@@ -7,8 +7,8 @@ publisher:
   name: "何慕"
   role: "高中数学研究部部长"
   avatar: "何"
-  dept_class: "dept-math"
-date: 2026-06-14 10:00
+  dept_class: "dept-senior-math"
+date: 2026-06-14 10:00:00 +0800
 date_note: "第五届四部全会第二次紧急部长会议通过"
 title: "关于禁止程颂文进入501宿舍的决定"
 ai_review:
