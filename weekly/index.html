@@ -4,6 +4,9 @@ title: 联测成绩
 active_nav: weekly
 extra_head: |
   <style>
+    /* ══════════════════════════════════════════
+       联测成绩页 — 重设计样式
+    ══════════════════════════════════════════ */
     .weekly-container {
       max-width: 1100px;
       margin: 0 auto;
@@ -11,93 +14,231 @@ extra_head: |
     }
     .weekly-header {
       text-align: center;
-      margin-bottom: 48px;
+      margin-bottom: 44px;
     }
     .weekly-header h1 {
       font-size: 2.4rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text);
       margin-bottom: 8px;
+      letter-spacing: -0.02em;
     }
     .weekly-header .subtitle {
       font-size: 1.05rem;
       color: var(--text-muted);
     }
+
+    /* ── Filter Pills ── */
+    .filter-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: 40px;
+      border: 2px solid var(--pill-border, #e5e7ec);
+      background: var(--pill-bg, #fff);
+      color: var(--pill-color, #5a5f6e);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(.4,0,.2,1);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .filter-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px var(--pill-shadow, rgba(0,0,0,0.10));
+    }
+    .filter-pill.active {
+      background: var(--pill-color, #5a5f6e) !important;
+      border-color: var(--pill-color, #5a5f6e) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 14px var(--pill-shadow, rgba(0,0,0,0.18));
+    }
+    .filter-pill .pill-count {
+      background: rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 1px 9px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      min-width: 22px;
+      text-align: center;
+      transition: background 0.22s;
+    }
+    .filter-pill:not(.active) .pill-count {
+      background: color-mix(in srgb, var(--pill-color, #5a5f6e) 14%, transparent);
+    }
+
+    /* ── Exam Grid ── */
     .exam-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 22px;
       margin-bottom: 40px;
     }
     .exam-card {
       background: var(--surface);
-      border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 24px;
-      box-shadow: var(--card-shadow);
-      transition: all 0.25s ease;
-      text-decoration: none;
-      color: inherit;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 6px 20px rgba(0,0,0,0.05);
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1), box-shadow 0.22s;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      text-decoration: none;
+      color: inherit;
     }
     .exam-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-      border-color: var(--accent);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
     }
-    .exam-card .card-date {
-      display: inline-flex;
+    /* category accent stripe */
+    .exam-card .card-stripe {
+      height: 4px;
+    }
+    .exam-card[data-cat="gaokao-math"] .card-stripe  { background: linear-gradient(90deg, #3a5fcf 0%, #3a5fcf55 100%); }
+    .exam-card[data-cat="gaokao-physics"] .card-stripe { background: linear-gradient(90deg, #0e8a6a 0%, #0e8a6a55 100%); }
+    .exam-card[data-cat="entertainment"] .card-stripe  { background: linear-gradient(90deg, #c7523a 0%, #c7523a55 100%); }
+
+    .card-body {
+      padding: 20px 22px 0;
+    }
+    .card-tags {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--accent);
-      background: var(--surface-alt);
-      padding: 4px 12px;
-      border-radius: 20px;
-      width: fit-content;
+      gap: 8px;
+      margin-bottom: 13px;
+      flex-wrap: wrap;
     }
-    .exam-card .card-title {
-      font-size: 1.25rem;
+    .tag-date {
+      background: var(--surface-alt);
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 3px 11px;
+      border-radius: 20px;
+    }
+    /* per-category tag colors */
+    .tag-cat {
+      font-size: 0.78rem;
       font-weight: 700;
+      padding: 3px 11px;
+      border-radius: 20px;
+      border-width: 1.5px;
+      border-style: solid;
+    }
+    .exam-card[data-cat="gaokao-math"]    .tag-cat { background:#eef2ff; color:#3a5fcf; border-color:#bfcaf7; }
+    .exam-card[data-cat="gaokao-physics"] .tag-cat { background:#e6f7f3; color:#0e8a6a; border-color:#9ad8c9; }
+    .exam-card[data-cat="entertainment"]  .tag-cat { background:#fff3ef; color:#c7523a; border-color:#f7c4b9; }
+
+    .card-title {
+      font-size: 1.18rem;
+      font-weight: 800;
       color: var(--text);
-      line-height: 1.4;
+      margin: 0 0 12px;
+      line-height: 1.35;
+    }
+
+    /* Quote block */
+    .card-quote {
+      background: linear-gradient(135deg, #fdf9f1 0%, #fef5e4 100%);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 0.93rem;
+      color: #7a5a1a;
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .card-quote::before { content: '\201C'; }
+    .card-quote::after  { content: '\201D'; }
+
+    .card-excerpt {
+      font-size: 0.87rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
       margin: 0;
     }
-    .exam-card .card-meta {
+
+    /* Stats row */
+    .card-stats {
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
+      align-items: stretch;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
     }
-    .exam-card .card-desc {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
+    .stat-cell {
       flex: 1;
-    }
-    .exam-card .card-link {
-      margin-top: auto;
-      font-weight: 600;
-      color: var(--accent);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 6px;
-      font-size: 0.9rem;
+      justify-content: center;
+      padding: 10px 6px;
+      gap: 2px;
+    }
+    .stat-cell + .stat-cell {
+      border-left: 1px solid var(--border);
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .stat-value {
+      font-weight: 800;
+      font-size: 0.97rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 95%;
+    }
+    .stat-value.small {
+      font-size: 0.78rem;
+    }
+
+    /* Footer row */
+    .card-footer {
+      padding: 11px 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+    .card-code {
+      font-size: 0.76rem;
+      color: #c0c4ce;
+      font-family: monospace;
+      letter-spacing: 0.03em;
+    }
+    .card-link {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.88rem;
       transition: gap 0.2s;
     }
-    .exam-card:hover .card-link {
-      gap: 12px;
-    }
+
+    /* hidden utility */
+    .exam-card.hidden { display: none !important; }
+
+    /* Pagination */
     .pagination {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
-      margin-top: 48px;
+      margin-top: 16px;
       flex-wrap: wrap;
     }
     .pagination a, .pagination span {
@@ -112,21 +253,10 @@ extra_head: |
       font-size: 0.9rem;
       transition: all 0.2s;
     }
-    .pagination a:hover {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-    .pagination .disabled {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .pagination .current-page {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-      font-weight: 700;
-    }
+    .pagination a:hover { background: var(--accent); color:#fff; border-color:var(--accent); }
+    .pagination .disabled { opacity:0.4; pointer-events:none; }
+    .pagination .current-page { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700; }
+
     .back-link {
       display: inline-flex;
       align-items: center;
@@ -136,15 +266,13 @@ extra_head: |
       font-weight: 600;
       font-size: 0.95rem;
       text-decoration: none;
-      transition: color 0.2s;
     }
-    .back-link:hover {
-      color: var(--text);
-    }
+    .back-link:hover { opacity: 0.8; }
+
     @media (max-width: 700px) {
-      .exam-grid {
-        grid-template-columns: 1fr;
-      }
+      .exam-grid { grid-template-columns: 1fr; }
+      .weekly-header h1 { font-size: 1.8rem; }
+      .filter-pill { font-size: 0.84rem; padding: 7px 15px; }
     }
   </style>
 ---
@@ -153,28 +281,103 @@ extra_head: |
 <div class="weekly-container">
   <div class="weekly-header">
     <h1>📋 联测成绩一览</h1>
-    <p class="subtitle">📊 数学高联联合测试记录</p>
+    <p class="subtitle">📊 数学 · 物理 · 娱乐 联合测试记录</p>
   </div>
 
+  {% assign math_count    = exams_sorted | where: "category", "gaokao-math"    | size %}
+  {% assign physics_count = exams_sorted | where: "category", "gaokao-physics" | size %}
+  {% assign fun_count     = exams_sorted | where: "category", "entertainment"  | size %}
+  {% assign total_count   = exams_sorted | size %}
+
+  <!-- ── Filter Pills ── -->
+  <div class="filter-pills">
+    <button class="filter-pill active"
+      data-filter="all"
+      style="--pill-color:#c7923e;--pill-bg:#fff8ee;--pill-border:#f0d5a0;--pill-shadow:rgba(199,146,62,0.3);">
+      🗂️ 全部 <span class="pill-count">{{ total_count }}</span>
+    </button>
+    <button class="filter-pill"
+      data-filter="gaokao-math"
+      style="--pill-color:#3a5fcf;--pill-bg:#eef2ff;--pill-border:#bfcaf7;--pill-shadow:rgba(58,95,207,0.3);">
+      📐 高考数学 <span class="pill-count">{{ math_count }}</span>
+    </button>
+    <button class="filter-pill"
+      data-filter="gaokao-physics"
+      style="--pill-color:#0e8a6a;--pill-bg:#e6f7f3;--pill-border:#9ad8c9;--pill-shadow:rgba(14,138,106,0.3);">
+      ⚛️ 高考物理 <span class="pill-count">{{ physics_count }}</span>
+    </button>
+    <button class="filter-pill"
+      data-filter="entertainment"
+      style="--pill-color:#c7523a;--pill-bg:#fff3ef;--pill-border:#f7c4b9;--pill-shadow:rgba(199,82,58,0.3);">
+      🎉 娱乐赛 <span class="pill-count">{{ fun_count }}</span>
+    </button>
+  </div>
+
+  <!-- ── Exam Cards ── -->
   <div id="exam-list" class="exam-grid">
     {% for exam in exams_sorted %}
-      <a href="{{ exam.url | relative_url }}" class="exam-card">
-        <div class="card-date">
-          📅 {{ exam.date | date: "%Y年%-m月%-d日" }}
+      {% assign cat_label = "" %}
+      {% assign cat_icon  = "" %}
+      {% if exam.category == "gaokao-math" %}
+        {% assign cat_label = "高考数学" %}
+        {% assign cat_icon  = "📐" %}
+      {% elsif exam.category == "gaokao-physics" %}
+        {% assign cat_label = "高考物理" %}
+        {% assign cat_icon  = "⚛️" %}
+      {% elsif exam.category == "entertainment" %}
+        {% assign cat_label = "娱乐赛" %}
+        {% assign cat_icon  = "🎉" %}
+      {% endif %}
+
+      <a href="{{ exam.url | relative_url }}"
+         class="exam-card"
+         data-cat="{{ exam.category }}"
+         data-date="{{ exam.date | date: '%Y%m%d' }}">
+
+        <div class="card-stripe"></div>
+
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag-date">📅 {{ exam.date | date: "%Y年%-m月%-d日" }}</span>
+            {% if exam.category %}
+              <span class="tag-cat">{{ cat_icon }} {{ cat_label }}</span>
+            {% endif %}
+          </div>
+
+          <h2 class="card-title">{{ exam.title }}</h2>
+
+          {% if exam.card_quote %}
+            <div class="card-quote">{{ exam.card_quote }}</div>
+          {% endif %}
+
+          <p class="card-excerpt">{{ exam.excerpt | strip_html | truncate: 100 }}</p>
         </div>
-        <h2 class="card-title">{{ exam.title }}</h2>
-        <div class="card-meta">
+
+        <div class="card-stats">
+          {% if exam.participants %}
+          <div class="stat-cell">
+            <span class="stat-label">👥 参赛人数</span>
+            <span class="stat-value">{{ exam.participants }}人</span>
+          </div>
+          {% endif %}
+          {% if exam.top_score and exam.top_name %}
+          <div class="stat-cell">
+            <span class="stat-label">🏆 {{ exam.top_name }}</span>
+            <span class="stat-value">{{ exam.top_score }}分</span>
+          </div>
+          {% endif %}
           {% if exam.source %}
-            <span>📝 {{ exam.source }}</span>
-          {% endif %}
-          {% if exam.code %}
-            <span>🔢 {{ exam.code }}</span>
+          <div class="stat-cell">
+            <span class="stat-label">📝 来源</span>
+            <span class="stat-value small">{{ exam.source }}</span>
+          </div>
           {% endif %}
         </div>
-        <div class="card-desc">
-          {{ exam.excerpt | strip_html | truncate: 120 }}
+
+        <div class="card-footer">
+          <span class="card-code">{{ exam.code }}</span>
+          <span class="card-link">查看详情 →</span>
         </div>
-        <span class="card-link">查看详情 →</span>
       </a>
     {% endfor %}
   </div>
@@ -184,60 +387,80 @@ extra_head: |
 </div>
 
 <script>
-  (function() {
-    const perPage = 6;
-    const cards = Array.from(document.querySelectorAll('#exam-list .exam-card'));
-    const paginationContainer = document.getElementById('pagination-container');
-    
-    if (!cards.length) {
-      if (paginationContainer) paginationContainer.innerHTML = '<span class="pagination-info">暂无联测记录</span>';
-      return;
-    }
+(function() {
+  'use strict';
 
-    let currentPage = 1;
-    const totalPages = Math.ceil(cards.length / perPage);
+  const perPage = 6;
+  const allCards = Array.from(document.querySelectorAll('#exam-list .exam-card'));
+  const paginationContainer = document.getElementById('pagination-container');
+  const filterPills = document.querySelectorAll('.filter-pill');
+  let currentFilter = 'all';
+  let currentPage = 1;
 
-    function showPage(page) {
-      cards.forEach((card, index) => {
-        card.style.display = (index >= (page-1)*perPage && index < page*perPage) ? '' : 'none';
-      });
-      renderPagination(page);
-    }
+  // ── Filter logic ──────────────────────────────────────────────────────────
+  function getFilteredCards() {
+    if (currentFilter === 'all') return allCards;
+    return allCards.filter(c => c.dataset.cat === currentFilter);
+  }
 
-    function renderPagination(page) {
-      let html = '';
-      if (page > 1) {
-        html += `<a href="#" class="pagination-btn" data-page="${page-1}">← 上一页</a>`;
-      } else {
-        html += '<span class="disabled">← 上一页</span>';
-      }
-      for (let i = 1; i <= totalPages; i++) {
-        if (i === page) {
-          html += `<span class="current-page">${i}</span>`;
-        } else {
-          html += `<a href="#" class="pagination-btn" data-page="${i}">${i}</a>`;
-        }
-      }
-      if (page < totalPages) {
-        html += `<a href="#" class="pagination-btn" data-page="${page+1}">下一页 →</a>`;
-      } else {
-        html += '<span class="disabled">下一页 →</span>';
-      }
-      paginationContainer.innerHTML = html;
-    }
+  function applyFilter(filter) {
+    currentFilter = filter;
+    currentPage = 1;
+    showPage(currentPage);
+  }
 
-    paginationContainer.addEventListener('click', function(e) {
-      e.preventDefault();
-      const btn = e.target.closest('.pagination-btn');
-      if (!btn || btn.classList.contains('disabled')) return;
-      const page = parseInt(btn.dataset.page);
-      if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        showPage(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', function() {
+      filterPills.forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      applyFilter(this.dataset.filter);
     });
+  });
 
-    showPage(1);
-  })();
+  // ── Pagination ────────────────────────────────────────────────────────────
+  function showPage(page) {
+    const filtered = getFilteredCards();
+    const total = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(total / perPage));
+    if (page > totalPages) page = totalPages;
+    currentPage = page;
+
+    // hide all, show slice
+    allCards.forEach(c => c.style.display = 'none');
+    const start = (page - 1) * perPage;
+    filtered.slice(start, start + perPage).forEach(c => c.style.display = '');
+
+    renderPagination(page, totalPages);
+  }
+
+  function renderPagination(page, totalPages) {
+    if (totalPages <= 1) { paginationContainer.innerHTML = ''; return; }
+    let html = '';
+    html += page > 1
+      ? `<a href="#" class="pagination-btn" data-page="${page - 1}">← 上一页</a>`
+      : '<span class="disabled">← 上一页</span>';
+    for (let i = 1; i <= totalPages; i++) {
+      html += i === page
+        ? `<span class="current-page">${i}</span>`
+        : `<a href="#" class="pagination-btn" data-page="${i}">${i}</a>`;
+    }
+    html += page < totalPages
+      ? `<a href="#" class="pagination-btn" data-page="${page + 1}">下一页 →</a>`
+      : '<span class="disabled">下一页 →</span>';
+    paginationContainer.innerHTML = html;
+  }
+
+  paginationContainer.addEventListener('click', function(e) {
+    e.preventDefault();
+    const btn = e.target.closest('.pagination-btn');
+    if (!btn || btn.classList.contains('disabled')) return;
+    const page = parseInt(btn.dataset.page);
+    currentPage = page;
+    showPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  showPage(1);
+})();
 </script>
