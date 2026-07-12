@@ -67,6 +67,8 @@ extra_head: |
       vertical-align: middle;
     }
     .delta-table td:first-child { padding-left: 24px; font-weight: 600; }
+    .delta-table td:nth-child(2) { font-weight: 500; color: var(--text-secondary); } /* 考号列样式 */
+    .delta-table td:nth-child(3) { font-weight: 600; } /* 姓名列加粗 */
     .delta-table tbody tr {
       transition: background 0.15s;
     }
@@ -239,6 +241,7 @@ extra_scripts:
       <table class="delta-table">
         <thead>
           <tr>
+            <th>🆔 考号</th>
             <th>👤 姓名</th>
             <th>📉 赛前</th>
             <th>📈 赛后</th>
@@ -254,6 +257,7 @@ extra_scripts:
               {% assign after = item.history[1] %}
               {% assign delta = after | minus: before %}
               <tr>
+                <td>{{ item.id }}</td>
                 <td>{{ student.name }}</td>
                 <td>{{ before }}</td>
                 <td>{{ after }}</td>
