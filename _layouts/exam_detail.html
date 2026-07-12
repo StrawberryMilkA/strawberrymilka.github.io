@@ -174,7 +174,7 @@ extra_scripts:
         {% assign count = results | size %}
         {% if count > 0 %}
         <tr class="avg-row">
-          <td>900001</td>
+          <td>-</td>
           <td>平均分</td>
           {% for col in exam.columns_def %}
             {% assign sum = 0 %}
@@ -235,6 +235,7 @@ extra_scripts:
       <div class="rating-chart-container">
         <canvas id="chart-{{ sys }}"></canvas>
       </div>
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
       <!-- 变化明细表（美化版） -->
       <table class="delta-table">
         <thead>
