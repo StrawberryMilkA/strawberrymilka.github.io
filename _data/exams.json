@@ -62,5 +62,79 @@
         { "id": "500001", "history": [1500, 1452] }
       ]
     }
+  },
+  {
+    "id": "2",
+    "date": "2026.6.19",
+    "time": "19:30-21:30",
+    "source": "2026全国一卷",
+    "code": "ABHM_LC_26GKI",
+    "category": "gaokao-math",
+    "card_quote": "高考题当值无愧的神",
+    "participants": 4,
+    "top_score": 135,
+    "top_name": "丁致远",
+    "pinned": false,
+    "sort_date": "2026-06-19",
+    "rating_index": 2,
+    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2026全国一卷，单选题（题1-8）全员满分40分，展现出扎实的基础功底。最高分<strong>丁致远135分</strong>，与第二名曾奂霖（129分）差距仅6分，竞争异常激烈。</p><p>多选题（题9-11）得分率83%，题11（满分4分）得分率仅50%，是本次区分度最大的选择题。填空题（题12-14）题14无人得分，为本次最难题型之一。大题（题15-19）题15、16表现最佳，题19（满分17分）得分率仅51%，说明压轴大题仍是普遍弱点。</p>",
+    "columns_def": [
+      { "field": "q1",           "title": "T1",      "is_subtotal": false },
+      { "field": "q2",           "title": "T2",      "is_subtotal": false },
+      { "field": "q3",           "title": "T3",      "is_subtotal": false },
+      { "field": "q4",           "title": "T4",      "is_subtotal": false },
+      { "field": "q5",           "title": "T5",      "is_subtotal": false },
+      { "field": "q6",           "title": "T6",      "is_subtotal": false },
+      { "field": "q7",           "title": "T7",      "is_subtotal": false },
+      { "field": "q8",           "title": "T8",      "is_subtotal": false },
+      { "field": "single_total", "title": "单选合计","is_subtotal": true  },
+      { "field": "q9",           "title": "T9(6)",   "is_subtotal": false },
+      { "field": "q10",          "title": "T10(6)",  "is_subtotal": false },
+      { "field": "q11",          "title": "T11(4)",  "is_subtotal": false },
+      { "field": "multi_total",  "title": "多选合计","is_subtotal": true  },
+      { "field": "q12",          "title": "T12(5)",  "is_subtotal": false },
+      { "field": "q13",          "title": "T13(5)",  "is_subtotal": false },
+      { "field": "q14",          "title": "T14(5)",  "is_subtotal": false },
+      { "field": "fill_total",   "title": "填空合计","is_subtotal": true  },
+      { "field": "q15",          "title": "T15(15)", "is_subtotal": false },
+      { "field": "q16",          "title": "T16(15)", "is_subtotal": false },
+      { "field": "q17",          "title": "T17(15)", "is_subtotal": false },
+      { "field": "q18",          "title": "T18(17)", "is_subtotal": false },
+      { "field": "q19",          "title": "T19(17)", "is_subtotal": false },
+      { "field": "big_total",    "title": "大题合计","is_subtotal": true  },
+      { "field": "total",        "title": "总分",    "is_subtotal": true  }
+    ],
+    "results": [
+      { "studentId": "100002", "name": "丁致远",
+        "columns": { "q1":5,"q2":5,"q3":5,"q4":5,"q5":5,"q6":5,"q7":5,"q8":5,
+                     "single_total":40,"q9":6,"q10":6,"q11":4,"multi_total":16,
+                     "q12":5,"q13":2,"q14":0,"fill_total":7,
+                     "q15":13,"q16":15,"q17":15,"q18":17,"q19":12,"big_total":72,"total":135 }},
+      { "studentId": "100001", "name": "曾奂霖",
+        "columns": { "q1":5,"q2":5,"q3":5,"q4":5,"q5":5,"q6":5,"q7":5,"q8":5,
+                     "single_total":40,"q9":6,"q10":6,"q11":4,"multi_total":16,
+                     "q12":5,"q13":5,"q14":0,"fill_total":10,
+                     "q15":13,"q16":15,"q17":15,"q18":8,"q19":12,"big_total":63,"total":129 }},
+      { "studentId": "100006", "name": "张浩民",
+        "columns": { "q1":5,"q2":5,"q3":5,"q4":5,"q5":5,"q6":5,"q7":5,"q8":5,
+                     "single_total":40,"q9":6,"q10":6,"q11":0,"multi_total":12,
+                     "q12":5,"q13":5,"q14":0,"fill_total":10,
+                     "q15":13,"q16":15,"q17":14,"q18":13,"q19":9,"big_total":64,"total":126 }},
+      { "studentId": "100003", "name": "邹宗睿",
+        "columns": { "q1":5,"q2":5,"q3":5,"q4":5,"q5":5,"q6":5,"q7":5,"q8":5,
+                     "single_total":40,"q9":6,"q10":6,"q11":4,"multi_total":16,
+                     "q12":5,"q13":5,"q14":5,"fill_total":15,
+                     "q15":8,"q16":14,"q17":9,"q18":11,"q19":2,"big_total":44,"total":115 }}
+    ],
+    "ratings": {
+      "gaokaoMath": [
+        { "id": "100001", "history": [null, 129] },
+        { "id": "100002", "history": [null, 135] },
+        { "id": "100003", "history": [null, 115] },
+        { "id": "100006", "history": [null, 126] }
+      ],
+      "gaokaoPhy":     [],
+      "entertainment": []
+    }
   }
 ]
