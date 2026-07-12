@@ -53,58 +53,87 @@ extra_scripts:
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   (function() {
+    // ===== 从 Liquid 获取数据 =====
     const ratingsAll = {{ ratings_all | jsonify }};
     const studentId = "{{ student_id }}";
     const examsSorted = {{ exams_sorted | jsonify }};
 
-    // 为每个系统绘制图表（如果存在数据）
-    const systems = ["gaokaoMath", "gaokaoPhy", "entertainment"];
-    systems.forEach(sys => {
-      const sysData = ratingsAll[sys] || [];
-      const studentData = sysData.find(item => item.id === studentId);
-      if (!studentData || studentData.history.length === 0) return;
+    // 定义三套系统的标识和颜色
+    const systems = [
+      { key: 'gaokaoMath', label: '高考数学实力分', color: '#c7923e' },
+      { key: 'gaokaoPhy',  label: '高考物理实力分', color: '#3a6fb5' },
+      { key: 'entertainment', label: '娱乐赛 Elo Rating', color: '#6abf69' }
+    ];
 
-      const canvas = document.getElementById('chart-' + sys);
+    // 辅助：获取 Y 轴标题
+    function getYTitle(sysKey) {
+      if (sysKey === 'entertainment') return 'Rating';
+      return '分数';
+    }
+
+    // 遍历每个系统
+    systems.forEach(sys => {
+      const sysData = ratingsAll[sys.key] || [];
+      const studentData = sysData.find(item => item.id === studentId);
+
+      // --- 安全检查：若该生无此系统数据，隐藏整个图表块 ---
+      const container = document.getElementById('chart-' + sys.key)?.closest('.chart-box');
+      if (!studentData || !studentData.history || !Array.isArray(studentData.history) || studentData.history.length === 0) {
+        if (container) {
+          container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;">该生暂无此系统数据</p>';
+        }
+        return; // 跳过绘制
+      }
+
+      const canvas = document.getElementById('chart-' + sys.key);
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      // 假设 examsSorted 和 studentData.history 已传入
-      const exams = {{ exams_sorted | jsonify }};
-      const history = {{ studentData.history | jsonify }}; // 注意：history[0] 是初始值
+      // --- 构建 (标签, rating) 配对数组 ---
+      const history = studentData.history;
+      // 确保至少有一个初始值
+      const pairs = [];
+      // 添加初始值（取 history[0]）
+      if (history[0] !== undefined && history[0] !== null) {
+        pairs.push({ label: '初始', rating: history[0] });
+      }
 
-      // 构建配对数组
-      const pairs = [{ label: '初始', rating: history[0] }];
-      exams.forEach((exam, index) => {
-        pairs.push({ label: exam.date, rating: history[index + 1] });
+      // 遍历每场考试，添加对应的赛后 Rating
+      examsSorted.forEach((exam, index) => {
+        const rating = history[index + 1]; // 因为 history[0] 是初始，第1场对应 history[1]
+        // 只添加非 null 的项（即该生参加了本场考试）
+        if (rating !== null && rating !== undefined) {
+          pairs.push({ label: exam.date, rating: rating });
+        }
       });
 
-      // 过滤掉 rating 为 null 或 undefined 的项
-      const filtered = pairs.filter(p => p.rating !== null && p.rating !== undefined);
-
-      // 如果没有任何数据，显示提示并隐藏图表
-      if (filtered.length === 0) {
-        // 可以显示“暂无数据”文字，并隐藏 canvas
-        document.querySelector('.chart-container').innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;">该生暂无此系统数据</p>';
+      // --- 如果过滤后没有数据，显示提示并跳过 ---
+      if (pairs.length === 0) {
+        if (container) {
+          container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;">该生暂无有效数据</p>';
+        }
         return;
       }
 
-      // 使用过滤后的数据
-      const labels = filtered.map(p => p.label);
-      const data = filtered.map(p => p.rating);
+      const labels = pairs.map(p => p.label);
+      const data = pairs.map(p => p.rating);
 
+      // --- 绘制折线图 ---
       new Chart(ctx, {
         type: 'line',
         data: {
           labels: labels,
           datasets: [{
-            label: 'Rating',
+            label: sys.label,
             data: data,
-            borderColor: sys === 'gaokaoMath' ? '#c7923e' : (sys === 'gaokaoPhy' ? '#3a6fb5' : '#6abf69'),
+            borderColor: sys.color,
             backgroundColor: 'transparent',
-            pointBackgroundColor: sys === 'gaokaoMath' ? '#c7923e' : (sys === 'gaokaoPhy' ? '#3a6fb5' : '#6abf69'),
+            pointBackgroundColor: sys.color,
             tension: 0.2,
             fill: false,
-            borderWidth: 2
+            borderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
           }]
         },
         options: {
@@ -113,11 +142,21 @@ extra_scripts:
           scales: {
             y: {
               beginAtZero: false,
-              title: { display: true, text: sys === 'entertainment' ? 'Rating' : '分数' }
+              title: {
+                display: true,
+                text: getYTitle(sys.key)
+              }
             }
           },
           plugins: {
-            legend: { display: false }
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.parsed.y + ' (' + context.label + ')';
+                }
+              }
+            }
           }
         }
       });
