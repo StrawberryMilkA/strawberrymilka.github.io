@@ -2,19 +2,21 @@
 layout: default
 extra_head: |
   <style>
-    .student-container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
+    .student-container { max-width: 1000px; margin: 0 auto; padding: 120px 24px 80px; }
     .student-header { text-align: center; margin-bottom: 40px; }
     .student-header h1 { font-size: 2.2rem; }
     .student-dept { font-size: 1rem; color: var(--text-muted); margin-top: 8px; }
-    .chart-box { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 32px 24px; }
-    .chart-container { width: 100%; height: 400px; }
+    .chart-box { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 32px 24px; margin-bottom: 32px; }
+    .chart-box h2 { font-size: 1.4rem; margin-bottom: 12px; }
+    .chart-container { width: 100%; height: 350px; }
+    .no-data { color: var(--text-muted); font-style: italic; text-align: center; padding: 20px 0; }
     .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
   </style>
 extra_scripts:
 ---
 {% assign student_id = page.student_id %}
 {% assign student = site.data.student | where: "id", student_id | first %}
-{% assign rating = site.data.ratings.students | where: "id", student_id | first %}
+{% assign ratings_all = site.data.ratings %}
 {% assign exams_sorted = site.data.exams | sort: "date" %}
 
 <div class="student-container">
@@ -23,63 +25,83 @@ extra_scripts:
     <p class="student-dept">所属部门：{{ student.dept }} | 学号：{{ student.id }}</p>
   </div>
 
-  <div class="chart-box">
-    <h2 style="margin-bottom: 16px; font-size: 1.4rem;">📈 Elo Rating 变化历史</h2>
-    <div class="chart-container">
-      <canvas id="ratingHistoryChart"></canvas>
+  <!-- 三套 Rating 独立折线图 -->
+  {% assign systems = "gaokaoMath,gaokaoPhy,entertainment" | split: "," %}
+  {% for sys in systems %}
+    {% assign sys_data = ratings_all[sys] | where: "id", student_id | first %}
+    {% if sys_data and sys_data.history.size > 0 %}
+    <div class="chart-box">
+      <h2>
+        {% case sys %}
+          {% when "gaokaoMath" %} 📐 高考数学实力分
+          {% when "gaokaoPhy" %} ⚛️ 高考物理实力分
+          {% when "entertainment" %} 🎮 娱乐赛 Elo Rating
+        {% endcase %}
+      </h2>
+      <div class="chart-container">
+        <canvas id="chart-{{ sys }}"></canvas>
+      </div>
     </div>
-  </div>
+    {% endif %}
+  {% endfor %}
 
   <a href="javascript:history.back()" class="back-link">← 返回上一页</a>
 </div>
 
-{% if rating %}
-
 <!-- 加载 Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<!-- 定义 Rating 数据 -->
 <script>
-  // 设置网页标题
-  document.title = "{{ student.name }}的Rating历史 | {{ site.title }}";
-
   (function() {
-    const ctx = document.getElementById('ratingHistoryChart').getContext('2d');
-    const labels = ["初始"
-      {% for exam in exams_sorted %}
-        ,"{{ exam.date }}"{% endfor %}
-    ];
-    const data = {{ rating.ratingHistory | jsonify }};
+    const ratingsAll = {{ ratings_all | jsonify }};
+    const studentId = "{{ student_id }}";
+    const examsSorted = {{ exams_sorted | jsonify }};
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Rating',
-          data: data,
-          borderColor: '#c7923e',
-          backgroundColor: 'rgba(199,146,62,0.1)',
-          pointBackgroundColor: '#c7923e',
-          tension: 0.2,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: false, min: 1300 }
+    // 为每个系统绘制图表（如果存在数据）
+    const systems = ["gaokaoMath", "gaokaoPhy", "entertainment"];
+    systems.forEach(sys => {
+      const sysData = ratingsAll[sys] || [];
+      const studentData = sysData.find(item => item.id === studentId);
+      if (!studentData || studentData.history.length === 0) return;
+
+      const canvas = document.getElementById('chart-' + sys);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // 横轴标签：初始 + 每场考试日期
+      const labels = ["初始"];
+      examsSorted.forEach(exam => {
+        labels.push(exam.date);
+      });
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Rating',
+            data: studentData.history,
+            borderColor: sys === 'gaokaoMath' ? '#c7923e' : (sys === 'gaokaoPhy' ? '#3a6fb5' : '#6abf69'),
+            backgroundColor: 'transparent',
+            pointBackgroundColor: sys === 'gaokaoMath' ? '#c7923e' : (sys === 'gaokaoPhy' ? '#3a6fb5' : '#6abf69'),
+            tension: 0.2,
+            fill: false,
+            borderWidth: 2
+          }]
         },
-        plugins: {
-          legend: { display: false }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+              title: { display: true, text: sys === 'entertainment' ? 'Rating' : '分数' }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
         }
-      }
+      });
     });
   })();
 </script>
-
-{% else %}
-
-<p>暂无 Rating 数据。</p>
-
-{% endif %}

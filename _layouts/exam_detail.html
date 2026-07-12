@@ -23,9 +23,22 @@ extra_head: |
     .player-card .comment { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; }
     .player-card .rating-link { margin-top: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 0.9rem; font-weight: 500; color: var(--accent); text-decoration: none; transition: color 0.2s; }
     .player-card .rating-link:hover { color: #b07d2e; text-decoration: underline; }
-    .rating-compare { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
-    .rating-compare h2 { font-size: 1.8rem; color: var(--text); margin-bottom: 24px; }
-    .chart-container { max-width: 700px; margin: 0 auto; height: 350px; }
+    /* Rating Tabs 样式 */
+    .rating-tabs-container { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
+    .rating-tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
+    .rating-tab { padding: 10px 24px; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; transition: all 0.2s; font-size: 1rem; }
+    .rating-tab:hover { background: var(--surface-alt); color: var(--text); }
+    .rating-tab.active { background: var(--accent); color: white; }
+    .rating-panel { display: none; }
+    .rating-panel.active { display: block; }
+    .rating-panel h3 { font-size: 1.3rem; margin-bottom: 16px; }
+    .rating-chart-container { height: 350px; margin-bottom: 24px; }
+    .delta-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .delta-table th { background: var(--surface-alt); padding: 10px; text-align: left; }
+    .delta-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    .delta-positive { color: #2e7d32; font-weight: 600; }
+    .delta-negative { color: #c62828; font-weight: 600; }
+    .delta-zero { color: var(--text-muted); }
     .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
     @media (max-width: 768px) { .player-reviews { grid-template-columns: 1fr; } }
   </style>
@@ -36,7 +49,7 @@ extra_scripts:
   <div class="exam-detail-container"><p>未找到该场考试数据。</p></div>
 {% else %}
 {% assign students_data = site.data.student %}
-{% assign ratings = site.data.ratings.students %}
+{% assign ratings_all = site.data.ratings %}
 <div class="exam-detail-container">
   <div class="exam-header">
     <h1>{{ page.title | default: exam.date | append: " 联测成绩" }}</h1>
@@ -76,7 +89,7 @@ extra_scripts:
         {% assign count = results | size %}
         {% if count > 0 %}
         <tr class="avg-row">
-          <td>900001</td>
+          <td>-</td>
           <td>平均分</td>
           {% for col in exam.columns_def %}
             {% assign sum = 0 %}
@@ -91,7 +104,7 @@ extra_scripts:
     </table>
   </div>
 
-  <!-- 点评（按原始书写顺序，含个人 Rating 链接） -->
+  <!-- 点评 -->
   <section class="review-section">
     <h2>📋 考试总评与考生点评</h2>
     <div class="overall-review">{{ exam.overall_review }}</div>
@@ -110,37 +123,169 @@ extra_scripts:
     </div>
   </section>
 
-  <!-- 图表区（完全保留） -->
-  <section class="rating-compare">
-    <h2>📈 本场 Elo Rating 变化</h2>
-    <p style="text-align:center; color: var(--text-light); margin-bottom: 8px;">基于每场联测成绩动态更新，初始 Rating = 1500</p>
-    <div class="chart-container">
-      <canvas id="ratingChart"></canvas>
+  <!-- 三套 Rating Tab 切换 -->
+  <div class="rating-tabs-container">
+    <h2>📊 三套 Rating 体系变化</h2>
+    <div class="rating-tabs">
+      {% assign systems = "gaokaoMath,gaokaoPhy,entertainment" | split: "," %}
+      {% for sys in systems %}
+        <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
+          {% case sys %}
+            {% when "gaokaoMath" %} 高考数学
+            {% when "gaokaoPhy" %} 高考物理
+            {% when "entertainment" %} 娱乐赛 Elo
+          {% endcase %}
+        </button>
+      {% endfor %}
     </div>
-    <p style="text-align:center;color:var(--text-muted);margin-top:12px;">显示每位参赛选手在本场考试前后的 Rating 变化</p>
-  </section>
+
+    {% for sys in systems %}
+    <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
+      <h3>
+        {% case sys %}
+          {% when "gaokaoMath" %} 高考数学实力分（范围 0-200）
+          {% when "gaokaoPhy" %} 高考物理实力分（范围 0-150）
+          {% when "entertainment" %} Elo 娱乐赛积分（初始 1500，范围 0-3000）
+        {% endcase %}
+      </h3>
+      <div class="rating-chart-container">
+        <canvas id="chart-{{ sys }}"></canvas>
+      </div>
+      <!-- 变化明细表 -->
+      <h4 style="margin: 16px 0 8px;">本场变化明细</h4>
+      <table class="delta-table">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>赛前 Rating</th>
+            <th>赛后 Rating</th>
+            <th>变化 (Δ)</th>
+          </tr>
+        </thead>
+        <tbody id="delta-{{ sys }}">
+          {% assign sys_ratings = exam.ratings[sys] %}
+          {% for item in sys_ratings %}
+            {% assign student = students_data | where: "id", item.id | first %}
+            {% if student %}
+              {% assign before = item.history[0] %}
+              {% assign after = item.history[1] %}
+              {% assign delta = after | minus: before %}
+              <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ before }}</td>
+                <td>{{ after }}</td>
+                <td class="{% if delta > 0 %}delta-positive{% elsif delta < 0 %}delta-negative{% else %}delta-zero{% endif %}">
+                  {% if delta > 0 %}+{% endif %}{{ delta }}
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+  </div>
 
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
 </div>
 
 <!-- 加载 Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<!-- 定义 Rating 数据 -->
 <script>
-  const ratingData = {
-    labels: ["更新前 Rating", "{{ exam.date }} 联测"],
-    students: [
-      {% for s in ratings %}
-      {
-        id: "{{ s.id }}",
-        name: "{{ site.data.student | where: 'id', s.id | first | map: 'name' }}",
-        ratingHistory: {{ s.ratingHistory | jsonify }}
-      }{% unless forloop.last %},{% endunless %}
-      {% endfor %}
-    ]
-  };
-</script>
-<!-- 绘图脚本 -->
-<script src="{{ '/assets/js/weekly.js' | relative_url }}"></script>
+  (function() {
+    // 从全局 ratings 获取数据
+    const ratingsData = {{ ratings_all | jsonify }};
+    const examRatings = {{ exam.ratings | jsonify }};
+    const allStudents = {{ students_data | jsonify }};
 
+    // 定义系统显示名称
+    const sysNames = {
+      gaokaoMath: '高考数学',
+      gaokaoPhy: '高考物理',
+      entertainment: '娱乐赛 Elo'
+    };
+
+    // 获取参与本场考试的学生 ID 列表（从 exam.ratings 中任一系统取）
+    const systemKeys = Object.keys(examRatings);
+    let participantIds = [];
+    if (systemKeys.length > 0) {
+      participantIds = examRatings[systemKeys[0]].map(item => item.id);
+    }
+
+    // 为每个系统绘制折线图（只显示参与本场的学生，且使用该系统的完整历史）
+    systemKeys.forEach(sys => {
+      const canvas = document.getElementById('chart-' + sys);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // 获取该系统的所有学生历史数据
+      const sysHistory = ratingsData[sys] || [];
+      // 筛选出参与本场的学生
+      const filtered = sysHistory.filter(item => participantIds.includes(item.id));
+
+      // 准备数据集：每个学生一条线
+      const datasets = filtered.map(item => {
+        const student = allStudents.find(s => s.id === item.id);
+        const name = student ? student.name : item.id;
+        return {
+          label: name,
+          data: item.history,
+          borderColor: getColor(item.id),
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 4,
+          tension: 0.1,
+          fill: false
+        };
+      });
+
+      // 横轴标签：第1场、第2场... (根据历史长度)
+      const maxLen = Math.max(...filtered.map(item => item.history.length));
+      const labels = Array.from({length: maxLen}, (_, i) => '第' + (i+1) + '场');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } },
+            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y } }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              title: { display: true, text: sys === 'entertainment' ? 'Rating' : '分数' }
+            }
+          }
+        }
+      });
+    });
+
+    // 辅助颜色生成
+    function getColor(id) {
+      const colors = ['#e2b04a','#5a8fcf','#6abf69','#e05d5d','#9b59b6','#f39c12','#1abc9c'];
+      const idx = parseInt(id.slice(-2)) % colors.length;
+      return colors[idx];
+    }
+
+    // Tab 切换逻辑
+    const tabs = document.querySelectorAll('.rating-tab');
+    const panels = document.querySelectorAll('.rating-panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        tabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const sys = this.dataset.system;
+        panels.forEach(p => {
+          p.classList.toggle('active', p.id === 'panel-' + sys);
+        });
+      });
+    });
+  })();
+</script>
 {% endif %}
