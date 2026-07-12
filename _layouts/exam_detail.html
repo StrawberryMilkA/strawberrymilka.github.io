@@ -210,75 +210,74 @@ extra_scripts:
   <!-- 三套 Rating Tab 切换 -->
   <div class="rating-tabs-container">
     <h2>Rating 变化</h2>
-    <div class="rating-tabs">
-      {% assign systems = "gaokaoMath,gaokaoPhy,entertainment" | split: "," %}
-      {% for sys in systems %}
-        <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
-          {% case sys %}
-            {% when "gaokaoMath" %} 高考数学
-            {% when "gaokaoPhy" %} 高考物理
-            {% when "entertainment" %} 娱乐赛
-          {% endcase %}
-        </button>
-      {% endfor %}
-    </div>
-
-    {% for sys in systems %}
-    <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
-      <h3>
-        {% case sys %}
-          {% when "gaokaoMath" %} 高考数学预测分（范围 0-200，x 分代表有高考数学 x 分的实力）
-          {% when "gaokaoPhy" %} 高考物理预测分（范围 0-150，x 分代表有高考物理 x 分的实力）
-          {% when "entertainment" %} 娱乐赛 Elo 积分（初始 1500，范围 0-3000）
-        {% endcase %}
-      </h3>
-      <div class="rating-chart-container">
-        <canvas id="chart-{{ sys }}"></canvas>
+      <div class="rating-tabs">
+        {% for pair in exam.ratings %}
+          {% assign sys = pair[0] %}
+          <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
+            {% case sys %}
+              {% when "gaokaoMath" %} 高考数学
+              {% when "gaokaoPhy" %} 高考物理
+              {% when "entertainment" %} 娱乐赛
+              {% else %} {{ sys }}
+            {% endcase %}
+          </button>
+        {% endfor %}
       </div>
-      <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
-      <!-- 变化明细表（美化版） -->
-      <table class="delta-table">
-        <thead>
-          <tr>
-            <th>🆔 考号</th>
-            <th>👤 姓名</th>
-            <th>📉 赛前</th>
-            <th>📈 赛后</th>
-            <th>🔄 变化</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% assign sys_ratings = exam.ratings[sys] %}
-          {% for item in sys_ratings %}
-            {% assign student = students_data | where: "id", item.id | first %}
-            {% if student %}
-              {% assign before = item.history[0] %}
-              {% assign after = item.history[1] %}
-              {% assign delta = after | minus: before %}
-              <tr>
-                <td>{{ item.id }}</td>
-                <td><a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="text-decoration:none; color:inherit; font-weight:600;">{{ student.name }}</a></td>
-                <td>{{ before }}</td>
-                <td>{{ after }}</td>
-                <td>
-                  {% if delta > 0 %}
-                    <span class="delta-badge delta-positive">
-                      <span class="delta-arrow">▲</span> +{{ delta }}
-                    </span>
-                  {% elsif delta < 0 %}
-                    <span class="delta-badge delta-negative">
-                      <span class="delta-arrow">▼</span> {{ delta }}
-                    </span>
-                  {% else %}
-                    <span class="delta-badge delta-zero">— 0</span>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+
+    {% for pair in exam.ratings %}
+      {% assign sys = pair[0] %}
+      {% assign sys_data = pair[1] %}
+      <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
+        <h3>
+          {% case sys %}
+            {% when "gaokaoMath" %} 高考数学预测分（范围 0-200，x 分代表有高考数学 x 分的实力）
+            {% when "gaokaoPhy" %} 高考物理预测分（范围 0-150，x 分代表有高考物理 x 分的实力）
+            {% when "entertainment" %} 娱乐赛 Elo 积分（初始 1500，范围 0-3000）
+            {% else %} {{ sys }}
+          {% endcase %}
+        </h3>
+        <div class="rating-chart-container">
+          <canvas id="chart-{{ sys }}"></canvas>
+        </div>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
+        <!-- 变化明细表 -->
+        <table class="delta-table">
+          <thead>
+            <tr>
+              <th>🆔 考号</th>
+              <th>👤 姓名</th>
+              <th>📉 赛前</th>
+              <th>📈 赛后</th>
+              <th>🔄 变化</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in sys_data %}
+              {% assign student = students_data | where: "id", item.id | first %}
+              {% if student %}
+                {% assign before = item.history[0] %}
+                {% assign after = item.history[1] %}
+                {% assign delta = after | minus: before %}
+                <tr>
+                  <td>{{ item.id }}</td>
+                  <td><a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="text-decoration:none; color:inherit; font-weight:600;">{{ student.name }}</a></td>
+                  <td>{{ before }}</td>
+                  <td>{{ after }}</td>
+                  <td>
+                    {% if delta > 0 %}
+                      <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
+                    {% elsif delta < 0 %}
+                      <span class="delta-badge delta-negative">▼ {{ delta }}</span>
+                    {% else %}
+                      <span class="delta-badge delta-zero">— 0</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     {% endfor %}
   </div>
 
