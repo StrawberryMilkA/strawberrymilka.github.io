@@ -209,7 +209,7 @@ extra_scripts:
 
   <!-- 三套 Rating Tab 切换 -->
   <div class="rating-tabs-container">
-    <h2>📊 三套 Rating 体系变化（本场前后）</h2>
+    <h2>Rating 变化</h2>
     <div class="rating-tabs">
       {% assign systems = "gaokaoMath,gaokaoPhy,entertainment" | split: "," %}
       {% for sys in systems %}
@@ -217,7 +217,7 @@ extra_scripts:
           {% case sys %}
             {% when "gaokaoMath" %} 高考数学
             {% when "gaokaoPhy" %} 高考物理
-            {% when "entertainment" %} 娱乐赛 Elo
+            {% when "entertainment" %} 娱乐赛
           {% endcase %}
         </button>
       {% endfor %}
@@ -227,56 +227,54 @@ extra_scripts:
     <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
       <h3>
         {% case sys %}
-          {% when "gaokaoMath" %} 高考数学实力分（范围 0-200）
-          {% when "gaokaoPhy" %} 高考物理实力分（范围 0-150）
-          {% when "entertainment" %} Elo 娱乐赛积分（初始 1500，范围 0-3000）
+          {% when "gaokaoMath" %} 高考数学预测分（范围 0-200，x 分代表有高考数学 x 分的实力）
+          {% when "gaokaoPhy" %} 高考物理预测分（范围 0-150，x 分代表有高考物理 x 分的实力）
+          {% when "entertainment" %} 娱乐赛 Elo 积分（初始 1500，范围 0-3000）
         {% endcase %}
       </h3>
       <div class="rating-chart-container">
         <canvas id="chart-{{ sys }}"></canvas>
       </div>
       <!-- 变化明细表（美化版） -->
-      <div class="delta-wrapper">
-        <table class="delta-table">
-          <thead>
-            <tr>
-              <th>👤 姓名</th>
-              <th>📉 赛前</th>
-              <th>📈 赛后</th>
-              <th>🔄 变化</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% assign sys_ratings = exam.ratings[sys] %}
-            {% for item in sys_ratings %}
-              {% assign student = students_data | where: "id", item.id | first %}
-              {% if student %}
-                {% assign before = item.history[0] %}
-                {% assign after = item.history[1] %}
-                {% assign delta = after | minus: before %}
-                <tr>
-                  <td>{{ student.name }}</td>
-                  <td>{{ before }}</td>
-                  <td>{{ after }}</td>
-                  <td>
-                    {% if delta > 0 %}
-                      <span class="delta-badge delta-positive">
-                        <span class="delta-arrow">▲</span> +{{ delta }}
-                      </span>
-                    {% elsif delta < 0 %}
-                      <span class="delta-badge delta-negative">
-                        <span class="delta-arrow">▼</span> {{ delta }}
-                      </span>
-                    {% else %}
-                      <span class="delta-badge delta-zero">— 0</span>
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+      <table class="delta-table">
+        <thead>
+          <tr>
+            <th>👤 姓名</th>
+            <th>📉 赛前</th>
+            <th>📈 赛后</th>
+            <th>🔄 变化</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% assign sys_ratings = exam.ratings[sys] %}
+          {% for item in sys_ratings %}
+            {% assign student = students_data | where: "id", item.id | first %}
+            {% if student %}
+              {% assign before = item.history[0] %}
+              {% assign after = item.history[1] %}
+              {% assign delta = after | minus: before %}
+              <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ before }}</td>
+                <td>{{ after }}</td>
+                <td>
+                  {% if delta > 0 %}
+                    <span class="delta-badge delta-positive">
+                      <span class="delta-arrow">▲</span> +{{ delta }}
+                    </span>
+                  {% elsif delta < 0 %}
+                    <span class="delta-badge delta-negative">
+                      <span class="delta-arrow">▼</span> {{ delta }}
+                    </span>
+                  {% else %}
+                    <span class="delta-badge delta-zero">— 0</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     {% endfor %}
   </div>
