@@ -68,11 +68,29 @@ extra_scripts:
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      // 横轴标签：初始 + 每场考试日期
-      const labels = ["初始"];
-      examsSorted.forEach(exam => {
-        labels.push(exam.date);
+      // 假设 examsSorted 和 studentData.history 已传入
+      const exams = {{ exams_sorted | jsonify }};
+      const history = {{ studentData.history | jsonify }}; // 注意：history[0] 是初始值
+
+      // 构建配对数组
+      const pairs = [{ label: '初始', rating: history[0] }];
+      exams.forEach((exam, index) => {
+        pairs.push({ label: exam.date, rating: history[index + 1] });
       });
+
+      // 过滤掉 rating 为 null 或 undefined 的项
+      const filtered = pairs.filter(p => p.rating !== null && p.rating !== undefined);
+
+      // 如果没有任何数据，显示提示并隐藏图表
+      if (filtered.length === 0) {
+        // 可以显示“暂无数据”文字，并隐藏 canvas
+        document.querySelector('.chart-container').innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;">该生暂无此系统数据</p>';
+        return;
+      }
+
+      // 使用过滤后的数据
+      const labels = filtered.map(p => p.label);
+      const data = filtered.map(p => p.rating);
 
       new Chart(ctx, {
         type: 'line',
@@ -80,7 +98,7 @@ extra_scripts:
           labels: labels,
           datasets: [{
             label: 'Rating',
-            data: studentData.history,
+            data: data,
             borderColor: sys === 'gaokaoMath' ? '#c7923e' : (sys === 'gaokaoPhy' ? '#3a6fb5' : '#6abf69'),
             backgroundColor: 'transparent',
             pointBackgroundColor: sys === 'gaokaoMath' ? '#c7923e' : (sys === 'gaokaoPhy' ? '#3a6fb5' : '#6abf69'),
