@@ -89,7 +89,7 @@ extra_scripts:
         {% assign count = results | size %}
         {% if count > 0 %}
         <tr class="avg-row">
-          <td>-</td>
+          <td>900001</td>
           <td>平均分</td>
           {% for col in exam.columns_def %}
             {% assign sum = 0 %}
@@ -125,7 +125,7 @@ extra_scripts:
 
   <!-- 三套 Rating Tab 切换 -->
   <div class="rating-tabs-container">
-    <h2>📊 三套 Rating 体系变化</h2>
+    <h2>📊 三套 Rating 体系变化（本场前后）</h2>
     <div class="rating-tabs">
       {% assign systems = "gaokaoMath,gaokaoPhy,entertainment" | split: "," %}
       {% for sys in systems %}
@@ -193,8 +193,7 @@ extra_scripts:
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   (function() {
-    // 从全局 ratings 获取数据
-    const ratingsData = {{ ratings_all | jsonify }};
+    // 从 exam.ratings 获取本场前后数据
     const examRatings = {{ exam.ratings | jsonify }};
     const allStudents = {{ students_data | jsonify }};
 
@@ -205,43 +204,36 @@ extra_scripts:
       entertainment: '娱乐赛 Elo'
     };
 
-    // 获取参与本场考试的学生 ID 列表（从 exam.ratings 中任一系统取）
+    // 获取所有系统键
     const systemKeys = Object.keys(examRatings);
-    let participantIds = [];
-    if (systemKeys.length > 0) {
-      participantIds = examRatings[systemKeys[0]].map(item => item.id);
-    }
 
-    // 为每个系统绘制折线图（只显示参与本场的学生，且使用该系统的完整历史）
+    // 为每个系统绘制折线图（仅显示本场赛前赛后两个点）
     systemKeys.forEach(sys => {
       const canvas = document.getElementById('chart-' + sys);
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      // 获取该系统的所有学生历史数据
-      const sysHistory = ratingsData[sys] || [];
-      // 筛选出参与本场的学生
-      const filtered = sysHistory.filter(item => participantIds.includes(item.id));
+      // 获取该系统的所有参赛学生数据（history 长度为 2）
+      const sysData = examRatings[sys] || [];
 
-      // 准备数据集：每个学生一条线
-      const datasets = filtered.map(item => {
+      // 准备数据集：每个学生一条线，两个点
+      const datasets = sysData.map(item => {
         const student = allStudents.find(s => s.id === item.id);
         const name = student ? student.name : item.id;
         return {
           label: name,
-          data: item.history,
+          data: item.history, // [before, after]
           borderColor: getColor(item.id),
           backgroundColor: 'transparent',
           borderWidth: 2,
-          pointRadius: 4,
-          tension: 0.1,
+          pointRadius: 5,
+          tension: 0,
           fill: false
         };
       });
 
-      // 横轴标签：第1场、第2场... (根据历史长度)
-      const maxLen = Math.max(...filtered.map(item => item.history.length));
-      const labels = Array.from({length: maxLen}, (_, i) => '第' + (i+1) + '场');
+      // 横轴标签固定为“赛前”和“赛后”
+      const labels = ['赛前', '赛后'];
 
       new Chart(ctx, {
         type: 'line',
