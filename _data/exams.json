@@ -34,24 +34,6 @@
       { "studentId": "100005", "name": "何慕", "columns": { "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 32 } }
     ],
     "ratings": {
-      "gaokaoMath": [
-        { "id": "100001", "history": [145, 152] },
-        { "id": "100002", "history": [140, 141] },
-        { "id": "100003", "history": [138, 142] },
-        { "id": "100005", "history": [135, 136] },
-        { "id": "100006", "history": [130, 132] },
-        { "id": "100007", "history": [128, 130] },
-        { "id": "500001", "history": [125, 127] }
-      ],
-      "gaokaoPhy": [
-        { "id": "100001", "history": [90, 95] },
-        { "id": "100002", "history": [88, 89] },
-        { "id": "100003", "history": [85, 87] },
-        { "id": "100005", "history": [80, 82] },
-        { "id": "100006", "history": [78, 79] },
-        { "id": "100007", "history": [76, 78] },
-        { "id": "500001", "history": [74, 75] }
-      ],
       "entertainment": [
         { "id": "100001", "history": [1500, 1596] },
         { "id": "100002", "history": [1500, 1501] },
@@ -90,13 +72,13 @@
       { "field": "single_total", "title": "单选合计","is_subtotal": true  },
       { "field": "q9",           "title": "T9(6)",   "is_subtotal": false },
       { "field": "q10",          "title": "T10(6)",  "is_subtotal": false },
-      { "field": "q11",          "title": "T11(4)",  "is_subtotal": false },
+      { "field": "q11",          "title": "T11(6)",  "is_subtotal": false },
       { "field": "multi_total",  "title": "多选合计","is_subtotal": true  },
       { "field": "q12",          "title": "T12(5)",  "is_subtotal": false },
       { "field": "q13",          "title": "T13(5)",  "is_subtotal": false },
       { "field": "q14",          "title": "T14(5)",  "is_subtotal": false },
       { "field": "fill_total",   "title": "填空合计","is_subtotal": true  },
-      { "field": "q15",          "title": "T15(15)", "is_subtotal": false },
+      { "field": "q15",          "title": "T15(13)", "is_subtotal": false },
       { "field": "q16",          "title": "T16(15)", "is_subtotal": false },
       { "field": "q17",          "title": "T17(15)", "is_subtotal": false },
       { "field": "q18",          "title": "T18(17)", "is_subtotal": false },
@@ -132,9 +114,7 @@
         { "id": "100002", "history": [null, 135] },
         { "id": "100003", "history": [null, 115] },
         { "id": "100006", "history": [null, 126] }
-      ],
-      "gaokaoPhy":     [],
-      "entertainment": []
+      ]
     }
   }
 ]
