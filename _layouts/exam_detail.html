@@ -201,7 +201,6 @@ extra_scripts:
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
           <div class="score-total">总分 {{ r.columns.total }} 分（一试{{ r.columns.trial1_total }} + 二试{{ r.columns.trial2_total }}）</div>
           <p class="comment">{{ student.reviews[exam.id] }}</p>
-          <a href="{{ '/students/' | append: r.studentId | append: '/' | relative_url }}" class="rating-link">📈 查看 Rating 变化历史 →</a>
         </div>
         {% endif %}
       {% endfor %}
@@ -257,7 +256,7 @@ extra_scripts:
               {% assign delta = after | minus: before %}
               <tr>
                 <td>{{ item.id }}</td>
-                <td>{{ student.name }}</td>
+                <td><a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="text-decoration:none; color:inherit; font-weight:600;">{{ student.name }}</a></td>
                 <td>{{ before }}</td>
                 <td>{{ after }}</td>
                 <td>

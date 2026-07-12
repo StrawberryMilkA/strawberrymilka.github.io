@@ -30,7 +30,7 @@
       { "studentId": "100007", "name": "赵哲宇", "columns": { "fill": 40, "t11": 5, "t12": 0, "trial1_total": 45, "trial2_t1": 0, "trial2_t2": 20, "trial2_total": 20, "total": 65 } },
       { "studentId": "100002", "name": "丁致远", "columns": { "fill": 48, "t11": 10, "t12": 0, "trial1_total": 58, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 58 } },
       { "studentId": "100006", "name": "张浩民", "columns": { "fill": 32, "t11": 10, "t12": 0, "trial1_total": 42, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 42 } },
-      { "studentId": "100008", "name": "李沂铮", "columns": { "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 10, "trial2_total": 10, "total": 42 } },
+      { "studentId": "500001", "name": "李沂铮", "columns": { "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 10, "trial2_total": 10, "total": 42 } },
       { "studentId": "100005", "name": "何慕", "columns": { "fill": 32, "t11": 0, "t12": 0, "trial1_total": 32, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 32 } }
     ],
     "ratings": {
@@ -41,7 +41,7 @@
         { "id": "100005", "history": [135, 136] },
         { "id": "100006", "history": [130, 132] },
         { "id": "100007", "history": [128, 130] },
-        { "id": "100008", "history": [125, 127] }
+        { "id": "500001", "history": [125, 127] }
       ],
       "gaokaoPhy": [
         { "id": "100001", "history": [90, 95] },
@@ -50,7 +50,7 @@
         { "id": "100005", "history": [80, 82] },
         { "id": "100006", "history": [78, 79] },
         { "id": "100007", "history": [76, 78] },
-        { "id": "100008", "history": [74, 75] }
+        { "id": "500001", "history": [74, 75] }
       ],
       "entertainment": [
         { "id": "100001", "history": [1500, 1596] },
@@ -59,7 +59,7 @@
         { "id": "100005", "history": [1500, 1404] },
         { "id": "100006", "history": [1500, 1452] },
         { "id": "100007", "history": [1500, 1532] },
-        { "id": "100008", "history": [1500, 1452] }
+        { "id": "500001", "history": [1500, 1452] }
       ]
     }
   }
