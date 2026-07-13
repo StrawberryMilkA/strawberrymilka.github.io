@@ -10,10 +10,7 @@ extra_head: |
     .exam-meta span { background: var(--surface-alt); padding: 6px 18px; border-radius: 20px; }
     .table-wrapper { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--card-shadow); background: white; margin-bottom: 40px; }
     .score-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-    
-    /* 移除了 background 属性，让内联样式去接管 */
     .score-table th { padding: 16px 14px; font-weight: 600; text-align: center; }
-    
     .score-table td { padding: 14px 14px; text-align: center; border-bottom: 1px solid var(--border); }
     .score-table tbody tr:hover { background: #f5f0e6; }
     .score-table .avg-row { background: #ececec; font-weight: 600; color: var(--text); border-top: 2px solid var(--accent); }
@@ -26,7 +23,8 @@ extra_head: |
     .player-card .comment { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; }
     .player-card .rating-link { margin-top: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 0.9rem; font-weight: 500; color: var(--accent); text-decoration: none; transition: color 0.2s; }
     .player-card .rating-link:hover { color: #b07d2e; text-decoration: underline; }
-    /* Rating Tabs 样式 */
+
+    /* Rating Tabs */
     .rating-tabs-container { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
     .rating-tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
     .rating-tab { padding: 10px 24px; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; transition: all 0.2s; font-size: 1rem; }
@@ -36,7 +34,8 @@ extra_head: |
     .rating-panel.active { display: block; }
     .rating-panel h3 { font-size: 1.3rem; margin-bottom: 16px; }
     .rating-chart-container { height: 350px; margin-bottom: 24px; }
-    /* ===== 美化后的变化明细表 ===== */
+
+    /* delta 表格 */
     .delta-wrapper { background: var(--surface-alt); border-radius: var(--radius); padding: 8px; margin-top: 16px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.04); }
     .delta-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.95rem; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--card-shadow); }
     .delta-table th { background: var(--hero-bg); color: #fff; font-weight: 600; padding: 14px 16px; text-align: left; letter-spacing: 0.3px; }
@@ -48,19 +47,64 @@ extra_head: |
     .delta-table tbody tr:hover { background: #f8f4eb; }
     .delta-table tbody tr:nth-child(even) { background: #fafafc; }
     .delta-table tbody tr:nth-child(even):hover { background: #f5f0e6; }
-    .delta-table .delta-positive { color: #1e7e34; font-weight: 700; background: #e8f5e9; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
-    .delta-table .delta-negative { color: #b71c1c; font-weight: 700; background: #ffebee; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
-    .delta-table .delta-zero { color: var(--text-muted); font-weight: 500; background: #f0f0f0; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
-    .delta-table .delta-arrow { margin-right: 4px; }
-    .delta-table .delta-badge { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-    
-    /* 得分色阶 — 在 <td> 上通过 Liquid 判断加 class */
+    .delta-positive { color: #1e7e34; font-weight: 700; background: #e8f5e9; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
+    .delta-negative { color: #b71c1c; font-weight: 700; background: #ffebee; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
+    .delta-zero { color: var(--text-muted); font-weight: 500; background: #f0f0f0; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
+    .delta-badge { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+
+    /* 得分色阶 — 用在单元格上 */
     .score-full   { background:#d1fae5 !important; color:#065f46; font-weight:600; }
     .score-good   { background:#f0fdf4 !important; color:#166534; }
     .score-mid    { background:#fefce8 !important; color:#854d0e; }
     .score-low    { background:#fff1f2 !important; color:#be123c; }
     .score-zero   { background:#fee2e2 !important; color:#991b1b; font-weight:700; }
-    
+
+    /* ===== 新增：图例和胶囊样式（替代 Tailwind） ===== */
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    .legend-title {
+      font-weight: 600;
+      color: #4b5563;
+    }
+    /* 通用胶囊 */
+    .capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+    .capsule-sub {
+      opacity: 0.6;
+      font-size: 0.7rem;
+    }
+    /* 难度颜色 */
+    .capsule.easy    { background: #d1fae5; color: #065f46; }
+    .capsule.medium  { background: #dcfce7; color: #166534; }
+    .capsule.moderate{ background: #fef9c3; color: #854d0e; }
+    .capsule.hard    { background: #ffedd5; color: #9a3412; }
+    .capsule.extreme { background: #fee2e2; color: #991b1b; }
+    /* 得分色阶胶囊（复用.score-*的配色） */
+    .capsule.score-full { background: #d1fae5; color: #065f46; }
+    .capsule.score-good { background: #f0fdf4; color: #166534; }
+    .capsule.score-mid  { background: #fefce8; color: #854d0e; }
+    .capsule.score-low  { background: #fff1f2; color: #be123c; }
+    .capsule.score-zero { background: #fee2e2; color: #991b1b; }
+
+    .legend-note {
+      margin-left: 0.5rem;
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
     /* 小屏适配 */
     @media (max-width: 600px) {
       .delta-table th, .delta-table td { padding: 10px 12px; font-size: 0.85rem; }
@@ -88,43 +132,30 @@ extra_scripts:
     </div>
   </div>
 
-  <!-- 成绩表格（动态列，按总分降序） -->
   {% assign results = exam.results | sort: "total" %}
 
-  <!-- 👇 新增：难度 & 得分色阶图例 -->
-  <div class="mb-4 flex flex-wrap items-center gap-3 text-sm">
-    <span class="font-semibold text-gray-600">难度色阶：</span>
-    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-medium">
-      <span>易</span><span class="opacity-60 text-xs">(1–4)</span>
-    </span>
-    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium">
-      <span>中</span><span class="opacity-60 text-xs">(5–7)</span>
-    </span>
-    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">
-      <span>偏难</span><span class="opacity-60 text-xs">(8–10)</span>
-    </span>
-    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">
-      <span>难</span><span class="opacity-60 text-xs">(11–13)</span>
-    </span>
-    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
-      <span>极难</span><span class="opacity-60 text-xs">(14–20)</span>
-    </span>
-    <span class="ml-2 text-xs text-gray-400">| 难度 x → 需约 10x 分实力方可在考场完成</span>
+  <!-- ===== 难度 & 得分色阶图例（使用自定义类） ===== -->
+  <div class="legend-row">
+    <span class="legend-title">难度色阶：</span>
+    <span class="capsule easy"><span>易</span><span class="capsule-sub">(1–4)</span></span>
+    <span class="capsule medium"><span>中</span><span class="capsule-sub">(5–7)</span></span>
+    <span class="capsule moderate"><span>偏难</span><span class="capsule-sub">(8–10)</span></span>
+    <span class="capsule hard"><span>难</span><span class="capsule-sub">(11–13)</span></span>
+    <span class="capsule extreme"><span>极难</span><span class="capsule-sub">(14–20)</span></span>
+    <span class="legend-note">| 难度 x → 需约 10x 分实力方可在考场完成</span>
   </div>
-  <div class="mb-5 flex flex-wrap items-center gap-3 text-sm">
-    <span class="font-semibold text-gray-600">得分色阶：</span>
-    <span class="inline-flex items-center px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-medium text-xs">满分</span>
-    <span class="inline-flex items-center px-2 py-1 rounded bg-green-50 text-green-700 font-medium text-xs">≥70%</span>
-    <span class="inline-flex items-center px-2 py-1 rounded bg-yellow-50 text-yellow-700 font-medium text-xs">40–70%</span>
-    <span class="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-600 font-medium text-xs">&lt;40%</span>
-    <span class="inline-flex items-center px-2 py-1 rounded bg-red-100 text-red-700 font-medium text-xs">0分</span>
+  <div class="legend-row" style="margin-bottom: 1.5rem;">
+    <span class="legend-title">得分色阶：</span>
+    <span class="capsule score-full">满分</span>
+    <span class="capsule score-good">≥70%</span>
+    <span class="capsule score-mid">40–70%</span>
+    <span class="capsule score-low">&lt;40%</span>
+    <span class="capsule score-zero">0分</span>
   </div>
 
   <div class="table-wrapper">
     <table class="score-table">
-      <!-- 👇 完全使用内联样式 + !important 解决覆盖问题 -->
       <thead>
-        <!-- 第一行 -->
         <tr>
           <th rowspan="3" class="left-0 z-20 px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[72px]" style="background-color: #111827 !important; color: #ffffff !important;">考号</th>
           <th rowspan="3" class="px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[80px]" style="background-color: #111827 !important; color: #ffffff !important;">姓名</th>
@@ -134,37 +165,38 @@ extra_scripts:
           <th colspan="6" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">大题</th>
           <th colspan="1" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">总分</th>
         </tr>
-        
-        <!-- 第二行 -->
         <tr>
           {% for col in exam.columns_def %}
             {% if col.is_subtotal %}
-              <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px] transition-colors cursor-default" style="background-color: #374151 !important; color: #fcd34d !important;">
+              <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #374151 !important; color: #fcd34d !important;">
                 {{ col.title }}
               </th>
             {% else %}
-              <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px] transition-colors cursor-default" style="background-color: #111827 !important; color: #ffffff !important;">
+              <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #111827 !important; color: #ffffff !important;">
                 {{ col.title }}
                 <span class="block text-xs font-normal" style="color: #9ca3af !important;">/{{ col.max_score }}</span>
               </th>
             {% endif %}
           {% endfor %}
         </tr>
-
-        <!-- 第三行：难度指示（改为胶囊样式） -->
+        <!-- 第三行：难度 → 使用自定义胶囊 -->
         <tr>
           {% for col in exam.columns_def %}
             {% if col.difficulty and col.is_subtotal == false %}
               {% assign d = col.difficulty | plus: 0 %}
-              {% if d <= 4 %}{% assign diff_bg = "bg-emerald-100" %}{% assign diff_text = "text-emerald-700" %}
-              {% elsif d <= 7 %}{% assign diff_bg = "bg-green-100" %}{% assign diff_text = "text-green-700" %}
-              {% elsif d <= 10 %}{% assign diff_bg = "bg-yellow-100" %}{% assign diff_text = "text-yellow-700" %}
-              {% elsif d <= 13 %}{% assign diff_bg = "bg-orange-100" %}{% assign diff_text = "text-orange-700" %}
-              {% else %}{% assign diff_bg = "bg-red-100" %}{% assign diff_text = "text-red-700" %}{% endif %}
-              <th class="px-1 py-1 border-r border-gray-700 text-center cursor-default" style="background-color: #1f2937 !important;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ diff_bg }} {{ diff_text }}">
-                  {{ col.difficulty }}
-                </span>
+              {% if d <= 4 %}
+                {% assign diff_level = "easy" %}
+              {% elsif d <= 7 %}
+                {% assign diff_level = "medium" %}
+              {% elsif d <= 10 %}
+                {% assign diff_level = "moderate" %}
+              {% elsif d <= 13 %}
+                {% assign diff_level = "hard" %}
+              {% else %}
+                {% assign diff_level = "extreme" %}
+              {% endif %}
+              <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
+                <span class="capsule {{ diff_level }}" style="font-size:0.75rem;">{{ col.difficulty }}</span>
               </th>
             {% else %}
               <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;">
@@ -174,7 +206,6 @@ extra_scripts:
           {% endfor %}
         </tr>
       </thead>
-
       <tbody>
         {% for r in results %}
         <tr {% if forloop.first %}style="font-weight:600; background:#fbf5e8;"{% endif %}>
@@ -202,7 +233,6 @@ extra_scripts:
         </tr>
         {% endfor %}
 
-        <!-- 平均分计算 -->
         {% assign count = results | size %}
         {% if count > 0 %}
         <tr class="avg-row">
@@ -239,22 +269,22 @@ extra_scripts:
     </div>
   </section>
 
-  <!-- Rating Tab 切换 -->
+  <!-- Rating Tabs -->
   <div class="rating-tabs-container">
     <h2>Rating 变化</h2><br>
-      <div class="rating-tabs">
-        {% for pair in exam.ratings %}
-          {% assign sys = pair[0] %}
-          <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
-            {% case sys %}
-              {% when "gaokaoMath" %} 高考数学
-              {% when "gaokaoPhy" %} 高考物理
-              {% when "entertainment" %} 娱乐赛
-              {% else %} {{ sys }}
-            {% endcase %}
-          </button>
-        {% endfor %}
-      </div>
+    <div class="rating-tabs">
+      {% for pair in exam.ratings %}
+        {% assign sys = pair[0] %}
+        <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
+          {% case sys %}
+            {% when "gaokaoMath" %} 高考数学
+            {% when "gaokaoPhy" %} 高考物理
+            {% when "entertainment" %} 娱乐赛
+            {% else %} {{ sys }}
+          {% endcase %}
+        </button>
+      {% endfor %}
+    </div>
 
     {% for pair in exam.ratings %}
       {% assign sys = pair[0] %}
@@ -274,13 +304,7 @@ extra_scripts:
         <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
         <table class="delta-table">
           <thead>
-            <tr>
-              <th>🆔 考号</th>
-              <th>👤 姓名</th>
-              <th>📉 赛前</th>
-              <th>📈 赛后</th>
-              <th>🔄 变化</th>
-            </tr>
+            <tr><th>🆔 考号</th><th>👤 姓名</th><th>📉 赛前</th><th>📈 赛后</th><th>🔄 变化</th></tr>
           </thead>
           <tbody>
             {% for item in sys_data %}
@@ -312,7 +336,7 @@ extra_scripts:
     {% endfor %}
   </div>
 
-  <!-- 👇 外部独立板块：基准分对比 -->
+  <!-- 基准分对比 -->
   <div class="review-section">
     <h2>📐 基准分对比</h2><br>
     <p style="color: var(--text-secondary); margin-top: -16px; margin-bottom: 24px;">实际得分与基于试卷难度加权得出的基准分对比，反映学生临场发挥水平。</p>
@@ -349,7 +373,6 @@ extra_scripts:
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
 </div>
 
-<!-- 加载 Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   (function() {
