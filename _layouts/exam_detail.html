@@ -410,10 +410,10 @@ extra_scripts:
             {% assign sys_label = sys %}{% assign sys_desc = "" %}
             {% if sys == "gaokaoMath" %}
               {% assign sys_label = "高考数学实力分" %}
-              {% assign sys_desc = "高考数学预测分范围 0~200 分，x 分代表该选手在高考中有 x 分的综合实力水平。本次联测为该系统首次计算，因此\"赛前\"均为空（以实际分直接作为赛后成绩入账）。后续场次将根据排名和得分动态更新。" %}
+              {% assign sys_desc = "高考数学预测分范围 0~200 分，x 分代表该选手在高考中有 x 分的综合实力水平。若某名选手“赛前”为空，则说明该选手首次参加高考数学联测。" %}
             {% elsif sys == "gaokaoPhy" %}
               {% assign sys_label = "高考物理实力分" %}
-              {% assign sys_desc = "高考物理预测分范围 0~150 分，x 分代表有高考物理 x 分的实力。" %}
+              {% assign sys_desc = "高考物理预测分范围 0~150 分，x 分代表有高考物理 x 分的实力。若某名选手“赛前”为空，则说明该选手首次参加高考物理联测。" %}
             {% elsif sys == "entertainment" %}
               {% assign sys_label = "娱乐赛 Elo Rating" %}
               {% assign sys_desc = "娱乐赛 Elo 积分初始值 1500，范围 0~3000，基于排名动态计算每场变化。" %}
