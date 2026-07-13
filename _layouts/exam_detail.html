@@ -3,138 +3,199 @@ layout: default
 active_nav: weekly
 extra_head: |
   <style>
-    /* 基础容器与头部 */
-    .exam-detail-container { max-width: 1200px; margin: 0 auto; padding: 100px 24px 80px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    .exam-header { text-align: center; margin-bottom: 40px; }
-    .exam-header h1 { font-size: 2.2rem; color: var(--text, #1f2937); font-weight: 700; margin-bottom: 16px; }
-    .exam-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; color: var(--text-secondary, #4b5563); font-size: 0.95rem; }
-    .exam-meta span { background: var(--surface-alt, #f3f4f6); padding: 6px 16px; border-radius: 20px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+    /* Global Overrides */
+    body {
+      font-family: 'Inter', 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif;
+      background: #f8f9fb;
+      color: #111827;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #c7923e66; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #c7923e; }
 
-    /* 标签页导航 */
-    .exam-tabs { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; border-bottom: 2px solid #e5e7eb; padding-bottom: 16px; justify-content: center; }
-    .exam-tab { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 99px; border: none; background: transparent; color: #4b5563; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; }
-    .exam-tab:hover { background: #f3f4f6; color: #1f2937; }
-    .exam-tab.active { background: #111827; color: #ffffff; box-shadow: 0 4px 12px rgba(17, 24, 39, 0.2); }
-    .tab-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
+    /* Layout & Header */
+    .exam-detail-container { max-width: 1100px; margin: 0 auto; padding: 100px 20px 80px; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #9ca3af; margin-bottom: 20px; }
+    .breadcrumb button { background: none; border: none; color: #c7923e; cursor: pointer; font-weight: 600; padding: 0; font-family: inherit; }
+    .breadcrumb span:last-child { color: #374151; font-weight: 500; }
+    
+    .exam-header { text-align: center; margin-bottom: 36px; }
+    .exam-header h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 800; color: #111827; margin-bottom: 10px; letter-spacing: -0.02em; }
+    .exam-quote {
+      display: inline-block; margin-bottom: 18px; padding: 10px 20px; border-radius: 12px;
+      background: linear-gradient(135deg, #fdf9f1, #fef5e4); border-left: 4px solid #c7923e;
+      color: #7a5a1a; font-style: italic; font-weight: 600; font-size: 0.95rem;
+    }
+    
+    .exam-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .exam-meta span { 
+      padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 500; 
+      color: #374151; background: #f1f3f6; border: 1px solid #e5e7ec; 
+    }
+
+    /* Overall Review */
+    .overall-review-box {
+      margin-bottom: 28px; border-radius: 18px; padding: 24px;
+      border: 1px solid #e5e7eb; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .overall-review-box h2 { font-size: 1.05rem; font-weight: 700; color: #111827; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .overall-review-content { color: #374151; line-height: 1.85; font-size: 0.95rem; }
+
+    /* Tabs */
+    .exam-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .exam-tab {
+      display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 12px;
+      border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;
+      background: #f1f3f6; color: #374151; font-family: inherit;
+    }
+    .exam-tab.active { background: #c7923e; color: #fff; box-shadow: 0 4px 14px rgba(199,146,62,0.3); }
+    
+    .panel-container {
+      border-radius: 20px; border: 1px solid #e5e7eb; background: #fff;
+      padding: 28px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-title { font-size: 1.2rem; font-weight: 700; color: #111827; margin-bottom: 12px; }
 
-    /* 图例说明 */
-    .legend-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 0.85rem; margin-bottom: 16px; background: #f9fafb; padding: 12px 20px; border-radius: 12px; border: 1px solid #e5e7eb; }
-    .legend-title { font-weight: 600; color: #374151; }
-    .legend-note { margin-left: auto; font-size: 0.8rem; color: #6b7280; font-style: italic; }
-
-    /* 胶囊标签 (Capsules) */
-    .capsule { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.02em; }
-    .capsule-sub { opacity: 0.7; font-size: 0.65rem; font-weight: 500; }
-    .capsule.easy { background: #d1fae5; color: #065f46; }
-    .capsule.medium { background: #dcfce7; color: #166534; }
-    .capsule.moderate { background: #fef9c3; color: #854d0e; }
-    .capsule.hard { background: #ffedd5; color: #9a3412; }
-    .capsule.extreme { background: #fee2e2; color: #991b1b; }
-    .capsule.score-full { background: #d1fae5; color: #065f46; }
-    .capsule.score-good { background: #f0fdf4; color: #166534; }
-    .capsule.score-mid { background: #fefce8; color: #854d0e; }
-    .capsule.score-low { background: #fff1f2; color: #be123c; }
-    .capsule.score-zero { background: #fee2e2; color: #991b1b; }
-
-    /* 成绩数据表格 (核心重构区域) */
-    .table-wrapper { overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); background: white; margin-bottom: 40px; border: 1px solid #e5e7eb; }
-    .score-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
+    /* Info Banners */
+    .info-banner { margin-bottom: 20px; padding: 14px 18px; border-radius: 14px; }
+    .info-banner p { line-height: 1.7; }
+    .info-banner-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
     
-    /* 统一表头样式 */
-    .score-table th { border-right: 1px solid #374151; padding: 12px 8px; text-align: center; font-weight: 600; vertical-align: middle; }
-    .score-table th:last-child { border-right: none; }
-    .th-dark-main { background-color: #111827; color: #ffffff; min-width: 72px; }
-    .th-dark-sub { background-color: #1f2937; color: #d1d5db; font-size: 0.8rem; letter-spacing: 0.05em; }
-    .th-accent { background-color: #374151; color: #fcd34d; min-width: 52px; }
-    .th-score-max { display: block; font-size: 0.7rem; color: #9ca3af; font-weight: 400; margin-top: 2px; }
+    .banner-yellow { background: linear-gradient(135deg, #fffbef, #fef5d0); border: 1px solid #f0d090; }
+    .banner-yellow .info-banner-title { color: #78500a; }
+    .banner-yellow p.desc { font-size: 0.85rem; color: #854d0e; }
     
-    /* 统一单元格样式 */
-    .score-table td { padding: 12px 10px; text-align: center; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #f3f4f6; color: #374151; }
-    .score-table td:last-child { border-right: none; }
-    .score-table tbody tr { transition: background-color 0.15s ease; }
-    .score-table tbody tr:hover { background-color: #f9fafb; }
-    .score-table tbody tr:first-child { background-color: #fefce8; font-weight: 600; } /* 冠军行高亮 */
+    .banner-blue { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #bfdbfe; }
+    .banner-blue .info-banner-title { color: #1e3a8a; }
+    .banner-blue p { font-size: 0.85rem; color: #1e40af; }
     
-    .avg-row td { background-color: #f3f4f6 !important; font-weight: 700; color: #111827; border-top: 2px solid #d1d5db; }
+    .banner-purple { background: linear-gradient(135deg, #faf5ff, #ede9fe); border: 1px solid #ddd6fe; }
+    .banner-purple .info-banner-title { color: #4c1d95; }
+    .banner-purple p { font-size: 0.85rem; color: #5b21b6; }
+
+    /* Score Table */
+    .table-wrapper { overflow-x: auto; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 28px; background: #fff; }
+    .score-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .score-table th, .score-table td { transition: background 0.15s; }
+    .score-table tbody tr { transition: background 0.15s; }
     
-    /* 表格内得分色阶 */
-    .score-table td.score-full { background-color: #d1fae5 !important; color: #065f46; font-weight: 700; }
-    .score-table td.score-good { background-color: #f0fdf4 !important; color: #166534; font-weight: 500; }
-    .score-table td.score-mid { background-color: #fefce8 !important; color: #854d0e; }
-    .score-table td.score-low { background-color: #fff1f2 !important; color: #be123c; }
-    .score-table td.score-zero { background-color: #fee2e2 !important; color: #991b1b; font-weight: 700; }
-
-    /* 通用区块与图表 */
-    .review-section, .rating-tabs-container { background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); padding: 32px; border: 1px solid #e5e7eb; margin-bottom: 40px; }
-    .review-section h2, .rating-tabs-container h2 { font-size: 1.5rem; color: #111827; margin-bottom: 8px; font-weight: 700; }
-    .rating-chart-container { height: 400px; margin: 24px 0; padding: 16px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb; }
-
-    /* 数据对比表格 (基准分 & Rating) */
-    .delta-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-    .delta-table th { background: #f3f4f6; color: #374151; font-weight: 600; padding: 14px 16px; text-align: left; border-bottom: 2px solid #e5e7eb; }
-    .delta-table td { padding: 14px 16px; border-bottom: 1px solid #e5e7eb; color: #4b5563; vertical-align: middle; }
-    .delta-table tbody tr:hover { background: #f9fafb; }
-    .delta-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 99px; font-size: 0.85rem; font-weight: 700; }
-    .delta-positive { color: #059669; background: #d1fae5; }
-    .delta-negative { color: #dc2626; background: #fee2e2; }
-    .delta-zero { color: #6b7280; background: #f3f4f6; }
-
-    /* 内部 Rating Tabs */
-    .rating-tabs { display: flex; gap: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 24px; flex-wrap: wrap; }
-    .rating-tab { padding: 10px 20px; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; color: #6b7280; background: transparent; border: none; transition: all 0.2s; font-size: 0.95rem; }
-    .rating-tab:hover { color: #111827; background: #f9fafb; }
-    .rating-tab.active { color: #111827; border-bottom: 2px solid #111827; background: transparent; }
-    .rating-panel { display: none; }
-    .rating-panel.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-
-    /* 考生点评卡片 */
-    .overall-review { background: #f8fafc; padding: 24px; border-radius: 12px; line-height: 1.7; font-size: 1.05rem; margin-bottom: 32px; border-left: 4px solid #3b82f6; color: #334155; }
-    .player-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-    .player-card { background: white; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: transform 0.2s; }
-    .player-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
-    .player-card h3 { font-size: 1.2rem; color: #111827; margin-bottom: 8px; font-weight: 700; display: flex; align-items: baseline; gap: 8px; }
-    .score-total { font-size: 1.1rem; font-weight: 700; color: #059669; margin-bottom: 12px; }
-    .mini-score-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .mini-score-chip { font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-    .comment { color: #4b5563; line-height: 1.6; font-size: 0.95rem; background: #f9fafb; padding: 16px; border-radius: 8px; flex-grow: 1; }
+    /* Table specific borders */
+    .score-table td { border-bottom: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0; }
+    .score-table th { border-right: 1px solid #374151; }
     
-    .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; color: #374151; font-weight: 600; text-decoration: none; padding: 10px 20px; border-radius: 8px; background: #f3f4f6; transition: background 0.2s; }
-    .back-link:hover { background: #e5e7eb; }
+    /* Hover effects via JS class */
+    .col-hover-header { background: #c7923e !important; color: #fff !important; }
+    .col-hover-cell { background: rgba(199,146,62,0.06) !important; }
 
-    @media (max-width: 768px) {
-      .exam-detail-container { padding: 80px 16px 40px; }
-      .exam-header h1 { font-size: 1.8rem; }
-      .legend-row { flex-direction: column; align-items: flex-start; }
-      .legend-note { margin-left: 0; }
+    /* Score colors exactly as requested */
+    .score-full  { background: #d1fae5 !important; color: #065f46; font-weight: 600; }
+    .score-good  { background: #f0fdf4 !important; color: #166534; }
+    .score-mid   { background: #fefce8 !important; color: #854d0e; }
+    .score-low   { background: #fff1f2 !important; color: #be123c; }
+    .score-zero  { background: #fee2e2 !important; color: #991b1b; font-weight: 700; }
+    
+    /* Diff badges */
+    .diff-badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+    .diff-easy     { background: #d1fae5; color: #065f46; }
+    .diff-medium   { background: #dcfce7; color: #166534; }
+    .diff-moderate { background: #fef9c3; color: #854d0e; }
+    .diff-hard     { background: #ffedd5; color: #9a3412; }
+    .diff-extreme  { background: #fee2e2; color: #991b1b; }
+
+    /* Baseline / Delta Tables */
+    .delta-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #fff; }
+    .delta-table th { background: #111827; color: #fff; padding: 13px 18px; text-align: left; font-weight: 600; }
+    .delta-table td { padding: 12px 18px; border-bottom: 1px solid #f0f0f0; }
+    .delta-table tbody tr:hover { background: #fef5e4 !important; }
+    .delta-badge { font-weight: 700; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.85rem; }
+    .delta-positive { background: #e8f5e9; color: #1e7e34; }
+    .delta-negative { background: #ffebee; color: #b71c1c; }
+    .delta-zero { background: #f0f0f0; color: #888; font-weight: 500; }
+
+    /* Rating Sub-tabs */
+    .rating-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 12px; }
+    .rating-tab {
+      padding: 8px 20px; border-radius: 8px 8px 0 0; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+      transition: all 0.2s; background: transparent; color: #6b7280; font-family: inherit;
+    }
+    .rating-tab.active { background: #c7923e; color: #fff; }
+    .rating-sys-panel { display: none; }
+    .rating-sys-panel.active { display: block; }
+
+    /* Review Cards */
+    .player-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+    .player-card { border-radius: 16px; border: 1px solid #e5e7eb; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); background: #fff; transition: box-shadow 0.2s; }
+    .player-card-header { padding: 16px 20px; display: flex; align-items: center; gap: 14px; }
+    .player-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 1.15rem; flex-shrink: 0; }
+    .player-card-body { padding: 16px 20px; }
+    .mini-score-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .mini-score-chip { font-size: 0.78rem; padding: 3px 10px; border-radius: 8px; font-weight: 600; }
+    .mini-chip-full { background: #dcfce7; color: #166534; }
+    .mini-chip-good { background: #fef9c3; color: #854d0e; }
+    .mini-chip-bad { background: #fee2e2; color: #991b1b; }
+    .review-comment { font-size: 0.88rem; color: #374151; line-height: 1.75; }
+
+    /* Chart Containers */
+    .chart-container { height: 320px; position: relative; margin-bottom: 24px; }
+
+    .back-link { 
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; 
+      color: #c7923e; font-weight: 600; font-size: 0.95rem; text-decoration: none; border: none; background: transparent; padding: 0; cursor: pointer; font-family: inherit;
     }
   </style>
 extra_scripts:
 ---
 {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
 {% if exam == nil %}
-  <div class="exam-detail-container">
-    <div class="overall-review" style="border-left-color: #ef4444;">未找到该场考试数据，请检查链接或数据源。</div>
-  </div>
+  <div class="exam-detail-container"><p>未找到该场考试数据。</p></div>
 {% else %}
 {% assign students_data = site.data.student %}
-{% assign ratings_all = site.data.ratings %}
+
 <div class="exam-detail-container">
   
+  <!-- Breadcrumbs -->
+  <div class="breadcrumb">
+    <button onclick="window.location.href='{{ '/weekly' | relative_url }}'">联测成绩</button>
+    <span>›</span>
+    <span>{{ exam.date }} {{ exam.source }}</span>
+  </div>
+
+  <!-- Header Section -->
   <div class="exam-header">
-    <h1>{{ page.title | default: exam.date | append: " 联测成绩分析报告" }}</h1>
+    {% assign cat_label = "" %}
+    {% if exam.category == "entertainment" %}{% assign cat_label = "🎉 娱乐赛" %}
+    {% elsif exam.category == "gaokao-math" %}{% assign cat_label = "📐 高考数学" %}
+    {% elsif exam.category == "gaokao-physics" %}{% assign cat_label = "⚛️ 高考物理" %}{% endif %}
+    
+    <h1>{{ exam.date }} {{ cat_label }} 联测</h1>
+    
+    <div class="exam-quote">「{{ exam.card_quote | default: "追求卓越，超越自我" }}」</div>
+    
     <div class="exam-meta">
       <span>📅 {{ exam.date }}</span>
-      <span>📝 来源：{{ exam.source }}</span>
+      <span>📝 试卷来源：{{ exam.source }}</span>
       <span>📋 编号：{{ exam.code }}</span>
       <span>⏱ {{ exam.time }}</span>
+      {% assign participants = exam.results | size %}
+      <span>👥 {{ participants }}人参赛</span>
+      {% assign sorted_results = exam.results | sort: "total" | reverse %}
+      <span>🏆 最高分：{{ sorted_results.first.name }} {{ sorted_results.first.columns.total }}分</span>
     </div>
   </div>
 
-  {% assign results = exam.results | sort: "total" | reverse %}
+  <!-- Overall Review -->
+  <div class="overall-review-box">
+    <h2><span>📄</span> 考试总评</h2>
+    <div class="overall-review-content">{{ exam.overall_review }}</div>
+  </div>
 
-  <!-- ===== 考试标签页按钮 ===== -->
+  <!-- Tabs Nav -->
   <div class="exam-tabs">
     <button class="exam-tab active" data-tab="table">📊 成绩表格</button>
     <button class="exam-tab" data-tab="baseline">📐 基准分对比</button>
@@ -142,451 +203,477 @@ extra_scripts:
     <button class="exam-tab" data-tab="reviews">📋 考生点评</button>
   </div>
 
-  <!-- ===== 面板 1：成绩表格 ===== -->
-  <div class="tab-panel active" id="panel-table">
-    
-    <div class="legend-row">
-      <span class="legend-title">难度色阶：</span>
-      <span class="capsule easy"><span>易</span><span class="capsule-sub">(1–4)</span></span>
-      <span class="capsule medium"><span>中</span><span class="capsule-sub">(5–7)</span></span>
-      <span class="capsule moderate"><span>偏难</span><span class="capsule-sub">(8–10)</span></span>
-      <span class="capsule hard"><span>难</span><span class="capsule-sub">(11–13)</span></span>
-      <span class="capsule extreme"><span>极难</span><span class="capsule-sub">(14–20)</span></span>
-      <span class="legend-note">* 难度系数 x 代表在考场环境中需具备约 10x 分的综合实力方可顺利完成。</span>
-    </div>
-    
-    <div class="legend-row" style="margin-bottom: 24px;">
-      <span class="legend-title">得分色阶：</span>
-      <span class="capsule score-full">满分 (100%)</span>
-      <span class="capsule score-good">优秀 (≥70%)</span>
-      <span class="capsule score-mid">及格 (40–70%)</span>
-      <span class="capsule score-low">偏低 (&lt;40%)</span>
-      <span class="capsule score-zero">零分 (0)</span>
-    </div>
+  <!-- Panel Container -->
+  <div class="panel-container">
 
-    <div class="table-wrapper">
-      <table class="score-table">
-        <thead>
-          <tr>
-            <th rowspan="3" class="th-dark-main">考号</th>
-            <th rowspan="3" class="th-dark-main">姓名</th>
-            <th colspan="9" class="th-dark-sub">单选题</th>
-            <th colspan="4" class="th-dark-sub">多选题</th>
-            <th colspan="4" class="th-dark-sub">填空题</th>
-            <th colspan="6" class="th-dark-sub">解答题</th>
-            <th colspan="1" class="th-dark-sub">总计</th>
-          </tr>
-          <tr>
-            {% for col in exam.columns_def %}
-              {% if col.is_subtotal %}
-                <th class="th-accent">
-                  {{ col.title }}
-                </th>
-              {% else %}
-                <th class="th-dark-main">
-                  {{ col.title }}
-                  <span class="th-score-max">/{{ col.max_score }}</span>
-                </th>
-              {% endif %}
-            {% endfor %}
-          </tr>
-          <!-- 难度行 -->
-          <tr>
-            {% for col in exam.columns_def %}
-              {% if col.difficulty and col.is_subtotal == false %}
-                {% assign d = col.difficulty | plus: 0 %}
-                {% if d <= 4 %} {% assign diff_level = "easy" %}
-                {% elsif d <= 7 %} {% assign diff_level = "medium" %}
-                {% elsif d <= 10 %} {% assign diff_level = "moderate" %}
-                {% elsif d <= 13 %} {% assign diff_level = "hard" %}
-                {% else %} {% assign diff_level = "extreme" %}
-                {% endif %}
-                <th class="th-dark-sub" style="padding: 6px 2px;" title="难度系数: {{ col.difficulty }}">
-                  <span class="capsule {{ diff_level }}" style="font-size:0.7rem; padding: 2px 6px;">{{ col.difficulty }}</span>
-                </th>
-              {% else %}
-                <th class="th-dark-sub"><span style="opacity:0.3;">—</span></th>
-              {% endif %}
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for r in results %}
-          <tr>
-            <td style="font-family: monospace;">{{ r.studentId }}</td>
-            <td style="font-weight: 600;">{{ r.name }}</td>
-            {% for col in exam.columns_def %}
-              {% assign val = r.columns[col.field] | plus: 0 %}
-              {% assign max_s = col.max_score | plus: 0 %}
-              {% assign score_class = "" %}
-              {% if col.is_subtotal == false and max_s > 0 %}
-                {% if val == 0 %} {% assign score_class = "score-zero" %}
-                {% elsif val == max_s %} {% assign score_class = "score-full" %}
-                {% elsif val >= max_s | times: 0.7 %} {% assign score_class = "score-good" %}
-                {% elsif val >= max_s | times: 0.4 %} {% assign score_class = "score-mid" %}
-                {% else %} {% assign score_class = "score-low" %}
-                {% endif %}
-              {% endif %}
-              <td class="{{ score_class }}">{{ val }}</td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-
-          <!-- 平均分行 -->
-          {% assign count = results | size %}
-          {% if count > 0 %}
-          <tr class="avg-row">
-            <td colspan="2">总体平均分</td>
-            {% for col in exam.columns_def %}
-              {% assign sum = 0 %}
-              {% for r in results %}
-                {% assign sum = sum | plus: r.columns[col.field] %}
-              {% endfor %}
-              <td>{{ sum | divided_by: count | round: 1 }}</td>
-            {% endfor %}
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ===== 面板 2：基准分对比 ===== -->
-  <div class="tab-panel" id="panel-baseline">
-    <div class="review-section">
-      <h2>📐 基准分分析模型</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 24px;">通过对比考生实际得分与系统基于试卷难度矩阵测算的基准分，科学反映本次考试中的临场发挥水平及抗压能力。</p>
-      <div class="rating-chart-container">
-        <canvas id="chart-baseline"></canvas>
+    <!-- ===== Panel 1: Table ===== -->
+    <div class="tab-panel active" id="panel-table">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div class="panel-title" style="margin-bottom:0;">成绩总表</div>
+        <span style="font-size: 0.78rem; color: #9ca3af; background: #f9fafb; padding: 5px 14px; border-radius: 999px; border: 1px solid #e5e7eb;">鼠标悬停列名可高亮该列 · 悬停难度数字查看说明</span>
       </div>
-      <table class="delta-table">
-        <thead>
-          <tr>
-            <th>👤 姓名</th>
-            <th>📝 实际得分</th>
-            <th>📐 测算基准分</th>
-            <th>🔄 发挥差值</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for r in exam.results %}
-            {% assign bs = exam.baseline_scores[r.studentId] %}
-            {% assign delta = r.columns.total | minus: bs %}
-            <tr>
-              <td><strong>{{ r.name }}</strong></td>
-              <td style="font-weight: 600;">{{ r.columns.total }}</td>
-              <td>{{ bs }}</td>
-              <td>
-                {% if delta > 0 %}
-                  <span class="delta-badge delta-positive">超常发挥 +{{ delta }}</span>
-                {% elsif delta < 0 %}
-                  <span class="delta-badge delta-negative">发挥失常 {{ delta }}</span>
-                {% else %}
-                  <span class="delta-badge delta-zero">稳定发挥 0</span>
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 
-  <!-- ===== 面板 3：Rating 变化 ===== -->
-  <div class="tab-panel" id="panel-rating">
-    <div class="rating-tabs-container">
-      <h2>📈 Rating 积分变动记录</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 24px;">系统根据考试结果重新结算各位选手的综合实力评级。</p>
+      <!-- Difficulty Hint Banner -->
+      {% assign has_difficulty = false %}
+      {% for col in exam.columns_def %}
+        {% if col.difficulty and col.is_subtotal == false %}{% assign has_difficulty = true %}{% endif %}
+      {% endfor %}
       
+      {% if has_difficulty %}
+      <div class="info-banner banner-yellow">
+        <p class="info-banner-title"><span>💡</span> 难度说明</p>
+        <p class="desc">
+          难度范围 <strong>1~20</strong>，难度 x 表示实力至少有 <strong>10x 分</strong>的选手才能在考场条件下做出该题。<br>
+          例：T14 难度 14 → 需约 <strong>140 分</strong>实力；T19 难度 16 → 需约 <strong>160 分</strong>实力。
+        </p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center;">
+          <span style="font-size: 0.78rem; font-weight: 600; color: #78500a;">难度色阶：</span>
+          <span style="background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">易 1-4</span>
+          <span style="background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">中 5-7</span>
+          <span style="background: #fef9c3; color: #854d0e; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">偏难 8-10</span>
+          <span style="background: #ffedd5; color: #9a3412; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">难 11-13</span>
+          <span style="background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">极难 14+</span>
+          <span style="font-size: 0.75rem; color: #9ca3af; margin-left: 4px;">| 得分色阶：</span>
+          <span style="background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">满分</span>
+          <span style="background: #f0fdf4; color: #166534; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">≥70%</span>
+          <span style="background: #fefce8; color: #854d0e; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">40-70%</span>
+          <span style="background: #fff1f2; color: #be123c; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">&lt;40%</span>
+          <span style="background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">0分</span>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="table-wrapper">
+        <table class="score-table" id="main-score-table">
+          <thead>
+            <tr>
+              <th rowspan="{% if has_difficulty %}2{% else %}1{% endif %}" style="background: #111827; color: #fff; padding: 12px 14px; text-align: center; font-weight: 700; white-space: nowrap; min-width: 40px; border-right: 1px solid #374151;">#</th>
+              <th rowspan="{% if has_difficulty %}2{% else %}1{% endif %}" style="background: #111827; color: #fff; padding: 12px 14px; text-align: center; font-weight: 700; white-space: nowrap; min-width: 72px; border-right: 1px solid #374151;">姓名</th>
+              {% for col in exam.columns_def %}
+                {% if col.is_subtotal %}
+                  <th data-col="{{ col.field }}" style="background: #374151; color: #fcd34d; padding: 10px 8px; text-align: center; font-weight: 700; white-space: nowrap; min-width: 56px; cursor: pointer; border-bottom: 1px solid #374151;">
+                    <div>{{ col.title }}</div>
+                  </th>
+                {% else %}
+                  <th data-col="{{ col.field }}" style="background: #111827; color: #fff; padding: 10px 8px; text-align: center; font-weight: 600; white-space: nowrap; min-width: 56px; cursor: pointer; border-bottom: 1px solid #374151;"
+                      {% if col.difficulty %}title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力方可在考场完成"{% endif %}>
+                    <div>{{ col.title }}</div>
+                    {% if col.max_score %}
+                    <div style="font-size: 0.72rem; color: #9ca3af; font-weight: 400;">/{{ col.max_score }}</div>
+                    {% endif %}
+                  </th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+            {% if has_difficulty %}
+            <tr>
+              {% for col in exam.columns_def %}
+                {% if col.difficulty and col.is_subtotal == false %}
+                  {% assign d = col.difficulty | plus: 0 %}
+                  {% assign diff_class = "diff-extreme" %}{% assign diff_label = "极难" %}
+                  {% if d <= 4 %}{% assign diff_class = "diff-easy" %}{% assign diff_label = "易" %}
+                  {% elsif d <= 7 %}{% assign diff_class = "diff-medium" %}{% assign diff_label = "中" %}
+                  {% elsif d <= 10 %}{% assign diff_class = "diff-moderate" %}{% assign diff_label = "偏难" %}
+                  {% elsif d <= 13 %}{% assign diff_class = "diff-hard" %}{% assign diff_label = "难" %}{% endif %}
+                  <th data-col="{{ col.field }}" style="background: #1f2937; padding: 4px 6px; text-align: center; cursor: pointer;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
+                    <span class="diff-badge {{ diff_class }}">{{ diff_label }} {{ col.difficulty }}</span>
+                  </th>
+                {% else %}
+                  <th data-col="{{ col.field }}" style="background: #1f2937; padding: 4px 6px; text-align: center;">
+                    <span style="color: #6b7280; font-size: 0.72rem;">—</span>
+                  </th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+            {% endif %}
+          </thead>
+          <tbody>
+            {% for r in sorted_results %}
+            {% assign is_first = forloop.first %}
+            {% assign row_bg = "#fff" %}
+            {% assign modulo = forloop.index | modulo: 2 %}
+            {% if modulo == 0 %}{% assign row_bg = "#fafafa" %}{% endif %}
+            {% if is_first %}{% assign row_bg = "#fffbf0" %}{% endif %}
+            
+            <tr style="background: {{ row_bg }}; font-weight: {% if is_first %}700{% else %}400{% endif %};" onmouseover="this.style.background='#fef5e4'" onmouseout="this.style.background='{{ row_bg }}'">
+              <td style="text-align: center; padding: 12px 8px; color: {% if is_first %}#c7923e{% else %}#6b7280{% endif %}; font-weight: 700;">
+                {% if is_first %}🏆{% else %}{{ forloop.index }}{% endif %}
+              </td>
+              <td style="text-align: center; padding: 12px 10px; font-weight: 700; white-space: nowrap;">{{ r.name }}</td>
+              
+              {% for col in exam.columns_def %}
+                {% assign val = r.columns[col.field] | plus: 0 %}
+                {% assign max_s = col.max_score | plus: 0 %}
+                {% assign sc = "" %}
+                {% if col.is_subtotal == false and max_s > 0 %}
+                  {% if val == 0 %}{% assign sc = "score-zero" %}
+                  {% elsif val == max_s %}{% assign sc = "score-full" %}
+                  {% else %}
+                    {% assign ratio = val | times: 1.0 | divided_by: max_s %}
+                    {% if ratio >= 0.7 %}{% assign sc = "score-good" %}
+                    {% elsif ratio >= 0.4 %}{% assign sc = "score-mid" %}
+                    {% else %}{% assign sc = "score-low" %}{% endif %}
+                  {% endif %}
+                {% endif %}
+                
+                <td class="{{ sc }}" data-col="{{ col.field }}" style="text-align: center; padding: 12px 8px; font-weight: {% if col.is_subtotal %}700{% else %}400{% endif %}; {% if col.is_subtotal %}color: #92400e;{% endif %}">
+                  {{ val }}
+                </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+            
+            {% assign count = sorted_results | size %}
+            {% if count > 0 %}
+            <tr style="background: #f3f4f6; font-weight: 600; border-top: 2px solid #c7923e;">
+              <td colspan="2" style="text-align: center; padding: 10px 14px; border-right: 1px solid #e5e7eb; color: #6b7280; font-size: 0.85rem;">平均分</td>
+              {% for col in exam.columns_def %}
+                {% assign sum = 0 %}
+                {% for r in sorted_results %}{% assign sum = sum | plus: r.columns[col.field] %}{% endfor %}
+                <td style="text-align: center; padding: 10px 8px; color: {% if col.is_subtotal %}#92400e{% else %}#374151{% endif %}; font-weight: {% if col.is_subtotal %}700{% else %}500{% endif %};">
+                  {{ sum | divided_by: count | round: 1 }}
+                </td>
+              {% endfor %}
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Panel 2: Baseline ===== -->
+    <div class="tab-panel" id="panel-baseline">
+      <h2 class="panel-title">基准分对比</h2>
+      <div class="info-banner banner-blue">
+        <p class="info-banner-title"><span>📐</span> 什么是基准分？</p>
+        <p>基准分是将每道题目按其<strong>难度系数加权</strong>后换算得到的标准化分数，与实际分同处同一范围。<br>计算方式：每题贡献 = (得分/满分) × 满分 × (难度/10)，加权求和后映射到满分。</p>
+        <p style="margin-top: 6px; font-weight: 600;">基准分的意义：消除不同场次卷子难度差异后，各场成绩可直接横向对比，客观反映选手实力。</p>
+      </div>
+
+      <div class="table-wrapper" style="box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-radius: 14px;">
+        <table class="delta-table">
+          <thead>
+            <tr><th>👤 姓名</th><th>📝 实际分</th><th>📐 基准分</th><th>🔄 差值</th></tr>
+          </thead>
+          <tbody>
+            {% for r in sorted_results %}
+              {% assign bs = exam.baseline_scores[r.studentId] %}
+              {% assign delta = r.columns.total | minus: bs %}
+              {% assign row_bg = "#fff" %}
+              {% assign modulo = forloop.index | modulo: 2 %}
+              {% if modulo == 0 %}{% assign row_bg = "#fafafa" %}{% endif %}
+              <tr style="background: {{ row_bg }};">
+                <td style="font-weight: 600;">{{ r.name }}</td>
+                <td style="font-weight: 700;">{{ r.columns.total }}</td>
+                <td>{{ bs | default: 0 }}</td>
+                <td>
+                  {% if delta > 0 %}
+                    <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
+                  {% elsif delta < 0 %}
+                    <span class="delta-badge delta-negative">▼ {{ delta }}</span>
+                  {% else %}
+                    <span class="delta-badge delta-zero">— 0</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-container"><canvas id="chart-baseline"></canvas></div>
+    </div>
+
+    <!-- ===== Panel 3: Rating ===== -->
+    <div class="tab-panel" id="panel-rating">
+      <h2 class="panel-title">Rating 变化</h2>
+      
+      {% assign ratings_size = exam.ratings | size %}
+      {% if ratings_size > 1 %}
       <div class="rating-tabs">
         {% for pair in exam.ratings %}
           {% assign sys = pair[0] %}
-          <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
-            {% case sys %}
-              {% when "gaokaoMath" %} 高考数学体系
-              {% when "gaokaoPhy" %} 高考物理体系
-              {% when "entertainment" %} 娱乐赛 Elo
-              {% else %} {{ sys }}
-            {% endcase %}
-          </button>
+          {% assign sys_label = sys %}
+          {% if sys == "gaokaoMath" %}{% assign sys_label = "高考数学实力分" %}
+          {% elsif sys == "gaokaoPhy" %}{% assign sys_label = "高考物理实力分" %}
+          {% elsif sys == "entertainment" %}{% assign sys_label = "娱乐赛 Elo Rating" %}{% endif %}
+          <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">{{ sys_label }}</button>
         {% endfor %}
       </div>
+      {% endif %}
 
       {% for pair in exam.ratings %}
         {% assign sys = pair[0] %}
         {% assign sys_data = pair[1] %}
-        <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
-          <h3 style="font-size: 1.1rem; color: #374151; margin-bottom: 16px;">
-            {% case sys %}
-              {% when "gaokaoMath" %} 说明：高考数学预测分（满分 200，分值对应高考实战能力估值）
-              {% when "gaokaoPhy" %} 说明：高考物理预测分（满分 150，分值对应高考实战能力估值）
-              {% when "entertainment" %} 说明：标准 Elo 积分系统（初始分 1500）
-              {% else %} 系统名称：{{ sys }}
-            {% endcase %}
-          </h3>
-          <div class="rating-chart-container" style="height: 350px;">
-            <canvas id="chart-{{ sys }}"></canvas>
+        
+        <div class="rating-sys-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
+          <div class="info-banner banner-purple">
+            {% assign sys_label = sys %}{% assign sys_desc = "" %}
+            {% if sys == "gaokaoMath" %}
+              {% assign sys_label = "高考数学实力分" %}
+              {% assign sys_desc = "高考数学预测分范围 0~200 分，x 分代表该选手在高考中有 x 分的综合实力水平。本次联测为该系统首次计算，因此\"赛前\"均为空（以实际分直接作为赛后成绩入账）。后续场次将根据排名和得分动态更新。" %}
+            {% elsif sys == "gaokaoPhy" %}
+              {% assign sys_label = "高考物理实力分" %}
+              {% assign sys_desc = "高考物理预测分范围 0~150 分，x 分代表有高考物理 x 分的实力。" %}
+            {% elsif sys == "entertainment" %}
+              {% assign sys_label = "娱乐赛 Elo Rating" %}
+              {% assign sys_desc = "娱乐赛 Elo 积分初始值 1500，范围 0~3000，基于排名动态计算每场变化。" %}
+            {% endif %}
+            <p class="info-banner-title"><span>📈</span> {{ sys_label }} 说明</p>
+            <p>{{ sys_desc }}</p>
           </div>
-          <table class="delta-table">
-            <thead>
-              <tr>
-                <th>🆔 考号</th>
-                <th>👤 选手</th>
-                <th>📉 赛前 Rating</th>
-                <th>📈 赛后 Rating</th>
-                <th>🔄 净变动</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for item in sys_data %}
-                {% assign student = students_data | where: "id", item.id | first %}
-                {% if student %}
-                  {% assign before = item.history[0] %}
-                  {% assign after = item.history[1] %}
-                  {% assign delta = after | minus: before %}
-                  <tr>
-                    <td style="font-family: monospace;">{{ item.id }}</td>
-                    <td>
-                      <a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="color: #2563eb; font-weight: 600; text-decoration: none;">
-                        {{ student.name }} ↗
-                      </a>
-                    </td>
-                    <td>{{ before }}</td>
-                    <td style="font-weight: 700;">{{ after }}</td>
-                    <td>
-                      {% if delta > 0 %}
-                        <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
-                      {% elsif delta < 0 %}
-                        <span class="delta-badge delta-negative">▼ {{ delta }}</span>
-                      {% else %}
-                        <span class="delta-badge delta-zero">— 0</span>
-                      {% endif %}
-                    </td>
-                  </tr>
-                {% endif %}
-              {% endfor %}
-            </tbody>
-          </table>
+          
+          <div class="table-wrapper" style="box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-radius: 14px;">
+            <table class="delta-table">
+              <thead>
+                <tr><th>👤 姓名</th><th>📉 赛前</th><th>📈 赛后</th><th>🔄 变化</th></tr>
+              </thead>
+              <tbody>
+                {% assign colors = "#c7923e,#5a8fcf,#6abf69,#e05d5d,#9b59b6,#f39c12,#1abc9c,#e67e22,#2ecc71,#3498db" | split: "," %}
+                {% for item in sys_data %}
+                  {% assign student = students_data | where: "id", item.id | first %}
+                  {% assign color_idx = forloop.index0 | modulo: 10 %}
+                  {% assign row_color = colors[color_idx] %}
+                  {% if student %}
+                    {% assign before = item.history[0] %}
+                    {% assign after = item.history[1] %}
+                    {% assign delta = 0 %}
+                    {% if after and before %}{% assign delta = after | minus: before %}{% endif %}
+                    
+                    {% assign row_bg = "#fff" %}
+                    {% assign modulo = forloop.index | modulo: 2 %}
+                    {% if modulo == 0 %}{% assign row_bg = "#fafafa" %}{% endif %}
+                    <tr style="background: {{ row_bg }};">
+                      <td style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: {{ row_color }};"></span>
+                        {{ student.name }}
+                      </td>
+                      <td style="color: #6b7280;">{% if before %}{{ before }}{% else %}<span style="color: #ccc;">—</span>{% endif %}</td>
+                      <td style="font-weight: 700;">{% if after %}{{ after }}{% else %}<span style="color: #ccc;">—</span>{% endif %}</td>
+                      <td>
+                        {% if before == nil or after == nil %}
+                          <span style="color: #ccc; font-size: 0.85rem;">—</span>
+                        {% elsif delta > 0 %}
+                          <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
+                        {% elsif delta < 0 %}
+                          <span class="delta-badge delta-negative">▼ {{ delta }}</span>
+                        {% else %}
+                          <span class="delta-badge delta-zero">— 0</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-container"><canvas id="chart-{{ sys }}"></canvas></div>
         </div>
       {% endfor %}
     </div>
-  </div>
 
-  <!-- ===== 面板 4：考生点评 ===== -->
-  <div class="tab-panel" id="panel-reviews">
-    <section class="review-section">
-      <h2>📋 考试总评与试卷分析</h2>
-      <div class="overall-review">{{ exam.overall_review }}</div>
-      
-      <h3 style="font-size: 1.3rem; margin: 32px 0 20px; color: #111827;">选手具体表现与考后反思</h3>
+    <!-- ===== Panel 4: Reviews ===== -->
+    <div class="tab-panel" id="panel-reviews">
+      <h2 class="panel-title" style="margin-bottom: 20px;">考生个人点评</h2>
       <div class="player-reviews">
-        {% for r in results %}
+        {% assign colors = "#c7923e,#3a5fcf,#0e8a6a,#c7523a,#9b59b6,#f39c12,#1abc9c" | split: "," %}
+        {% for r in sorted_results %}
           {% assign student = students_data | where: "id", r.studentId | first %}
           {% if student %}
+          {% assign c_idx = forloop.index0 | modulo: 7 %}
+          {% assign card_color = colors[c_idx] %}
+          
           <div class="player-card">
-            <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight: 400; font-size: 0.9rem; color: #6b7280;">#{{ r.studentId }}</span></h3>
-            <div class="score-total">总分 {{ r.columns.total }} 分</div>
-
-            <div class="mini-score-row">
-              {% if exam.category == "entertainment" %}
-                <span class="mini-score-chip">一试 {{ r.columns.trial1_total }}/{{ exam.trial1_max | default: 66 }}</span>
-                <span class="mini-score-chip">二试 {{ r.columns.trial2_total }}/{{ exam.trial2_max | default: 50 }}</span>
-              {% elsif exam.category == "gaokao-math" %}
-                <span class="mini-score-chip">单选 {{ r.columns.single_total }}/40</span>
-                <span class="mini-score-chip">多选 {{ r.columns.multi_total }}/16</span>
-                <span class="mini-score-chip">填空 {{ r.columns.fill_total }}/15</span>
-                <span class="mini-score-chip">大题 {{ r.columns.big_total }}/79</span>
-              {% else %}
-                <span class="mini-score-chip">选择客观题情况记录于内</span>
-              {% endif %}
+            <div class="player-card-header" style="background: {{ card_color }}14; border-bottom: 3px solid {{ card_color }};">
+              <div class="player-avatar" style="background: {{ card_color }};">{{ student.name | slice: 0, 1 }}</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 1rem; color: #111827;">{% if forloop.first %}🏆 {% endif %}{{ student.name }}</div>
+                <div style="font-size: 0.78rem; color: #9ca3af; margin-top: 2px;">学号 {{ r.studentId }}</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-weight: 800; font-size: 1.4rem; color: {{ card_color }}; line-height: 1;">{{ r.columns.total }}分</div>
+                {% assign bs = exam.baseline_scores[r.studentId] %}
+                {% if bs %}<div style="font-size: 0.75rem; color: #9ca3af; margin-top: 2px;">基准 {{ bs }} 分</div>{% endif %}
+              </div>
             </div>
-
-            <div class="comment">
-              {% if student.reviews[exam.id] %}
-                {{ student.reviews[exam.id] }}
-              {% else %}
-                <span style="color: #9ca3af; font-style: italic;">该选手暂未提交考后点评与总结。</span>
-              {% endif %}
+            
+            <div class="player-card-body">
+              <div class="mini-score-row">
+                {% if exam.category == "entertainment" %}
+                  {% assign s1 = r.columns.trial1_total | default: 0 %}{% assign m1 = exam.trial1_max | default: 66 %}
+                  {% assign r1 = s1 | times: 1.0 | divided_by: m1 %}
+                  <span class="mini-score-chip {% if r1 >= 1 %}mini-chip-full{% elsif r1 >= 0.7 %}mini-chip-good{% else %}mini-chip-bad{% endif %}">一试 {{ s1 }}/{{ m1 }}</span>
+                  
+                  {% assign s2 = r.columns.trial2_total | default: 0 %}{% assign m2 = exam.trial2_max | default: 50 %}
+                  {% assign r2 = s2 | times: 1.0 | divided_by: m2 %}
+                  <span class="mini-score-chip {% if r2 >= 1 %}mini-chip-full{% elsif r2 >= 0.7 %}mini-chip-good{% else %}mini-chip-bad{% endif %}">二试 {{ s2 }}/{{ m2 }}</span>
+                {% elsif exam.category == "gaokao-math" %}
+                  {% assign sec_names = "单选,多选,填空,大题" | split: "," %}
+                  {% assign sec_fields = "single_total,multi_total,fill_total,big_total" | split: "," %}
+                  {% assign sec_maxs = "40,16,15,79" | split: "," %}
+                  {% for i in (0..3) %}
+                    {% assign field = sec_fields[i] %}{% assign max = sec_maxs[i] | plus: 0 %}
+                    {% assign val = r.columns[field] | default: 0 %}
+                    {% assign ratio = val | times: 1.0 | divided_by: max %}
+                    <span class="mini-score-chip {% if ratio >= 1 %}mini-chip-full{% elsif ratio >= 0.7 %}mini-chip-good{% else %}mini-chip-bad{% endif %}">
+                      {{ sec_names[i] }} {{ val }}/{{ max }}
+                    </span>
+                  {% endfor %}
+                {% endif %}
+              </div>
+              <p class="review-comment">{{ student.reviews[exam.id] | default: "暂无点评" }}</p>
             </div>
           </div>
           {% endif %}
         {% endfor %}
       </div>
-    </section>
+    </div>
   </div>
 
-  <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回全部联测列表</a>
+  <button class="back-link" onclick="window.location.href='{{ '/weekly' | relative_url }}'">← 返回联测列表</button>
 </div>
 
-<!-- 引入 Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // 顶层标签页切换逻辑
-    const topTabs = document.querySelectorAll('.exam-tab');
-    const topPanels = document.querySelectorAll('.tab-panel');
+  // Top-level tab switching
+  document.querySelectorAll('.exam-tab').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.exam-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    });
+  });
 
-    topTabs.forEach(btn => {
-      btn.addEventListener('click', function() {
-        topTabs.forEach(b => b.classList.remove('active'));
-        topPanels.forEach(p => p.classList.remove('active'));
-        this.classList.add('active');
-        document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+  // Rating sub-tab switching
+  document.querySelectorAll('.rating-tab').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.rating-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const sys = this.dataset.system;
+      document.querySelectorAll('.rating-sys-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'panel-' + sys);
       });
     });
+  });
 
-    // Rating 系统内部标签页切换逻辑
-    const ratingTabs = document.querySelectorAll('.rating-tab');
-    const ratingPanels = document.querySelectorAll('.rating-panel');
+  // Table Column Hover functionality
+  const hoverCols = document.querySelectorAll('th[data-col], td[data-col]');
+  hoverCols.forEach(el => {
+    el.addEventListener('mouseenter', function() {
+      const colId = this.getAttribute('data-col');
+      if (!colId) return;
+      document.querySelectorAll(`th[data-col="${colId}"]`).forEach(th => th.classList.add('col-hover-header'));
+      document.querySelectorAll(`td[data-col="${colId}"]`).forEach(td => td.classList.add('col-hover-cell'));
+    });
+    el.addEventListener('mouseleave', function() {
+      const colId = this.getAttribute('data-col');
+      if (!colId) return;
+      document.querySelectorAll(`th[data-col="${colId}"]`).forEach(th => th.classList.remove('col-hover-header'));
+      document.querySelectorAll(`td[data-col="${colId}"]`).forEach(td => td.classList.remove('col-hover-cell'));
+    });
+  });
+
+  // Chart Rendering Logic
+  (function() {
+    const chartColors = ['#c7923e', '#5a8fcf', '#6abf69', '#e05d5d', '#9b59b6', '#f39c12', '#1abc9c', '#e67e22', '#2ecc71', '#3498db'];
     
-    ratingTabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        ratingTabs.forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        const sys = this.dataset.system;
-        ratingPanels.forEach(p => { 
-          p.classList.toggle('active', p.id === 'panel-' + sys); 
-        });
-      });
-    });
-
-    // Chart.js 全局默认配置优化
-    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
-    Chart.defaults.color = '#4b5563';
-
-    // 绘制 Rating 走势图
-    const examRatings = {{ exam.ratings | jsonify }};
-    const allStudents = {{ students_data | jsonify }};
-    const systemKeys = Object.keys(examRatings || {});
-
-    // 获取选手对应的稳定图表颜色
-    function getColor(id) {
-      const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#14b8a6', '#6366f1', '#ec4899'];
-      // 取考号数字部分生成哈希
-      const numMatch = id.match(/\d+/);
-      const idx = numMatch ? parseInt(numMatch[0]) % colors.length : 0;
-      return colors[idx];
-    }
-
-    systemKeys.forEach(sys => {
-      const canvas = document.getElementById('chart-' + sys);
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const sysData = examRatings[sys] || [];
-      
-      const datasets = sysData.map(item => {
-        const student = allStudents.find(s => s.id === item.id);
-        const name = student ? student.name : item.id;
-        const color = getColor(item.id);
-        
-        return {
-          label: name,
-          data: item.history,
-          borderColor: color,
-          backgroundColor: color + '20', // 添加20%透明度
-          borderWidth: 2.5,
-          pointBackgroundColor: 'white',
-          pointBorderColor: color,
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          tension: 0.1,
-          fill: false
-        };
-      });
-
-      new Chart(ctx, {
-        type: 'line',
-        data: { 
-          labels: ['赛前测算', '赛后结算'], 
-          datasets: datasets 
-        },
-        options: {
-          responsive: true, 
-          maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          plugins: { 
-            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, boxWidth: 8 } },
-            tooltip: { backgroundColor: 'rgba(17, 24, 39, 0.9)', titleFont: { size: 13 }, bodyFont: { size: 13 }, padding: 12 }
-          },
-          scales: { 
-            y: { 
-              beginAtZero: false, 
-              grid: { color: '#f3f4f6' },
-              title: { display: true, text: sys === 'entertainment' ? 'Elo 积分' : '能力评估分' } 
-            },
-            x: { grid: { display: false } }
-          }
-        }
-      });
-    });
-
-    // 绘制 基准分对比图
+    // Baseline Chart
     const baselineCanvas = document.getElementById('chart-baseline');
     if (baselineCanvas) {
-      const baselineScores = {{ exam.baseline_scores | jsonify }} || {};
-      const results = {{ exam.results | jsonify }} || [];
-      
+      const baselineScores = {{ exam.baseline_scores | jsonify | default: "{}" }};
+      const results = {{ sorted_results | jsonify }};
       const names = [];
       const actualData = [];
       const baselineData = [];
 
       results.forEach(r => {
         names.push(r.name);
-        actualData.push(r.columns.total);
+        actualData.push(r.columns.total || 0);
         baselineData.push(baselineScores[r.studentId] || 0);
       });
+      
+      const hasBaseline = Object.keys(baselineScores).length > 0;
+      const datasets = [{
+        label: '实际得分', data: actualData, borderColor: '#c7923e', backgroundColor: 'rgba(199,146,62,0.1)',
+        borderWidth: 3, pointRadius: 7, pointHoverRadius: 9, tension: 0.2, fill: false
+      }];
+      if (hasBaseline) {
+        datasets.push({
+          label: '基准分', data: baselineData, borderColor: '#5a8fcf', backgroundColor: 'rgba(90,143,207,0.08)',
+          borderWidth: 3, pointRadius: 7, pointHoverRadius: 9, tension: 0.2, fill: false, borderDash: [6, 4]
+        });
+      }
 
       new Chart(baselineCanvas, {
         type: 'line',
-        data: {
-          labels: names,
-          datasets: [
-            {
-              label: '实际得分',
-              data: actualData,
-              borderColor: '#10b981', // Emerald
-              backgroundColor: '#10b98120',
-              borderWidth: 3,
-              pointBackgroundColor: 'white',
-              pointBorderColor: '#10b981',
-              pointBorderWidth: 2,
-              pointRadius: 6,
-              pointHoverRadius: 8,
-              tension: 0.3,
-              fill: true
-            },
-            {
-              label: '测算基准分',
-              data: baselineData,
-              borderColor: '#6366f1', // Indigo
-              backgroundColor: 'transparent',
-              borderWidth: 3,
-              pointBackgroundColor: 'white',
-              pointBorderColor: '#6366f1',
-              pointBorderWidth: 2,
-              pointRadius: 6,
-              pointHoverRadius: 8,
-              tension: 0.3,
-              borderDash: [6, 6]
-            }
-          ]
-        },
+        data: { labels: names, datasets: datasets },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
+          responsive: true, maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
-            tooltip: { backgroundColor: 'rgba(17, 24, 39, 0.9)', callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' 分' } }
+            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 18, font: { size: 13 } } },
+            tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y} 分` } }
           },
-          scales: { 
-            y: { beginAtZero: false, grid: { color: '#f3f4f6' }, title: { display: true, text: '考试分值' } },
+          scales: {
+            y: { beginAtZero: false, title: { display: true, text: '分数', font: { size: 12 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
             x: { grid: { display: false } }
           }
         }
       });
     }
-  });
+
+    // Rating Charts
+    const examRatings = {{ exam.ratings | jsonify | default: "{}" }};
+    const allStudents = {{ students_data | jsonify }};
+    Object.keys(examRatings).forEach(sys => {
+      const canvas = document.getElementById('chart-' + sys);
+      if (!canvas) return;
+      const sysData = examRatings[sys] || [];
+      
+      // Keep entries that have history
+      const active = sysData.filter(e => (e.history || [e.before, e.after]).some(v => v !== null));
+      const datasets = active.map((entry, idx) => {
+        const student = allStudents.find(s => s.id === entry.id);
+        const name = student ? student.name : entry.id;
+        const hist = entry.history || [entry.before, entry.after];
+        return {
+          label: name,
+          data: hist.map(v => (v === null || v === undefined ? null : v)),
+          borderColor: chartColors[idx % chartColors.length],
+          backgroundColor: 'transparent',
+          borderWidth: 2.5, pointRadius: 5, pointHoverRadius: 7, tension: 0.2, fill: false, spanGaps: false
+        };
+      });
+
+      let maxLen = 0;
+      active.forEach(e => {
+        const l = (e.history || []).length;
+        if (l > maxLen) maxLen = l;
+      });
+      const labels = maxLen === 2 ? ['赛前', '赛后'] : Array.from({length: maxLen}, (_, i) => i === 0 ? '初始' : `第${i}场`);
+      
+      let yLabel = 'Rating', yMin, yMax;
+      if (sys === 'gaokaoMath') { yMin = 90; yMax = 150; yLabel = '分数'; }
+      if (sys === 'gaokaoPhy') { yMin = 50; yMax = 150; yLabel = '分数'; }
+
+      new Chart(canvas, {
+        type: 'line',
+        data: { labels: labels, datasets: datasets },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, font: { size: 12.5 } } },
+            tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}` } }
+          },
+          scales: {
+            y: { 
+              beginAtZero: false, min: yMin, max: yMax,
+              title: { display: true, text: yLabel }, grid: { color: 'rgba(0,0,0,0.05)' }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    });
+  })();
 </script>
 {% endif %}
