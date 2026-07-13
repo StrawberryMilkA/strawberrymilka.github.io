@@ -112,6 +112,23 @@ extra_head: |
     }
     .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
     @media (max-width: 768px) { .player-reviews { grid-template-columns: 1fr; } }
+
+    /* ===== 新增：考试标签页 ===== */
+    .exam-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+    .exam-tab {
+      display:flex; align-items:center; gap:8px;
+      padding:10px 20px; border-radius:12px; border:none;
+      background:#f1f3f6; color:#374151; font-weight:600;
+      font-size:0.9rem; cursor:pointer; transition:all 0.2s;
+    }
+    .exam-tab.active { background:#c7923e; color:#fff; box-shadow:0 4px 14px rgba(199,146,62,0.3); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* ===== 新增：迷你分数芯片 ===== */
+    .mini-score-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+    .mini-score-chip { font-size:0.78rem; padding:3px 10px; border-radius:8px; font-weight:600;
+      background:#fef5e4; color:#92400e; }
   </style>
 extra_scripts:
 ---
@@ -134,240 +151,271 @@ extra_scripts:
 
   {% assign results = exam.results | sort: "total" %}
 
-  <!-- ===== 难度 & 得分色阶图例（使用自定义类） ===== -->
-  <div class="legend-row">
-    <span class="legend-title">难度色阶：</span>
-    <span class="capsule easy"><span>易</span><span class="capsule-sub">(1–4)</span></span>
-    <span class="capsule medium"><span>中</span><span class="capsule-sub">(5–7)</span></span>
-    <span class="capsule moderate"><span>偏难</span><span class="capsule-sub">(8–10)</span></span>
-    <span class="capsule hard"><span>难</span><span class="capsule-sub">(11–13)</span></span>
-    <span class="capsule extreme"><span>极难</span><span class="capsule-sub">(14–20)</span></span>
-    <span class="legend-note">| 难度 x → 需约 10x 分实力方可在考场完成</span>
-  </div>
-  <div class="legend-row" style="margin-bottom: 1.5rem;">
-    <span class="legend-title">得分色阶：</span>
-    <span class="capsule score-full">满分</span>
-    <span class="capsule score-good">≥70%</span>
-    <span class="capsule score-mid">40–70%</span>
-    <span class="capsule score-low">&lt;40%</span>
-    <span class="capsule score-zero">0分</span>
+  <!-- ===== 考试标签页按钮 ===== -->
+  <div class="exam-tabs">
+    <button class="exam-tab active" data-tab="table">📊 成绩表格</button>
+    <button class="exam-tab" data-tab="baseline">📐 基准分对比</button>
+    <button class="exam-tab" data-tab="rating">📈 Rating 变化</button>
+    <button class="exam-tab" data-tab="reviews">📋 考生点评</button>
   </div>
 
-  <div class="table-wrapper">
-    <table class="score-table">
-      <thead>
-        <tr>
-          <th rowspan="3" class="left-0 z-20 px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[72px]" style="background-color: #111827 !important; color: #ffffff !important;">考号</th>
-          <th rowspan="3" class="px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[80px]" style="background-color: #111827 !important; color: #ffffff !important;">姓名</th>
-          <th colspan="9" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">单选题</th>
-          <th colspan="4" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">多选题</th>
-          <th colspan="4" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">填空题</th>
-          <th colspan="6" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">大题</th>
-          <th colspan="1" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">总分</th>
-        </tr>
-        <tr>
-          {% for col in exam.columns_def %}
-            {% if col.is_subtotal %}
-              <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #374151 !important; color: #fcd34d !important;">
-                {{ col.title }}
-              </th>
-            {% else %}
-              <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #111827 !important; color: #ffffff !important;">
-                {{ col.title }}
-                <span class="block text-xs font-normal" style="color: #9ca3af !important;">/{{ col.max_score }}</span>
-              </th>
-            {% endif %}
-          {% endfor %}
-        </tr>
-        <!-- 第三行：难度 → 使用自定义胶囊 -->
-        <tr>
-          {% for col in exam.columns_def %}
-            {% if col.difficulty and col.is_subtotal == false %}
-              {% assign d = col.difficulty | plus: 0 %}
-              {% if d <= 4 %}
-                {% assign diff_level = "easy" %}
-              {% elsif d <= 7 %}
-                {% assign diff_level = "medium" %}
-              {% elsif d <= 10 %}
-                {% assign diff_level = "moderate" %}
-              {% elsif d <= 13 %}
-                {% assign diff_level = "hard" %}
-              {% else %}
-                {% assign diff_level = "extreme" %}
-              {% endif %}
-              <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
-                <span class="capsule {{ diff_level }}" style="font-size:0.75rem;">{{ col.difficulty }}</span>
-              </th>
-            {% else %}
-              <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;">
-                <span class="text-gray-500 text-xs">—</span>
-              </th>
-            {% endif %}
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in results %}
-        <tr {% if forloop.first %}style="font-weight:600; background:#fbf5e8;"{% endif %}>
-          <td>{{ r.studentId }}</td>
-          <td><strong>{{ r.name }}</strong></td>
-          {% for col in exam.columns_def %}
-            {% assign val = r.columns[col.field] | plus: 0 %}
-            {% assign max_s = col.max_score | plus: 0 %}
-            {% assign score_class = "" %}
-            {% if col.is_subtotal == false and max_s > 0 %}
-              {% if val == 0 %}
-                {% assign score_class = "score-zero" %}
-              {% elsif val == max_s %}
-                {% assign score_class = "score-full" %}
-              {% elsif val >= max_s | times: 0.7 %}
-                {% assign score_class = "score-good" %}
-              {% elsif val >= max_s | times: 0.4 %}
-                {% assign score_class = "score-mid" %}
-              {% else %}
-                {% assign score_class = "score-low" %}
-              {% endif %}
-            {% endif %}
-            <td class="{{ score_class }}">{{ val }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-
-        {% assign count = results | size %}
-        {% if count > 0 %}
-        <tr class="avg-row">
-          <td>-</td>
-          <td>平均分</td>
-          {% for col in exam.columns_def %}
-            {% assign sum = 0 %}
-            {% for r in results %}
-              {% assign sum = sum | plus: r.columns[col.field] %}
-            {% endfor %}
-            <td>{{ sum | divided_by: count | round: 1 }}</td>
-          {% endfor %}
-        </tr>
-        {% endif %}
-      </tbody>
-    </table>
-  </div>
-
-  <!-- 点评 -->
-  <section class="review-section">
-    <h2>📋 考试总评与考生点评</h2>
-    <div class="overall-review">{{ exam.overall_review }}</div>
-    <div class="player-reviews">
-      {% for r in exam.results %}
-        {% assign student = students_data | where: "id", r.studentId | first %}
-        {% if student %}
-        <div class="player-card">
-          <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
-          <div class="score-total">总分 {{ r.columns.total }} 分</div>
-          <p class="comment">{{ student.reviews[exam.id] }}</p>
-        </div>
-        {% endif %}
-      {% endfor %}
+  <!-- ===== 面板 1：成绩表格 ===== -->
+  <div class="tab-panel active" id="panel-table">
+    <!-- 难度 & 得分色阶图例 -->
+    <div class="legend-row">
+      <span class="legend-title">难度色阶：</span>
+      <span class="capsule easy"><span>易</span><span class="capsule-sub">(1–4)</span></span>
+      <span class="capsule medium"><span>中</span><span class="capsule-sub">(5–7)</span></span>
+      <span class="capsule moderate"><span>偏难</span><span class="capsule-sub">(8–10)</span></span>
+      <span class="capsule hard"><span>难</span><span class="capsule-sub">(11–13)</span></span>
+      <span class="capsule extreme"><span>极难</span><span class="capsule-sub">(14–20)</span></span>
+      <span class="legend-note">| 难度 x → 需约 10x 分实力方可在考场完成</span>
     </div>
-  </section>
+    <div class="legend-row" style="margin-bottom: 1.5rem;">
+      <span class="legend-title">得分色阶：</span>
+      <span class="capsule score-full">满分</span>
+      <span class="capsule score-good">≥70%</span>
+      <span class="capsule score-mid">40–70%</span>
+      <span class="capsule score-low">&lt;40%</span>
+      <span class="capsule score-zero">0分</span>
+    </div>
 
-  <!-- Rating Tabs -->
-  <div class="rating-tabs-container">
-    <h2>Rating 变化</h2><br>
-    <div class="rating-tabs">
+    <div class="table-wrapper">
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th rowspan="3" class="left-0 z-20 px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[72px]" style="background-color: #111827 !important; color: #ffffff !important;">考号</th>
+            <th rowspan="3" class="px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[80px]" style="background-color: #111827 !important; color: #ffffff !important;">姓名</th>
+            <th colspan="9" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">单选题</th>
+            <th colspan="4" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">多选题</th>
+            <th colspan="4" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">填空题</th>
+            <th colspan="6" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">大题</th>
+            <th colspan="1" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">总分</th>
+          </tr>
+          <tr>
+            {% for col in exam.columns_def %}
+              {% if col.is_subtotal %}
+                <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #374151 !important; color: #fcd34d !important;">
+                  {{ col.title }}
+                </th>
+              {% else %}
+                <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #111827 !important; color: #ffffff !important;">
+                  {{ col.title }}
+                  <span class="block text-xs font-normal" style="color: #9ca3af !important;">/{{ col.max_score }}</span>
+                </th>
+              {% endif %}
+            {% endfor %}
+          </tr>
+          <!-- 第三行：难度 → 使用自定义胶囊 -->
+          <tr>
+            {% for col in exam.columns_def %}
+              {% if col.difficulty and col.is_subtotal == false %}
+                {% assign d = col.difficulty | plus: 0 %}
+                {% if d <= 4 %}
+                  {% assign diff_level = "easy" %}
+                {% elsif d <= 7 %}
+                  {% assign diff_level = "medium" %}
+                {% elsif d <= 10 %}
+                  {% assign diff_level = "moderate" %}
+                {% elsif d <= 13 %}
+                  {% assign diff_level = "hard" %}
+                {% else %}
+                  {% assign diff_level = "extreme" %}
+                {% endif %}
+                <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
+                  <span class="capsule {{ diff_level }}" style="font-size:0.75rem;">{{ col.difficulty }}</span>
+                </th>
+              {% else %}
+                <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;">
+                  <span class="text-gray-500 text-xs">—</span>
+                </th>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          <tr {% if forloop.first %}style="font-weight:600; background:#fbf5e8;"{% endif %}>
+            <td>{{ r.studentId }}</td>
+            <td><strong>{{ r.name }}</strong></td>
+            {% for col in exam.columns_def %}
+              {% assign val = r.columns[col.field] | plus: 0 %}
+              {% assign max_s = col.max_score | plus: 0 %}
+              {% assign score_class = "" %}
+              {% if col.is_subtotal == false and max_s > 0 %}
+                {% if val == 0 %}
+                  {% assign score_class = "score-zero" %}
+                {% elsif val == max_s %}
+                  {% assign score_class = "score-full" %}
+                {% elsif val >= max_s | times: 0.7 %}
+                  {% assign score_class = "score-good" %}
+                {% elsif val >= max_s | times: 0.4 %}
+                  {% assign score_class = "score-mid" %}
+                {% else %}
+                  {% assign score_class = "score-low" %}
+                {% endif %}
+              {% endif %}
+              <td class="{{ score_class }}">{{ val }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+
+          {% assign count = results | size %}
+          {% if count > 0 %}
+          <tr class="avg-row">
+            <td>-</td>
+            <td>平均分</td>
+            {% for col in exam.columns_def %}
+              {% assign sum = 0 %}
+              {% for r in results %}
+                {% assign sum = sum | plus: r.columns[col.field] %}
+              {% endfor %}
+              <td>{{ sum | divided_by: count | round: 1 }}</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== 面板 2：基准分对比 ===== -->
+  <div class="tab-panel" id="panel-baseline">
+    <div class="review-section">
+      <h2>📐 基准分对比</h2><br>
+      <p style="color: var(--text-secondary); margin-top: -16px; margin-bottom: 24px;">实际得分与基于试卷难度加权得出的基准分对比，反映学生临场发挥水平。</p>
+      <div class="rating-chart-container">
+        <canvas id="chart-baseline"></canvas>
+      </div>
+      <table class="delta-table">
+        <thead>
+          <tr><th>👤 姓名</th><th>📝 实际分</th><th>📐 基准分</th><th>🔄 差值</th></tr>
+        </thead>
+        <tbody>
+          {% for r in exam.results %}
+            {% assign bs = exam.baseline_scores[r.studentId] %}
+            {% assign delta = bs | minus: r.columns.total %}
+            <tr>
+              <td><strong>{{ r.name }}</strong></td>
+              <td>{{ r.columns.total }}</td>
+              <td>{{ bs }}</td>
+              <td>
+                {% if delta > 0 %}
+                  <span class="delta-badge delta-negative">▼ -{{ delta }}</span>
+                {% elsif delta < 0 %}
+                  <span class="delta-badge delta-positive">▲ +{{ delta | abs }}</span>
+                {% else %}
+                  <span class="delta-badge delta-zero">— 0</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== 面板 3：Rating 变化 ===== -->
+  <div class="tab-panel" id="panel-rating">
+    <div class="rating-tabs-container">
+      <h2>Rating 变化</h2><br>
+      <div class="rating-tabs">
+        {% for pair in exam.ratings %}
+          {% assign sys = pair[0] %}
+          <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
+            {% case sys %}
+              {% when "gaokaoMath" %} 高考数学
+              {% when "gaokaoPhy" %} 高考物理
+              {% when "entertainment" %} 娱乐赛
+              {% else %} {{ sys }}
+            {% endcase %}
+          </button>
+        {% endfor %}
+      </div>
+
       {% for pair in exam.ratings %}
         {% assign sys = pair[0] %}
-        <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
-          {% case sys %}
-            {% when "gaokaoMath" %} 高考数学
-            {% when "gaokaoPhy" %} 高考物理
-            {% when "entertainment" %} 娱乐赛
-            {% else %} {{ sys }}
-          {% endcase %}
-        </button>
+        {% assign sys_data = pair[1] %}
+        <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
+          <h3>
+            {% case sys %}
+              {% when "gaokaoMath" %} 高考数学预测分（范围 0-200，x 分代表有高考数学 x 分的实力）
+              {% when "gaokaoPhy" %} 高考物理预测分（范围 0-150，x 分代表有高考物理 x 分的实力）
+              {% when "entertainment" %} 娱乐赛 Elo 积分（初始 1500，范围 0-3000）
+              {% else %} {{ sys }}
+            {% endcase %}
+          </h3>
+          <div class="rating-chart-container">
+            <canvas id="chart-{{ sys }}"></canvas>
+          </div>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
+          <table class="delta-table">
+            <thead>
+              <tr><th>🆔 考号</th><th>👤 姓名</th><th>📉 赛前</th><th>📈 赛后</th><th>🔄 变化</th></tr>
+            </thead>
+            <tbody>
+              {% for item in sys_data %}
+                {% assign student = students_data | where: "id", item.id | first %}
+                {% if student %}
+                  {% assign before = item.history[0] %}
+                  {% assign after = item.history[1] %}
+                  {% assign delta = after | minus: before %}
+                  <tr>
+                    <td>{{ item.id }}</td>
+                    <td><a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="text-decoration:none; color:inherit; font-weight:600;">{{ student.name }}</a></td>
+                    <td>{{ before }}</td>
+                    <td>{{ after }}</td>
+                    <td>
+                      {% if delta > 0 %}
+                        <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
+                      {% elsif delta < 0 %}
+                        <span class="delta-badge delta-negative">▼ {{ delta }}</span>
+                      {% else %}
+                        <span class="delta-badge delta-zero">— 0</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       {% endfor %}
     </div>
-
-    {% for pair in exam.ratings %}
-      {% assign sys = pair[0] %}
-      {% assign sys_data = pair[1] %}
-      <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
-        <h3>
-          {% case sys %}
-            {% when "gaokaoMath" %} 高考数学预测分（范围 0-200，x 分代表有高考数学 x 分的实力）
-            {% when "gaokaoPhy" %} 高考物理预测分（范围 0-150，x 分代表有高考物理 x 分的实力）
-            {% when "entertainment" %} 娱乐赛 Elo 积分（初始 1500，范围 0-3000）
-            {% else %} {{ sys }}
-          {% endcase %}
-        </h3>
-        <div class="rating-chart-container">
-          <canvas id="chart-{{ sys }}"></canvas>
-        </div>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
-        <table class="delta-table">
-          <thead>
-            <tr><th>🆔 考号</th><th>👤 姓名</th><th>📉 赛前</th><th>📈 赛后</th><th>🔄 变化</th></tr>
-          </thead>
-          <tbody>
-            {% for item in sys_data %}
-              {% assign student = students_data | where: "id", item.id | first %}
-              {% if student %}
-                {% assign before = item.history[0] %}
-                {% assign after = item.history[1] %}
-                {% assign delta = after | minus: before %}
-                <tr>
-                  <td>{{ item.id }}</td>
-                  <td><a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="text-decoration:none; color:inherit; font-weight:600;">{{ student.name }}</a></td>
-                  <td>{{ before }}</td>
-                  <td>{{ after }}</td>
-                  <td>
-                    {% if delta > 0 %}
-                      <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
-                    {% elsif delta < 0 %}
-                      <span class="delta-badge delta-negative">▼ {{ delta }}</span>
-                    {% else %}
-                      <span class="delta-badge delta-zero">— 0</span>
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% endfor %}
   </div>
 
-  <!-- 基准分对比 -->
-  <div class="review-section">
-    <h2>📐 基准分对比</h2><br>
-    <p style="color: var(--text-secondary); margin-top: -16px; margin-bottom: 24px;">实际得分与基于试卷难度加权得出的基准分对比，反映学生临场发挥水平。</p>
-    <div class="rating-chart-container">
-      <canvas id="chart-baseline"></canvas>
-    </div>
-    <table class="delta-table">
-      <thead>
-        <tr><th>👤 姓名</th><th>📝 实际分</th><th>📐 基准分</th><th>🔄 差值</th></tr>
-      </thead>
-      <tbody>
+  <!-- ===== 面板 4：考生点评 ===== -->
+  <div class="tab-panel" id="panel-reviews">
+    <section class="review-section">
+      <h2>📋 考试总评与考生点评</h2>
+      <div class="overall-review">{{ exam.overall_review }}</div>
+      <div class="player-reviews">
         {% for r in exam.results %}
-          {% assign bs = exam.baseline_scores[r.studentId] %}
-          {% assign delta = bs | minus: r.columns.total %}
-          <tr>
-            <td><strong>{{ r.name }}</strong></td>
-            <td>{{ r.columns.total }}</td>
-            <td>{{ bs }}</td>
-            <td>
-              {% if delta > 0 %}
-                <span class="delta-badge delta-negative">▼ -{{ delta }}</span>
-              {% elsif delta < 0 %}
-                <span class="delta-badge delta-positive">▲ +{{ delta | abs }}</span>
-              {% else %}
-                <span class="delta-badge delta-zero">— 0</span>
+          {% assign student = students_data | where: "id", r.studentId | first %}
+          {% if student %}
+          <div class="player-card">
+            <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
+            <div class="score-total">总分 {{ r.columns.total }} 分</div>
+
+            <!-- 迷你分数芯片：根据考试类别显示小分 -->
+            <div class="mini-score-row">
+              {% if exam.category == "entertainment" %}
+                <span class="mini-score-chip">一试 {{ r.columns.trial1_total }}/{{ exam.trial1_max | default: 66 }}</span>
+                <span class="mini-score-chip">二试 {{ r.columns.trial2_total }}/{{ exam.trial2_max | default: 50 }}</span>
+              {% elsif exam.category == "gaokao-math" %}
+                <span class="mini-score-chip">单选 {{ r.columns.single_total }}/40</span>
+                <span class="mini-score-chip">多选 {{ r.columns.multi_total }}/16</span>
+                <span class="mini-score-chip">填空 {{ r.columns.fill_total }}/15</span>
+                <span class="mini-score-chip">大题 {{ r.columns.big_total }}/79</span>
               {% endif %}
-            </td>
-          </tr>
+            </div>
+
+            <p class="comment">{{ student.reviews[exam.id] }}</p>
+          </div>
+          {% endif %}
         {% endfor %}
-      </tbody>
-    </table>
+      </div>
+    </section>
   </div>
 
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
@@ -375,6 +423,17 @@ extra_scripts:
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
+  // ===== 顶层考试标签页切换 =====
+  document.querySelectorAll('.exam-tab').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.exam-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ===== 原有 Rating 系统内切换 + 图表绘制 =====
   (function() {
     const examRatings = {{ exam.ratings | jsonify }};
     const allStudents = {{ students_data | jsonify }};
