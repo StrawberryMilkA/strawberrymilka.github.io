@@ -580,7 +580,11 @@ extra_scripts:
     // Baseline Chart
     const baselineCanvas = document.getElementById('chart-baseline');
     if (baselineCanvas) {
-      const baselineScores = {{ exam.baseline_scores | jsonify | default: '{}' }};
+      {% if exam.baseline_scores %}
+      const baselineScores = {{ exam.baseline_scores | jsonify }};
+      {% else %}
+      const baselineScores = {};
+      {% endif %}
       const results = {{ sorted_results | jsonify }};
       const names = [];
       const actualData = [];
@@ -622,7 +626,11 @@ extra_scripts:
     }
 
     // Rating Charts
-    const examRatings = {{ exam.ratings | jsonify | default: '{}' }};
+    {% if exam.ratings %}
+    const examRatings = {{ exam.ratings | jsonify }};
+    {% else %}
+    const examRatings = {};
+    {% endif %}
     const allStudents = {{ students_data | jsonify }};
     Object.keys(examRatings).forEach(sys => {
       const canvas = document.getElementById('chart-' + sys);
