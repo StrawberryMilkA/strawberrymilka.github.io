@@ -169,11 +169,11 @@ extra_scripts:
   <!-- Header Section -->
   <div class="exam-header">
     {% assign cat_label = "" %}
-    {% if exam.category == "entertainment" %}{% assign cat_label = "🎉 娱乐赛" %}
-    {% elsif exam.category == "gaokao-math" %}{% assign cat_label = "📐 高考数学" %}
-    {% elsif exam.category == "gaokao-physics" %}{% assign cat_label = "⚛️ 高考物理" %}{% endif %}
+    {% if exam.category == "entertainment" %}{% assign cat_label = " 娱乐赛" %}
+    {% elsif exam.category == "gaokao-math" %}{% assign cat_label = " 高考数学" %}
+    {% elsif exam.category == "gaokao-physics" %}{% assign cat_label = " 高考物理" %}{% endif %}
     
-    <h1>{% if exam.name %}{{ exam.name }}{% else %}{{ exam.date }} {{ cat_label }} 联测{% endif %}</h1>
+    <h1>{% if exam.title %}{{ exam.title }}{% else %}{{ exam.date }} {{ cat_label }} 联测{% endif %}</h1>
     
     <div class="exam-quote">「{{ exam.card_quote | default: "追求卓越，超越自我" }}」</div>
     
