@@ -3,153 +3,136 @@ layout: default
 active_nav: weekly
 extra_head: |
   <style>
-    .exam-detail-container { max-width: 1100px; margin: 0 auto; padding: 120px 24px 80px; }
-    .exam-header { text-align: center; margin-bottom: 48px; }
-    .exam-header h1 { font-size: 2.4rem; color: var(--text); }
-    .exam-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; color: var(--text-secondary); font-size: 0.95rem; margin-top: 16px; }
-    .exam-meta span { background: var(--surface-alt); padding: 6px 18px; border-radius: 20px; }
-    .table-wrapper { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--card-shadow); background: white; margin-bottom: 40px; }
-    .score-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-    .score-table th { padding: 16px 14px; font-weight: 600; text-align: center; }
-    .score-table td { padding: 14px 14px; text-align: center; border-bottom: 1px solid var(--border); }
-    .score-table tbody tr:hover { background: #f5f0e6; }
-    .score-table .avg-row { background: #ececec; font-weight: 600; color: var(--text); border-top: 2px solid var(--accent); }
-    .review-section { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
-    .overall-review { background: var(--surface-alt); padding: 24px; border-radius: 12px; line-height: 1.8; font-size: 1.05rem; margin-bottom: 32px; }
-    .player-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-    .player-card { background: var(--surface-alt); border-radius: 12px; padding: 20px; border-left: 4px solid var(--accent); display: flex; flex-direction: column; }
-    .player-card h3 { font-size: 1.15rem; color: var(--text); margin-bottom: 6px; }
-    .player-card .score-total { font-weight: 700; color: var(--accent); margin-bottom: 8px; }
-    .player-card .comment { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; }
-    .player-card .rating-link { margin-top: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 0.9rem; font-weight: 500; color: var(--accent); text-decoration: none; transition: color 0.2s; }
-    .player-card .rating-link:hover { color: #b07d2e; text-decoration: underline; }
+    /* 基础容器与头部 */
+    .exam-detail-container { max-width: 1200px; margin: 0 auto; padding: 100px 24px 80px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .exam-header { text-align: center; margin-bottom: 40px; }
+    .exam-header h1 { font-size: 2.2rem; color: var(--text, #1f2937); font-weight: 700; margin-bottom: 16px; }
+    .exam-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; color: var(--text-secondary, #4b5563); font-size: 0.95rem; }
+    .exam-meta span { background: var(--surface-alt, #f3f4f6); padding: 6px 16px; border-radius: 20px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
 
-    /* Rating Tabs */
-    .rating-tabs-container { background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); padding: 36px 32px; margin-top: 40px; }
-    .rating-tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
-    .rating-tab { padding: 10px 24px; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; color: var(--text-secondary); background: transparent; border: none; transition: all 0.2s; font-size: 1rem; }
-    .rating-tab:hover { background: var(--surface-alt); color: var(--text); }
-    .rating-tab.active { background: var(--accent); color: white; }
-    .rating-panel { display: none; }
-    .rating-panel.active { display: block; }
-    .rating-panel h3 { font-size: 1.3rem; margin-bottom: 16px; }
-    .rating-chart-container { height: 350px; margin-bottom: 24px; }
+    /* 标签页导航 */
+    .exam-tabs { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; border-bottom: 2px solid #e5e7eb; padding-bottom: 16px; justify-content: center; }
+    .exam-tab { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 99px; border: none; background: transparent; color: #4b5563; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; }
+    .exam-tab:hover { background: #f3f4f6; color: #1f2937; }
+    .exam-tab.active { background: #111827; color: #ffffff; box-shadow: 0 4px 12px rgba(17, 24, 39, 0.2); }
+    .tab-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* delta 表格 */
-    .delta-wrapper { background: var(--surface-alt); border-radius: var(--radius); padding: 8px; margin-top: 16px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.04); }
-    .delta-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.95rem; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--card-shadow); }
-    .delta-table th { background: var(--hero-bg); color: #fff; font-weight: 600; padding: 14px 16px; text-align: left; letter-spacing: 0.3px; }
-    .delta-table th:first-child { padding-left: 24px; }
-    .delta-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
-    .delta-table td:first-child { padding-left: 24px; font-weight: 500; color: var(--text-secondary); }
-    .delta-table td:nth-child(2) { font-weight: 600; }
-    .delta-table tbody tr { transition: background 0.15s; }
-    .delta-table tbody tr:hover { background: #f8f4eb; }
-    .delta-table tbody tr:nth-child(even) { background: #fafafc; }
-    .delta-table tbody tr:nth-child(even):hover { background: #f5f0e6; }
-    .delta-positive { color: #1e7e34; font-weight: 700; background: #e8f5e9; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
-    .delta-negative { color: #b71c1c; font-weight: 700; background: #ffebee; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
-    .delta-zero { color: var(--text-muted); font-weight: 500; background: #f0f0f0; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
-    .delta-badge { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    /* 图例说明 */
+    .legend-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 0.85rem; margin-bottom: 16px; background: #f9fafb; padding: 12px 20px; border-radius: 12px; border: 1px solid #e5e7eb; }
+    .legend-title { font-weight: 600; color: #374151; }
+    .legend-note { margin-left: auto; font-size: 0.8rem; color: #6b7280; font-style: italic; }
 
-    /* 得分色阶 — 用在单元格上 */
-    .score-full   { background:#d1fae5 !important; color:#065f46; font-weight:600; }
-    .score-good   { background:#f0fdf4 !important; color:#166534; }
-    .score-mid    { background:#fefce8 !important; color:#854d0e; }
-    .score-low    { background:#fff1f2 !important; color:#be123c; }
-    .score-zero   { background:#fee2e2 !important; color:#991b1b; font-weight:700; }
-
-    /* ===== 新增：图例和胶囊样式（替代 Tailwind） ===== */
-    .legend-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-    }
-    .legend-title {
-      font-weight: 600;
-      color: #4b5563;
-    }
-    /* 通用胶囊 */
-    .capsule {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      line-height: 1.2;
-    }
-    .capsule-sub {
-      opacity: 0.6;
-      font-size: 0.7rem;
-    }
-    /* 难度颜色 */
-    .capsule.easy    { background: #d1fae5; color: #065f46; }
-    .capsule.medium  { background: #dcfce7; color: #166534; }
-    .capsule.moderate{ background: #fef9c3; color: #854d0e; }
-    .capsule.hard    { background: #ffedd5; color: #9a3412; }
+    /* 胶囊标签 (Capsules) */
+    .capsule { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.02em; }
+    .capsule-sub { opacity: 0.7; font-size: 0.65rem; font-weight: 500; }
+    .capsule.easy { background: #d1fae5; color: #065f46; }
+    .capsule.medium { background: #dcfce7; color: #166534; }
+    .capsule.moderate { background: #fef9c3; color: #854d0e; }
+    .capsule.hard { background: #ffedd5; color: #9a3412; }
     .capsule.extreme { background: #fee2e2; color: #991b1b; }
-    /* 得分色阶胶囊（复用.score-*的配色） */
     .capsule.score-full { background: #d1fae5; color: #065f46; }
     .capsule.score-good { background: #f0fdf4; color: #166534; }
-    .capsule.score-mid  { background: #fefce8; color: #854d0e; }
-    .capsule.score-low  { background: #fff1f2; color: #be123c; }
+    .capsule.score-mid { background: #fefce8; color: #854d0e; }
+    .capsule.score-low { background: #fff1f2; color: #be123c; }
     .capsule.score-zero { background: #fee2e2; color: #991b1b; }
 
-    .legend-note {
-      margin-left: 0.5rem;
-      font-size: 0.7rem;
-      color: #9ca3af;
-    }
-    /* 小屏适配 */
-    @media (max-width: 600px) {
-      .delta-table th, .delta-table td { padding: 10px 12px; font-size: 0.85rem; }
-      .delta-table th:first-child, .delta-table td:first-child { padding-left: 16px; }
-    }
-    .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
-    @media (max-width: 768px) { .player-reviews { grid-template-columns: 1fr; } }
+    /* 成绩数据表格 (核心重构区域) */
+    .table-wrapper { overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); background: white; margin-bottom: 40px; border: 1px solid #e5e7eb; }
+    .score-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; white-space: nowrap; }
+    
+    /* 统一表头样式 */
+    .score-table th { border-right: 1px solid #374151; padding: 12px 8px; text-align: center; font-weight: 600; vertical-align: middle; }
+    .score-table th:last-child { border-right: none; }
+    .th-dark-main { background-color: #111827; color: #ffffff; min-width: 72px; }
+    .th-dark-sub { background-color: #1f2937; color: #d1d5db; font-size: 0.8rem; letter-spacing: 0.05em; }
+    .th-accent { background-color: #374151; color: #fcd34d; min-width: 52px; }
+    .th-score-max { display: block; font-size: 0.7rem; color: #9ca3af; font-weight: 400; margin-top: 2px; }
+    
+    /* 统一单元格样式 */
+    .score-table td { padding: 12px 10px; text-align: center; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #f3f4f6; color: #374151; }
+    .score-table td:last-child { border-right: none; }
+    .score-table tbody tr { transition: background-color 0.15s ease; }
+    .score-table tbody tr:hover { background-color: #f9fafb; }
+    .score-table tbody tr:first-child { background-color: #fefce8; font-weight: 600; } /* 冠军行高亮 */
+    
+    .avg-row td { background-color: #f3f4f6 !important; font-weight: 700; color: #111827; border-top: 2px solid #d1d5db; }
+    
+    /* 表格内得分色阶 */
+    .score-table td.score-full { background-color: #d1fae5 !important; color: #065f46; font-weight: 700; }
+    .score-table td.score-good { background-color: #f0fdf4 !important; color: #166534; font-weight: 500; }
+    .score-table td.score-mid { background-color: #fefce8 !important; color: #854d0e; }
+    .score-table td.score-low { background-color: #fff1f2 !important; color: #be123c; }
+    .score-table td.score-zero { background-color: #fee2e2 !important; color: #991b1b; font-weight: 700; }
 
-    /* ===== 新增：考试标签页 ===== */
-    .exam-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
-    .exam-tab {
-      display:flex; align-items:center; gap:8px;
-      padding:10px 20px; border-radius:12px; border:none;
-      background:#f1f3f6; color:#374151; font-weight:600;
-      font-size:0.9rem; cursor:pointer; transition:all 0.2s;
-    }
-    .exam-tab.active { background:#c7923e; color:#fff; box-shadow:0 4px 14px rgba(199,146,62,0.3); }
-    .tab-panel { display:none; }
-    .tab-panel.active { display:block; }
+    /* 通用区块与图表 */
+    .review-section, .rating-tabs-container { background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); padding: 32px; border: 1px solid #e5e7eb; margin-bottom: 40px; }
+    .review-section h2, .rating-tabs-container h2 { font-size: 1.5rem; color: #111827; margin-bottom: 8px; font-weight: 700; }
+    .rating-chart-container { height: 400px; margin: 24px 0; padding: 16px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb; }
 
-    /* ===== 新增：迷你分数芯片 ===== */
-    .mini-score-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
-    .mini-score-chip { font-size:0.78rem; padding:3px 10px; border-radius:8px; font-weight:600;
-      background:#fef5e4; color:#92400e; }
+    /* 数据对比表格 (基准分 & Rating) */
+    .delta-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+    .delta-table th { background: #f3f4f6; color: #374151; font-weight: 600; padding: 14px 16px; text-align: left; border-bottom: 2px solid #e5e7eb; }
+    .delta-table td { padding: 14px 16px; border-bottom: 1px solid #e5e7eb; color: #4b5563; vertical-align: middle; }
+    .delta-table tbody tr:hover { background: #f9fafb; }
+    .delta-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 99px; font-size: 0.85rem; font-weight: 700; }
+    .delta-positive { color: #059669; background: #d1fae5; }
+    .delta-negative { color: #dc2626; background: #fee2e2; }
+    .delta-zero { color: #6b7280; background: #f3f4f6; }
+
+    /* 内部 Rating Tabs */
+    .rating-tabs { display: flex; gap: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 24px; flex-wrap: wrap; }
+    .rating-tab { padding: 10px 20px; border-radius: 8px 8px 0 0; cursor: pointer; font-weight: 600; color: #6b7280; background: transparent; border: none; transition: all 0.2s; font-size: 0.95rem; }
+    .rating-tab:hover { color: #111827; background: #f9fafb; }
+    .rating-tab.active { color: #111827; border-bottom: 2px solid #111827; background: transparent; }
+    .rating-panel { display: none; }
+    .rating-panel.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+    /* 考生点评卡片 */
+    .overall-review { background: #f8fafc; padding: 24px; border-radius: 12px; line-height: 1.7; font-size: 1.05rem; margin-bottom: 32px; border-left: 4px solid #3b82f6; color: #334155; }
+    .player-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+    .player-card { background: white; border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: transform 0.2s; }
+    .player-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+    .player-card h3 { font-size: 1.2rem; color: #111827; margin-bottom: 8px; font-weight: 700; display: flex; align-items: baseline; gap: 8px; }
+    .score-total { font-size: 1.1rem; font-weight: 700; color: #059669; margin-bottom: 12px; }
+    .mini-score-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .mini-score-chip { font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .comment { color: #4b5563; line-height: 1.6; font-size: 0.95rem; background: #f9fafb; padding: 16px; border-radius: 8px; flex-grow: 1; }
+    
+    .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; color: #374151; font-weight: 600; text-decoration: none; padding: 10px 20px; border-radius: 8px; background: #f3f4f6; transition: background 0.2s; }
+    .back-link:hover { background: #e5e7eb; }
+
+    @media (max-width: 768px) {
+      .exam-detail-container { padding: 80px 16px 40px; }
+      .exam-header h1 { font-size: 1.8rem; }
+      .legend-row { flex-direction: column; align-items: flex-start; }
+      .legend-note { margin-left: 0; }
+    }
   </style>
 extra_scripts:
 ---
 {% assign exam = site.data.exams | where: "id", page.exam_id | first %}
 {% if exam == nil %}
-  <div class="exam-detail-container"><p>未找到该场考试数据。</p></div>
+  <div class="exam-detail-container">
+    <div class="overall-review" style="border-left-color: #ef4444;">未找到该场考试数据，请检查链接或数据源。</div>
+  </div>
 {% else %}
 {% assign students_data = site.data.student %}
 {% assign ratings_all = site.data.ratings %}
 <div class="exam-detail-container">
+  
   <div class="exam-header">
-    <h1>{{ page.title | default: exam.date | append: " 联测成绩" }}</h1>
+    <h1>{{ page.title | default: exam.date | append: " 联测成绩分析报告" }}</h1>
     <div class="exam-meta">
       <span>📅 {{ exam.date }}</span>
-      <span>📝 试卷来源：{{ exam.source }}</span>
+      <span>📝 来源：{{ exam.source }}</span>
       <span>📋 编号：{{ exam.code }}</span>
       <span>⏱ {{ exam.time }}</span>
     </div>
   </div>
 
-  {% assign results = exam.results | sort: "total" %}
+  {% assign results = exam.results | sort: "total" | reverse %}
 
   <!-- ===== 考试标签页按钮 ===== -->
   <div class="exam-tabs">
@@ -161,7 +144,7 @@ extra_scripts:
 
   <!-- ===== 面板 1：成绩表格 ===== -->
   <div class="tab-panel active" id="panel-table">
-    <!-- 难度 & 得分色阶图例 -->
+    
     <div class="legend-row">
       <span class="legend-title">难度色阶：</span>
       <span class="capsule easy"><span>易</span><span class="capsule-sub">(1–4)</span></span>
@@ -169,90 +152,79 @@ extra_scripts:
       <span class="capsule moderate"><span>偏难</span><span class="capsule-sub">(8–10)</span></span>
       <span class="capsule hard"><span>难</span><span class="capsule-sub">(11–13)</span></span>
       <span class="capsule extreme"><span>极难</span><span class="capsule-sub">(14–20)</span></span>
-      <span class="legend-note">| 难度 x → 需约 10x 分实力方可在考场完成</span>
+      <span class="legend-note">* 难度系数 x 代表在考场环境中需具备约 10x 分的综合实力方可顺利完成。</span>
     </div>
-    <div class="legend-row" style="margin-bottom: 1.5rem;">
+    
+    <div class="legend-row" style="margin-bottom: 24px;">
       <span class="legend-title">得分色阶：</span>
-      <span class="capsule score-full">满分</span>
-      <span class="capsule score-good">≥70%</span>
-      <span class="capsule score-mid">40–70%</span>
-      <span class="capsule score-low">&lt;40%</span>
-      <span class="capsule score-zero">0分</span>
+      <span class="capsule score-full">满分 (100%)</span>
+      <span class="capsule score-good">优秀 (≥70%)</span>
+      <span class="capsule score-mid">及格 (40–70%)</span>
+      <span class="capsule score-low">偏低 (&lt;40%)</span>
+      <span class="capsule score-zero">零分 (0)</span>
     </div>
 
     <div class="table-wrapper">
       <table class="score-table">
         <thead>
           <tr>
-            <th rowspan="3" class="left-0 z-20 px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[72px]" style="background-color: #111827 !important; color: #ffffff !important;">考号</th>
-            <th rowspan="3" class="px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[80px]" style="background-color: #111827 !important; color: #ffffff !important;">姓名</th>
-            <th colspan="9" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">单选题</th>
-            <th colspan="4" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">多选题</th>
-            <th colspan="4" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">填空题</th>
-            <th colspan="6" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">大题</th>
-            <th colspan="1" class="px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide" style="background-color: #1f2937 !important; color: #d1d5db !important;">总分</th>
+            <th rowspan="3" class="th-dark-main">考号</th>
+            <th rowspan="3" class="th-dark-main">姓名</th>
+            <th colspan="9" class="th-dark-sub">单选题</th>
+            <th colspan="4" class="th-dark-sub">多选题</th>
+            <th colspan="4" class="th-dark-sub">填空题</th>
+            <th colspan="6" class="th-dark-sub">解答题</th>
+            <th colspan="1" class="th-dark-sub">总计</th>
           </tr>
           <tr>
             {% for col in exam.columns_def %}
               {% if col.is_subtotal %}
-                <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #374151 !important; color: #fcd34d !important;">
+                <th class="th-accent">
                   {{ col.title }}
                 </th>
               {% else %}
-                <th class="px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px]" style="background-color: #111827 !important; color: #ffffff !important;">
+                <th class="th-dark-main">
                   {{ col.title }}
-                  <span class="block text-xs font-normal" style="color: #9ca3af !important;">/{{ col.max_score }}</span>
+                  <span class="th-score-max">/{{ col.max_score }}</span>
                 </th>
               {% endif %}
             {% endfor %}
           </tr>
-          <!-- 第三行：难度 → 使用自定义胶囊 -->
+          <!-- 难度行 -->
           <tr>
             {% for col in exam.columns_def %}
               {% if col.difficulty and col.is_subtotal == false %}
                 {% assign d = col.difficulty | plus: 0 %}
-                {% if d <= 4 %}
-                  {% assign diff_level = "easy" %}
-                {% elsif d <= 7 %}
-                  {% assign diff_level = "medium" %}
-                {% elsif d <= 10 %}
-                  {% assign diff_level = "moderate" %}
-                {% elsif d <= 13 %}
-                  {% assign diff_level = "hard" %}
-                {% else %}
-                  {% assign diff_level = "extreme" %}
+                {% if d <= 4 %} {% assign diff_level = "easy" %}
+                {% elsif d <= 7 %} {% assign diff_level = "medium" %}
+                {% elsif d <= 10 %} {% assign diff_level = "moderate" %}
+                {% elsif d <= 13 %} {% assign diff_level = "hard" %}
+                {% else %} {% assign diff_level = "extreme" %}
                 {% endif %}
-                <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
-                  <span class="capsule {{ diff_level }}" style="font-size:0.75rem;">{{ col.difficulty }}</span>
+                <th class="th-dark-sub" style="padding: 6px 2px;" title="难度系数: {{ col.difficulty }}">
+                  <span class="capsule {{ diff_level }}" style="font-size:0.7rem; padding: 2px 6px;">{{ col.difficulty }}</span>
                 </th>
               {% else %}
-                <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;">
-                  <span class="text-gray-500 text-xs">—</span>
-                </th>
+                <th class="th-dark-sub"><span style="opacity:0.3;">—</span></th>
               {% endif %}
             {% endfor %}
           </tr>
         </thead>
         <tbody>
           {% for r in results %}
-          <tr {% if forloop.first %}style="font-weight:600; background:#fbf5e8;"{% endif %}>
-            <td>{{ r.studentId }}</td>
-            <td><strong>{{ r.name }}</strong></td>
+          <tr>
+            <td style="font-family: monospace;">{{ r.studentId }}</td>
+            <td style="font-weight: 600;">{{ r.name }}</td>
             {% for col in exam.columns_def %}
               {% assign val = r.columns[col.field] | plus: 0 %}
               {% assign max_s = col.max_score | plus: 0 %}
               {% assign score_class = "" %}
               {% if col.is_subtotal == false and max_s > 0 %}
-                {% if val == 0 %}
-                  {% assign score_class = "score-zero" %}
-                {% elsif val == max_s %}
-                  {% assign score_class = "score-full" %}
-                {% elsif val >= max_s | times: 0.7 %}
-                  {% assign score_class = "score-good" %}
-                {% elsif val >= max_s | times: 0.4 %}
-                  {% assign score_class = "score-mid" %}
-                {% else %}
-                  {% assign score_class = "score-low" %}
+                {% if val == 0 %} {% assign score_class = "score-zero" %}
+                {% elsif val == max_s %} {% assign score_class = "score-full" %}
+                {% elsif val >= max_s | times: 0.7 %} {% assign score_class = "score-good" %}
+                {% elsif val >= max_s | times: 0.4 %} {% assign score_class = "score-mid" %}
+                {% else %} {% assign score_class = "score-low" %}
                 {% endif %}
               {% endif %}
               <td class="{{ score_class }}">{{ val }}</td>
@@ -260,11 +232,11 @@ extra_scripts:
           </tr>
           {% endfor %}
 
+          <!-- 平均分行 -->
           {% assign count = results | size %}
           {% if count > 0 %}
           <tr class="avg-row">
-            <td>-</td>
-            <td>平均分</td>
+            <td colspan="2">总体平均分</td>
             {% for col in exam.columns_def %}
               {% assign sum = 0 %}
               {% for r in results %}
@@ -282,30 +254,35 @@ extra_scripts:
   <!-- ===== 面板 2：基准分对比 ===== -->
   <div class="tab-panel" id="panel-baseline">
     <div class="review-section">
-      <h2>📐 基准分对比</h2><br>
-      <p style="color: var(--text-secondary); margin-top: -16px; margin-bottom: 24px;">实际得分与基于试卷难度加权得出的基准分对比，反映学生临场发挥水平。</p>
+      <h2>📐 基准分分析模型</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">通过对比考生实际得分与系统基于试卷难度矩阵测算的基准分，科学反映本次考试中的临场发挥水平及抗压能力。</p>
       <div class="rating-chart-container">
         <canvas id="chart-baseline"></canvas>
       </div>
       <table class="delta-table">
         <thead>
-          <tr><th>👤 姓名</th><th>📝 实际分</th><th>📐 基准分</th><th>🔄 差值</th></tr>
+          <tr>
+            <th>👤 姓名</th>
+            <th>📝 实际得分</th>
+            <th>📐 测算基准分</th>
+            <th>🔄 发挥差值</th>
+          </tr>
         </thead>
         <tbody>
           {% for r in exam.results %}
             {% assign bs = exam.baseline_scores[r.studentId] %}
-            {% assign delta = bs | minus: r.columns.total %}
+            {% assign delta = r.columns.total | minus: bs %}
             <tr>
               <td><strong>{{ r.name }}</strong></td>
-              <td>{{ r.columns.total }}</td>
+              <td style="font-weight: 600;">{{ r.columns.total }}</td>
               <td>{{ bs }}</td>
               <td>
                 {% if delta > 0 %}
-                  <span class="delta-badge delta-negative">▼ -{{ delta }}</span>
+                  <span class="delta-badge delta-positive">超常发挥 +{{ delta }}</span>
                 {% elsif delta < 0 %}
-                  <span class="delta-badge delta-positive">▲ +{{ delta | abs }}</span>
+                  <span class="delta-badge delta-negative">发挥失常 {{ delta }}</span>
                 {% else %}
-                  <span class="delta-badge delta-zero">— 0</span>
+                  <span class="delta-badge delta-zero">稳定发挥 0</span>
                 {% endif %}
               </td>
             </tr>
@@ -318,15 +295,17 @@ extra_scripts:
   <!-- ===== 面板 3：Rating 变化 ===== -->
   <div class="tab-panel" id="panel-rating">
     <div class="rating-tabs-container">
-      <h2>Rating 变化</h2><br>
+      <h2>📈 Rating 积分变动记录</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">系统根据考试结果重新结算各位选手的综合实力评级。</p>
+      
       <div class="rating-tabs">
         {% for pair in exam.ratings %}
           {% assign sys = pair[0] %}
           <button class="rating-tab {% if forloop.first %}active{% endif %}" data-system="{{ sys }}">
             {% case sys %}
-              {% when "gaokaoMath" %} 高考数学
-              {% when "gaokaoPhy" %} 高考物理
-              {% when "entertainment" %} 娱乐赛
+              {% when "gaokaoMath" %} 高考数学体系
+              {% when "gaokaoPhy" %} 高考物理体系
+              {% when "entertainment" %} 娱乐赛 Elo
               {% else %} {{ sys }}
             {% endcase %}
           </button>
@@ -337,21 +316,26 @@ extra_scripts:
         {% assign sys = pair[0] %}
         {% assign sys_data = pair[1] %}
         <div class="rating-panel {% if forloop.first %}active{% endif %}" id="panel-{{ sys }}">
-          <h3>
+          <h3 style="font-size: 1.1rem; color: #374151; margin-bottom: 16px;">
             {% case sys %}
-              {% when "gaokaoMath" %} 高考数学预测分（范围 0-200，x 分代表有高考数学 x 分的实力）
-              {% when "gaokaoPhy" %} 高考物理预测分（范围 0-150，x 分代表有高考物理 x 分的实力）
-              {% when "entertainment" %} 娱乐赛 Elo 积分（初始 1500，范围 0-3000）
-              {% else %} {{ sys }}
+              {% when "gaokaoMath" %} 说明：高考数学预测分（满分 200，分值对应高考实战能力估值）
+              {% when "gaokaoPhy" %} 说明：高考物理预测分（满分 150，分值对应高考实战能力估值）
+              {% when "entertainment" %} 说明：标准 Elo 积分系统（初始分 1500）
+              {% else %} 系统名称：{{ sys }}
             {% endcase %}
           </h3>
-          <div class="rating-chart-container">
+          <div class="rating-chart-container" style="height: 350px;">
             <canvas id="chart-{{ sys }}"></canvas>
           </div>
-          <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
           <table class="delta-table">
             <thead>
-              <tr><th>🆔 考号</th><th>👤 姓名</th><th>📉 赛前</th><th>📈 赛后</th><th>🔄 变化</th></tr>
+              <tr>
+                <th>🆔 考号</th>
+                <th>👤 选手</th>
+                <th>📉 赛前 Rating</th>
+                <th>📈 赛后 Rating</th>
+                <th>🔄 净变动</th>
+              </tr>
             </thead>
             <tbody>
               {% for item in sys_data %}
@@ -361,10 +345,14 @@ extra_scripts:
                   {% assign after = item.history[1] %}
                   {% assign delta = after | minus: before %}
                   <tr>
-                    <td>{{ item.id }}</td>
-                    <td><a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="text-decoration:none; color:inherit; font-weight:600;">{{ student.name }}</a></td>
+                    <td style="font-family: monospace;">{{ item.id }}</td>
+                    <td>
+                      <a href="{{ '/students/' | append: item.id | append: '/' | relative_url }}" style="color: #2563eb; font-weight: 600; text-decoration: none;">
+                        {{ student.name }} ↗
+                      </a>
+                    </td>
                     <td>{{ before }}</td>
-                    <td>{{ after }}</td>
+                    <td style="font-weight: 700;">{{ after }}</td>
                     <td>
                       {% if delta > 0 %}
                         <span class="delta-badge delta-positive">▲ +{{ delta }}</span>
@@ -387,17 +375,18 @@ extra_scripts:
   <!-- ===== 面板 4：考生点评 ===== -->
   <div class="tab-panel" id="panel-reviews">
     <section class="review-section">
-      <h2>📋 考试总评与考生点评</h2>
+      <h2>📋 考试总评与试卷分析</h2>
       <div class="overall-review">{{ exam.overall_review }}</div>
+      
+      <h3 style="font-size: 1.3rem; margin: 32px 0 20px; color: #111827;">选手具体表现与考后反思</h3>
       <div class="player-reviews">
-        {% for r in exam.results %}
+        {% for r in results %}
           {% assign student = students_data | where: "id", r.studentId | first %}
           {% if student %}
           <div class="player-card">
-            <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
+            <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight: 400; font-size: 0.9rem; color: #6b7280;">#{{ r.studentId }}</span></h3>
             <div class="score-total">总分 {{ r.columns.total }} 分</div>
 
-            <!-- 迷你分数芯片：根据考试类别显示小分 -->
             <div class="mini-score-row">
               {% if exam.category == "entertainment" %}
                 <span class="mini-score-chip">一试 {{ r.columns.trial1_total }}/{{ exam.trial1_max | default: 66 }}</span>
@@ -407,10 +396,18 @@ extra_scripts:
                 <span class="mini-score-chip">多选 {{ r.columns.multi_total }}/16</span>
                 <span class="mini-score-chip">填空 {{ r.columns.fill_total }}/15</span>
                 <span class="mini-score-chip">大题 {{ r.columns.big_total }}/79</span>
+              {% else %}
+                <span class="mini-score-chip">选择客观题情况记录于内</span>
               {% endif %}
             </div>
 
-            <p class="comment">{{ student.reviews[exam.id] }}</p>
+            <div class="comment">
+              {% if student.reviews[exam.id] %}
+                {{ student.reviews[exam.id] }}
+              {% else %}
+                <span style="color: #9ca3af; font-style: italic;">该选手暂未提交考后点评与总结。</span>
+              {% endif %}
+            </div>
           </div>
           {% endif %}
         {% endfor %}
@@ -418,79 +415,118 @@ extra_scripts:
     </section>
   </div>
 
-  <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
+  <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回全部联测列表</a>
 </div>
 
+<!-- 引入 Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-  // ===== 顶层考试标签页切换 =====
-  document.querySelectorAll('.exam-tab').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.exam-tab').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      this.classList.add('active');
-      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
-    });
-  });
+  document.addEventListener('DOMContentLoaded', function() {
+    // 顶层标签页切换逻辑
+    const topTabs = document.querySelectorAll('.exam-tab');
+    const topPanels = document.querySelectorAll('.tab-panel');
 
-  // ===== 原有 Rating 系统内切换 + 图表绘制 =====
-  (function() {
+    topTabs.forEach(btn => {
+      btn.addEventListener('click', function() {
+        topTabs.forEach(b => b.classList.remove('active'));
+        topPanels.forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Rating 系统内部标签页切换逻辑
+    const ratingTabs = document.querySelectorAll('.rating-tab');
+    const ratingPanels = document.querySelectorAll('.rating-panel');
+    
+    ratingTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        ratingTabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const sys = this.dataset.system;
+        ratingPanels.forEach(p => { 
+          p.classList.toggle('active', p.id === 'panel-' + sys); 
+        });
+      });
+    });
+
+    // Chart.js 全局默认配置优化
+    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+    Chart.defaults.color = '#4b5563';
+
+    // 绘制 Rating 走势图
     const examRatings = {{ exam.ratings | jsonify }};
     const allStudents = {{ students_data | jsonify }};
-    const systemKeys = Object.keys(examRatings);
+    const systemKeys = Object.keys(examRatings || {});
+
+    // 获取选手对应的稳定图表颜色
+    function getColor(id) {
+      const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#14b8a6', '#6366f1', '#ec4899'];
+      // 取考号数字部分生成哈希
+      const numMatch = id.match(/\d+/);
+      const idx = numMatch ? parseInt(numMatch[0]) % colors.length : 0;
+      return colors[idx];
+    }
 
     systemKeys.forEach(sys => {
       const canvas = document.getElementById('chart-' + sys);
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const sysData = examRatings[sys] || [];
+      
       const datasets = sysData.map(item => {
         const student = allStudents.find(s => s.id === item.id);
         const name = student ? student.name : item.id;
+        const color = getColor(item.id);
+        
         return {
           label: name,
           data: item.history,
-          borderColor: getColor(item.id),
-          backgroundColor: 'transparent',
-          borderWidth: 2,
+          borderColor: color,
+          backgroundColor: color + '20', // 添加20%透明度
+          borderWidth: 2.5,
+          pointBackgroundColor: 'white',
+          pointBorderColor: color,
+          pointBorderWidth: 2,
           pointRadius: 5,
-          tension: 0,
+          pointHoverRadius: 7,
+          tension: 0.1,
           fill: false
         };
       });
-      const labels = ['赛前', '赛后'];
+
       new Chart(ctx, {
         type: 'line',
-        data: { labels: labels, datasets: datasets },
+        data: { 
+          labels: ['赛前测算', '赛后结算'], 
+          datasets: datasets 
+        },
         options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } } },
-          scales: { y: { beginAtZero: false, title: { display: true, text: sys === 'entertainment' ? 'Rating' : '分数' } } }
+          responsive: true, 
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { 
+            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16, boxWidth: 8 } },
+            tooltip: { backgroundColor: 'rgba(17, 24, 39, 0.9)', titleFont: { size: 13 }, bodyFont: { size: 13 }, padding: 12 }
+          },
+          scales: { 
+            y: { 
+              beginAtZero: false, 
+              grid: { color: '#f3f4f6' },
+              title: { display: true, text: sys === 'entertainment' ? 'Elo 积分' : '能力评估分' } 
+            },
+            x: { grid: { display: false } }
+          }
         }
       });
     });
 
-    function getColor(id) {
-      const colors = ['#e2b04a', '#5a8fcf', '#6abf69', '#e05d5d', '#9b59b6', '#f39c12', '#1abc9c','#e67e22', '#2ecc71', '#3498db', '#e74c3c', '#8e44ad', '#2c3e50', '#d35400'];
-      const idx = parseInt(id.slice(-2)) % colors.length;
-      return colors[idx];
-    }
-
-    const tabs = document.querySelectorAll('.rating-tab');
-    const panels = document.querySelectorAll('.rating-panel');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        tabs.forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        const sys = this.dataset.system;
-        panels.forEach(p => { p.classList.toggle('active', p.id === 'panel-' + sys); });
-      });
-    });
-
+    // 绘制 基准分对比图
     const baselineCanvas = document.getElementById('chart-baseline');
     if (baselineCanvas) {
-      const baselineScores = {{ exam.baseline_scores | jsonify }};
-      const results = {{ exam.results | jsonify }};
+      const baselineScores = {{ exam.baseline_scores | jsonify }} || {};
+      const results = {{ exam.results | jsonify }} || [];
+      
       const names = [];
       const actualData = [];
       const baselineData = [];
@@ -509,35 +545,48 @@ extra_scripts:
             {
               label: '实际得分',
               data: actualData,
-              borderColor: '#e2b04a',
-              backgroundColor: 'transparent',
+              borderColor: '#10b981', // Emerald
+              backgroundColor: '#10b98120',
               borderWidth: 3,
+              pointBackgroundColor: 'white',
+              pointBorderColor: '#10b981',
+              pointBorderWidth: 2,
               pointRadius: 6,
-              tension: 0.1
+              pointHoverRadius: 8,
+              tension: 0.3,
+              fill: true
             },
             {
-              label: '基准分',
+              label: '测算基准分',
               data: baselineData,
-              borderColor: '#5a8fcf',
+              borderColor: '#6366f1', // Indigo
               backgroundColor: 'transparent',
               borderWidth: 3,
+              pointBackgroundColor: 'white',
+              pointBorderColor: '#6366f1',
+              pointBorderWidth: 2,
               pointRadius: 6,
-              tension: 0.1,
-              borderDash: [5, 5]
+              pointHoverRadius: 8,
+              tension: 0.3,
+              borderDash: [6, 6]
             }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
           plugins: {
-            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } },
-            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' 分' } }
+            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
+            tooltip: { backgroundColor: 'rgba(17, 24, 39, 0.9)', callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' 分' } }
           },
-          scales: { y: { beginAtZero: true, title: { display: true, text: '分数' } } }
+          scales: { 
+            y: { beginAtZero: false, grid: { color: '#f3f4f6' }, title: { display: true, text: '考试分值' } },
+            x: { grid: { display: false } }
+          }
         }
       });
     }
-  })();
+  });
 </script>
 {% endif %}
