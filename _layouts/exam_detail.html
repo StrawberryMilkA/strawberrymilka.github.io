@@ -68,60 +68,34 @@ extra_head: |
     }
     .delta-table td:first-child { padding-left: 24px; font-weight: 500; color: var(--text-secondary); } /* 考号列样式 */
     .delta-table td:nth-child(2) { font-weight: 600; }
-    .delta-table tbody tr {
-      transition: background 0.15s;
-    }
-    .delta-table tbody tr:hover {
-      background: #f8f4eb;
-    }
-    .delta-table tbody tr:nth-child(even) {
-      background: #fafafc;
-    }
-    .delta-table tbody tr:nth-child(even):hover {
-      background: #f5f0e6;
-    }
-    .delta-table .delta-positive {
-      color: #1e7e34;
-      font-weight: 700;
-      background: #e8f5e9;
-      padding: 2px 12px;
-      border-radius: 20px;
-      display: inline-block;
-      font-size: 0.9rem;
-    }
-    .delta-table .delta-negative {
-      color: #b71c1c;
-      font-weight: 700;
-      background: #ffebee;
-      padding: 2px 12px;
-      border-radius: 20px;
-      display: inline-block;
-      font-size: 0.9rem;
-    }
-    .delta-table .delta-zero {
-      color: var(--text-muted);
-      font-weight: 500;
-      background: #f0f0f0;
-      padding: 2px 12px;
-      border-radius: 20px;
-      display: inline-block;
-      font-size: 0.9rem;
-    }
-    .delta-table .delta-arrow {
-      margin-right: 4px;
-    }
-    .delta-table .delta-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
+    .delta-table tbody tr { transition: background 0.15s; }
+    .delta-table tbody tr:hover { background: #f8f4eb; }
+    .delta-table tbody tr:nth-child(even) { background: #fafafc; }
+    .delta-table tbody tr:nth-child(even):hover { background: #f5f0e6; }
+    .delta-table .delta-positive { color: #1e7e34; font-weight: 700; background: #e8f5e9; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
+    .delta-table .delta-negative { color: #b71c1c; font-weight: 700; background: #ffebee; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
+    .delta-table .delta-zero { color: var(--text-muted); font-weight: 500; background: #f0f0f0; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
+    .delta-table .delta-arrow { margin-right: 4px; }
+    .delta-table .delta-badge { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    /* 难度徽章 */
+    .diff-badge { display:inline-block; padding:2px 7px; border-radius:12px; font-size:0.75rem; font-weight:700; }
+    .diff-easy    { background:#d1fae5; color:#065f46; }
+    .diff-mid     { background:#dcfce7; color:#166534; }
+    .diff-hard    { background:#fef9c3; color:#854d0e; }
+    .diff-harder  { background:#fed7aa; color:#9a3412; }
+    .diff-extreme { background:#fee2e2; color:#991b1b; }
+    .diff-cell    { background:#1f2937; padding:4px 8px; text-align:center; border-right:1px solid #374151; }
+
+    /* 得分色阶 — 在 <td> 上通过 Liquid 判断加 class */
+    .score-full   { background:#d1fae5 !important; color:#065f46; font-weight:600; }
+    .score-good   { background:#f0fdf4 !important; color:#166534; }
+    .score-mid    { background:#fefce8 !important; color:#854d0e; }
+    .score-low    { background:#fff1f2 !important; color:#be123c; }
+    .score-zero   { background:#fee2e2 !important; color:#991b1b; font-weight:700; }
+    
     /* 小屏适配 */
     @media (max-width: 600px) {
-      .delta-table th, .delta-table td {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-      }
+      .delta-table th, .delta-table td { padding: 10px 12px; font-size: 0.85rem; }
       .delta-table th:first-child, .delta-table td:first-child { padding-left: 16px; }
     }
     .back-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; color: var(--accent); font-weight: 600; }
@@ -155,7 +129,21 @@ extra_scripts:
           <th>考号</th>
           <th>姓名</th>
           {% for col in exam.columns_def %}
-            <th>{{ col.title }}</th>
+            {% if col.difficulty and col.is_subtotal == false %}
+              {% assign d = col.difficulty | plus: 0 %}
+              {% if d <= 4 %}{% assign diff_class = "diff-easy" %}
+              {% elsif d <= 7 %}{% assign diff_class = "diff-mid" %}
+              {% elsif d <= 10 %}{% assign diff_class = "diff-hard" %}
+              {% elsif d <= 13 %}{% assign diff_class = "diff-harder" %}
+              {% else %}{% assign diff_class = "diff-extreme" %}{% endif %}
+              <th class="diff-cell">
+                <span class="diff-badge {{ diff_class }}" title="难度{{ col.difficulty }} — 需约{{ col.difficulty | times: 10 }}分实力">
+                  {{ col.difficulty }}
+                </span>
+              </th>
+            {% else %}
+              <th class="diff-cell"><span style="color:#9ca3af">—</span></th>
+            {% endif %}
           {% endfor %}
         </tr>
       </thead>
@@ -165,7 +153,24 @@ extra_scripts:
           <td>{{ r.studentId }}</td>
           <td><strong>{{ r.name }}</strong></td>
           {% for col in exam.columns_def %}
-            <td>{{ r.columns[col.field] }}</td>
+            <!-- 👇 替换为得分色阶判断逻辑 -->
+            {% assign val = r.columns[col.field] | plus: 0 %}
+            {% assign max_s = col.max_score | plus: 0 %}
+            {% assign score_class = "" %}
+            {% if col.is_subtotal == false and max_s > 0 %}
+              {% if val == 0 %}
+                {% assign score_class = "score-zero" %}
+              {% elsif val == max_s %}
+                {% assign score_class = "score-full" %}
+              {% elsif val >= max_s | times: 0.7 %}
+                {% assign score_class = "score-good" %}
+              {% elsif val >= max_s | times: 0.4 %}
+                {% assign score_class = "score-mid" %}
+              {% else %}
+                {% assign score_class = "score-low" %}
+              {% endif %}
+            {% endif %}
+            <td class="{{ score_class }}">{{ val }}</td>
           {% endfor %}
         </tr>
         {% endfor %}
@@ -199,7 +204,7 @@ extra_scripts:
         {% if student %}
         <div class="player-card">
           <h3>{% if forloop.first %}🏆{% endif %} {{ student.name }} <span style="font-weight:400;font-size:0.9rem;">({{ r.studentId }})</span></h3>
-          <div class="score-total">总分 {{ r.columns.total }} 分（一试{{ r.columns.trial1_total }} + 二试{{ r.columns.trial2_total }}）</div>
+          <div class="score-total">总分 {{ r.columns.total }} 分</div>
           <p class="comment">{{ student.reviews[exam.id] }}</p>
         </div>
         {% endif %}
@@ -207,7 +212,7 @@ extra_scripts:
     </div>
   </section>
 
-  <!-- 三套 Rating Tab 切换 -->
+  <!-- Rating Tab 切换 -->
   <div class="rating-tabs-container">
     <h2>Rating 变化</h2>
       <div class="rating-tabs">
@@ -281,6 +286,40 @@ extra_scripts:
     {% endfor %}
   </div>
 
+  <!-- 👇 外部独立板块：基准分对比 -->
+  <div class="review-section">
+    <h2>📐 基准分对比</h2>
+    <p style="color: var(--text-secondary); margin-top: -16px; margin-bottom: 24px;">实际得分与基于试卷难度加权得出的基准分对比，反映学生临场发挥水平。</p>
+    <div class="rating-chart-container">
+      <canvas id="chart-baseline"></canvas>
+    </div>
+    <table class="delta-table">
+      <thead>
+        <tr><th>👤 姓名</th><th>📝 实际分</th><th>📐 基准分</th><th>🔄 差值</th></tr>
+      </thead>
+      <tbody>
+        {% for r in exam.results %}
+          {% assign bs = exam.baseline_scores[r.studentId] %}
+          {% assign delta = bs | minus: r.columns.total %}
+          <tr>
+            <td><strong>{{ r.name }}</strong></td>
+            <td>{{ r.columns.total }}</td>
+            <td>{{ bs }}</td>
+            <td>
+              {% if delta > 0 %}
+                <span class="delta-badge delta-negative">▼ -{{ delta }}</span>
+              {% elsif delta < 0 %}
+                <span class="delta-badge delta-positive">▲ +{{ delta | abs }}</span>
+              {% else %}
+                <span class="delta-badge delta-zero">— 0</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
   <a href="{{ '/weekly' | relative_url }}" class="back-link">← 返回联测列表</a>
 </div>
 
@@ -301,10 +340,7 @@ extra_scripts:
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      // 获取该系统的所有参赛学生数据（history 长度为 2）
       const sysData = examRatings[sys] || [];
-
-      // 准备数据集：每个学生一条线，两个点
       const datasets = sysData.map(item => {
         const student = allStudents.find(s => s.id === item.id);
         const name = student ? student.name : item.id;
@@ -319,39 +355,22 @@ extra_scripts:
           fill: false
         };
       });
-
-      // 横轴标签固定为“赛前”和“赛后”
       const labels = ['赛前', '赛后'];
 
       new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: labels,
-          datasets: datasets
-        },
+        data: { labels: labels, datasets: datasets },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } },
-            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y } }
-          },
-          scales: {
-            y: {
-              beginAtZero: false,
-              title: { display: true, text: sys === 'entertainment' ? 'Rating' : '分数' }
-            }
-          }
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } } },
+          scales: { y: { beginAtZero: false, title: { display: true, text: sys === 'entertainment' ? 'Rating' : '分数' } } }
         }
       });
     });
 
     // 辅助颜色生成
     function getColor(id) {
-      const colors = [
-        '#e2b04a', '#5a8fcf', '#6abf69', '#e05d5d', '#9b59b6', '#f39c12', '#1abc9c',
-        '#e67e22', '#2ecc71', '#3498db', '#e74c3c', '#8e44ad', '#2c3e50', '#d35400'
-      ];
+      const colors = ['#e2b04a', '#5a8fcf', '#6abf69', '#e05d5d', '#9b59b6', '#f39c12', '#1abc9c','#e67e22', '#2ecc71', '#3498db', '#e74c3c', '#8e44ad', '#2c3e50', '#d35400'];
       const idx = parseInt(id.slice(-2)) % colors.length;
       return colors[idx];
     }
@@ -364,11 +383,63 @@ extra_scripts:
         tabs.forEach(t => t.classList.remove('active'));
         this.classList.add('active');
         const sys = this.dataset.system;
-        panels.forEach(p => {
-          p.classList.toggle('active', p.id === 'panel-' + sys);
-        });
+        panels.forEach(p => { p.classList.toggle('active', p.id === 'panel-' + sys); });
       });
     });
+
+    // 👇 新增：独立绘制基准分对比图表
+    const baselineCanvas = document.getElementById('chart-baseline');
+    if (baselineCanvas) {
+      const baselineScores = {{ exam.baseline_scores | jsonify }};
+      const results = {{ exam.results | jsonify }};
+
+      const names = [];
+      const actualData = [];
+      const baselineData = [];
+
+      results.forEach(r => {
+        names.push(r.name);
+        actualData.push(r.columns.total);
+        baselineData.push(baselineScores[r.studentId] || 0);
+      });
+
+      new Chart(baselineCanvas, {
+        type: 'line',
+        data: {
+          labels: names,
+          datasets: [
+            {
+              label: '实际得分',
+              data: actualData,
+              borderColor: '#e2b04a',
+              backgroundColor: 'transparent',
+              borderWidth: 3,
+              pointRadius: 6,
+              tension: 0.1
+            },
+            {
+              label: '基准分',
+              data: baselineData,
+              borderColor: '#5a8fcf',
+              backgroundColor: 'transparent',
+              borderWidth: 3,
+              pointRadius: 6,
+              tension: 0.1,
+              borderDash: [5, 5]
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } },
+            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + ' 分' } }
+          },
+          scales: { y: { beginAtZero: true, title: { display: true, text: '分数' } } }
+        }
+      });
+    }
   })();
 </script>
 {% endif %}
