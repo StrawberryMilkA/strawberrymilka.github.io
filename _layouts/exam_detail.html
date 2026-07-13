@@ -90,6 +90,36 @@ extra_scripts:
 
   <!-- 成绩表格（动态列，按总分降序） -->
   {% assign results = exam.results | sort: "total" %}
+
+  <!-- 👇 新增：难度 & 得分色阶图例 -->
+  <div class="mb-4 flex flex-wrap items-center gap-3 text-sm">
+    <span class="font-semibold text-gray-600">难度色阶：</span>
+    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-medium">
+      <span>易</span><span class="opacity-60 text-xs">(1–4)</span>
+    </span>
+    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+      <span>中</span><span class="opacity-60 text-xs">(5–7)</span>
+    </span>
+    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">
+      <span>偏难</span><span class="opacity-60 text-xs">(8–10)</span>
+    </span>
+    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">
+      <span>难</span><span class="opacity-60 text-xs">(11–13)</span>
+    </span>
+    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
+      <span>极难</span><span class="opacity-60 text-xs">(14–20)</span>
+    </span>
+    <span class="ml-2 text-xs text-gray-400">| 难度 x → 需约 10x 分实力方可在考场完成</span>
+  </div>
+  <div class="mb-5 flex flex-wrap items-center gap-3 text-sm">
+    <span class="font-semibold text-gray-600">得分色阶：</span>
+    <span class="inline-flex items-center px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-medium text-xs">满分</span>
+    <span class="inline-flex items-center px-2 py-1 rounded bg-green-50 text-green-700 font-medium text-xs">≥70%</span>
+    <span class="inline-flex items-center px-2 py-1 rounded bg-yellow-50 text-yellow-700 font-medium text-xs">40–70%</span>
+    <span class="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-600 font-medium text-xs">&lt;40%</span>
+    <span class="inline-flex items-center px-2 py-1 rounded bg-red-100 text-red-700 font-medium text-xs">0分</span>
+  </div>
+
   <div class="table-wrapper">
     <table class="score-table">
       <!-- 👇 完全使用内联样式 + !important 解决覆盖问题 -->
@@ -121,7 +151,7 @@ extra_scripts:
           {% endfor %}
         </tr>
 
-        <!-- 第三行 -->
+        <!-- 第三行：难度指示（改为胶囊样式） -->
         <tr>
           {% for col in exam.columns_def %}
             {% if col.difficulty and col.is_subtotal == false %}
@@ -132,7 +162,9 @@ extra_scripts:
               {% elsif d <= 13 %}{% assign diff_bg = "bg-orange-100" %}{% assign diff_text = "text-orange-700" %}
               {% else %}{% assign diff_bg = "bg-red-100" %}{% assign diff_text = "text-red-700" %}{% endif %}
               <th class="px-1 py-1 border-r border-gray-700 text-center cursor-default" style="background-color: #1f2937 !important;" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
-                <span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold {{ diff_bg }} {{ diff_text }}">{{ col.difficulty }}</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ diff_bg }} {{ diff_text }}">
+                  {{ col.difficulty }}
+                </span>
               </th>
             {% else %}
               <th class="px-1 py-1 border-r border-gray-700 text-center" style="background-color: #1f2937 !important;">
