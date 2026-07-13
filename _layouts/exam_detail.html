@@ -3,16 +3,6 @@ layout: default
 active_nav: weekly
 extra_head: |
   <style>
-    /* 解决之前 CSS 覆盖 Tailwind 表头样式的问题 */
-    .score-table th {
-      background: unset !important;
-      color: unset !important;
-      padding: unset !important;
-    }
-    .score-table thead th {
-      background: unset !important;
-    }
-    
     .exam-detail-container { max-width: 1100px; margin: 0 auto; padding: 120px 24px 80px; }
     .exam-header { text-align: center; margin-bottom: 48px; }
     .exam-header h1 { font-size: 2.4rem; color: var(--text); }
@@ -20,6 +10,10 @@ extra_head: |
     .exam-meta span { background: var(--surface-alt); padding: 6px 18px; border-radius: 20px; }
     .table-wrapper { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--card-shadow); background: white; margin-bottom: 40px; }
     .score-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    
+    /* 1. 移除了 background 和 color，让 Tailwind 接管表头样式 */
+    .score-table th { padding: 16px 14px; font-weight: 600; text-align: center; }
+    
     .score-table td { padding: 14px 14px; text-align: center; border-bottom: 1px solid var(--border); }
     .score-table tbody tr:hover { background: #f5f0e6; }
     .score-table .avg-row { background: #ececec; font-weight: 600; color: var(--text); border-top: 2px solid var(--accent); }
@@ -43,39 +37,12 @@ extra_head: |
     .rating-panel h3 { font-size: 1.3rem; margin-bottom: 16px; }
     .rating-chart-container { height: 350px; margin-bottom: 24px; }
     /* ===== 美化后的变化明细表 ===== */
-    .delta-wrapper {
-      background: var(--surface-alt);
-      border-radius: var(--radius);
-      padding: 8px;
-      margin-top: 16px;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
-    }
-    .delta-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 0.95rem;
-      background: white;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-    }
-    .delta-table th {
-      background: var(--hero-bg);
-      color: #fff;
-      font-weight: 600;
-      padding: 14px 16px;
-      text-align: left;
-      letter-spacing: 0.3px;
-    }
+    .delta-wrapper { background: var(--surface-alt); border-radius: var(--radius); padding: 8px; margin-top: 16px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.04); }
+    .delta-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.95rem; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--card-shadow); }
+    .delta-table th { background: var(--hero-bg); color: #fff; font-weight: 600; padding: 14px 16px; text-align: left; letter-spacing: 0.3px; }
     .delta-table th:first-child { padding-left: 24px; }
-    .delta-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-      vertical-align: middle;
-    }
-    .delta-table td:first-child { padding-left: 24px; font-weight: 500; color: var(--text-secondary); } /* 考号列样式 */
+    .delta-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+    .delta-table td:first-child { padding-left: 24px; font-weight: 500; color: var(--text-secondary); }
     .delta-table td:nth-child(2) { font-weight: 600; }
     .delta-table tbody tr { transition: background 0.15s; }
     .delta-table tbody tr:hover { background: #f8f4eb; }
@@ -125,9 +92,8 @@ extra_scripts:
   {% assign results = exam.results | sort: "total" %}
   <div class="table-wrapper">
     <table class="score-table">
-      <!-- 👇 1. 替换为三行复杂表头，完全匹配你提供的 Tailwind 样式 -->
+      <!-- 三行复杂表头（使用 Tailwind 类） -->
       <thead>
-        <!-- 第一行：按模块分类分组（使用 rowspan 和 colspan 合并单元格） -->
         <tr>
           <th rowspan="3" class="left-0 z-20 bg-gray-900 text-white px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[72px]">考号</th>
           <th rowspan="3" class="bg-gray-900 text-white px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[80px]">姓名</th>
@@ -138,7 +104,6 @@ extra_scripts:
           <th colspan="1" class="bg-gray-800 text-gray-200 px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide">总分</th>
         </tr>
         
-        <!-- 第二行：具体的题号和满分 -->
         <tr>
           {% for col in exam.columns_def %}
             {% if col.is_subtotal %}
@@ -154,7 +119,6 @@ extra_scripts:
           {% endfor %}
         </tr>
 
-        <!-- 第三行：难度徽章 -->
         <tr>
           {% for col in exam.columns_def %}
             {% if col.difficulty and col.is_subtotal == false %}
@@ -182,7 +146,6 @@ extra_scripts:
           <td>{{ r.studentId }}</td>
           <td><strong>{{ r.name }}</strong></td>
           {% for col in exam.columns_def %}
-            <!-- 下面保持你之前修好的得分色阶判断逻辑 -->
             {% assign val = r.columns[col.field] | plus: 0 %}
             {% assign max_s = col.max_score | plus: 0 %}
             {% assign score_class = "" %}
@@ -244,6 +207,7 @@ extra_scripts:
   <!-- Rating Tab 切换 -->
   <div class="rating-tabs-container">
     <h2>Rating 变化</h2>
+    <br>
       <div class="rating-tabs">
         {% for pair in exam.ratings %}
           {% assign sys = pair[0] %}
@@ -274,7 +238,6 @@ extra_scripts:
           <canvas id="chart-{{ sys }}"></canvas>
         </div>
         <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">💡 点击姓名可查看该生完整的 Rating 变化历史</p>
-        <!-- 变化明细表 -->
         <table class="delta-table">
           <thead>
             <tr>
@@ -318,6 +281,7 @@ extra_scripts:
   <!-- 👇 外部独立板块：基准分对比 -->
   <div class="review-section">
     <h2>📐 基准分对比</h2>
+    <br>
     <p style="color: var(--text-secondary); margin-top: -16px; margin-bottom: 24px;">实际得分与基于试卷难度加权得出的基准分对比，反映学生临场发挥水平。</p>
     <div class="rating-chart-container">
       <canvas id="chart-baseline"></canvas>
@@ -356,26 +320,21 @@ extra_scripts:
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   (function() {
-    // 从 exam.ratings 获取本场前后数据
     const examRatings = {{ exam.ratings | jsonify }};
     const allStudents = {{ students_data | jsonify }};
-
-    // 获取所有系统键
     const systemKeys = Object.keys(examRatings);
 
-    // 为每个系统绘制折线图（仅显示本场赛前赛后两个点）
     systemKeys.forEach(sys => {
       const canvas = document.getElementById('chart-' + sys);
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-
       const sysData = examRatings[sys] || [];
       const datasets = sysData.map(item => {
         const student = allStudents.find(s => s.id === item.id);
         const name = student ? student.name : item.id;
         return {
           label: name,
-          data: item.history, // [before, after]
+          data: item.history,
           borderColor: getColor(item.id),
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -385,7 +344,6 @@ extra_scripts:
         };
       });
       const labels = ['赛前', '赛后'];
-
       new Chart(ctx, {
         type: 'line',
         data: { labels: labels, datasets: datasets },
@@ -397,14 +355,12 @@ extra_scripts:
       });
     });
 
-    // 辅助颜色生成
     function getColor(id) {
       const colors = ['#e2b04a', '#5a8fcf', '#6abf69', '#e05d5d', '#9b59b6', '#f39c12', '#1abc9c','#e67e22', '#2ecc71', '#3498db', '#e74c3c', '#8e44ad', '#2c3e50', '#d35400'];
       const idx = parseInt(id.slice(-2)) % colors.length;
       return colors[idx];
     }
 
-    // Tab 切换逻辑
     const tabs = document.querySelectorAll('.rating-tab');
     const panels = document.querySelectorAll('.rating-panel');
     tabs.forEach(tab => {
@@ -416,12 +372,10 @@ extra_scripts:
       });
     });
 
-    // 👇 新增：独立绘制基准分对比图表
     const baselineCanvas = document.getElementById('chart-baseline');
     if (baselineCanvas) {
       const baselineScores = {{ exam.baseline_scores | jsonify }};
       const results = {{ exam.results | jsonify }};
-
       const names = [];
       const actualData = [];
       const baselineData = [];
