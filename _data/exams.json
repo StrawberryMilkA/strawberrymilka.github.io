@@ -61,7 +61,7 @@
     "pinned": false,
     "sort_date": "2026-06-19",
     "rating_index": 2,
-    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2026全国一卷，单选题（题1-8）全员满分40分，展现出扎实的基础功底。最高分<strong>丁致远135分</strong>，与第二名曾奂霖（129分）差距仅6分，竞争异常激烈。</p><p>多选题（题9-11）得分率83%，题11（满分4分）得分率仅50%，是本次区分度最大的选择题。填空题（题12-14）题14无人得分，为本次最难题型之一。大题（题15-19）题15、16表现最佳，题19（满分17分）得分率仅51%，说明压轴大题仍是普遍弱点。</p>",
+    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2026全国一卷，单选题（题1-8）全员满分40分，展现出扎实的基础功底。最高分<strong>丁致远135分</strong>，与第二名曾奂霖（129分）差距仅6分，竞争异常激烈。</p><p>多选题（题9-11）得分率83%，题11（满分6分）得分率仅50%，是本次区分度最大的选择题。填空题（题12-14）题14仅一人得分，为本次最难题型之一。大题（题15-19）题15、16表现最佳，题19（满分17分）得分率仅51%，说明压轴大题仍是普遍弱点。</p>",
     "columns_def": [
       { "field": "q1", "title": "T1", "is_subtotal": false, "difficulty": 1, "max_score": 5 },
       { "field": "q2", "title": "T2", "is_subtotal": false, "difficulty": 2, "max_score": 5 },
@@ -74,7 +74,7 @@
       { "field": "single_total", "title": "单选合计", "is_subtotal": true },
       { "field": "q9", "title": "T9", "is_subtotal": false, "difficulty": 4, "max_score": 6 },
       { "field": "q10", "title": "T10", "is_subtotal": false, "difficulty": 9, "max_score": 6 },
-      { "field": "q11", "title": "T11", "is_subtotal": false, "difficulty": 14, "max_score": 4 },
+      { "field": "q11", "title": "T11", "is_subtotal": false, "difficulty": 14, "max_score": 6 },
       { "field": "multi_total", "title": "多选合计", "is_subtotal": true },
       { "field": "q12", "title": "T12", "is_subtotal": false, "difficulty": 4, "max_score": 5 },
       { "field": "q13", "title": "T13", "is_subtotal": false, "difficulty": 10, "max_score": 5 },
