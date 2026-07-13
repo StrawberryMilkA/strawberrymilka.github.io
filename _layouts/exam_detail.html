@@ -184,7 +184,7 @@ extra_scripts:
       <span>⏱ {{ exam.time }}</span>
       {% assign participants = exam.results | size %}
       <span>👥 {{ participants }}人参赛</span>
-      {% assign sorted_results = exam.results | sort: "total" | reverse %}
+      {% assign sorted_results = exam.results | sort: "total" %}
       <span>🏆 最高分：{{ sorted_results.first.name }} {{ sorted_results.first.columns.total }}分</span>
     </div>
   </div>
