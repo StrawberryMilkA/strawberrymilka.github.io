@@ -3,6 +3,16 @@ layout: default
 active_nav: weekly
 extra_head: |
   <style>
+    /* 解决之前 CSS 覆盖 Tailwind 表头样式的问题 */
+    .score-table th {
+      background: unset !important;
+      color: unset !important;
+      padding: unset !important;
+    }
+    .score-table thead th {
+      background: unset !important;
+    }
+    
     .exam-detail-container { max-width: 1100px; margin: 0 auto; padding: 120px 24px 80px; }
     .exam-header { text-align: center; margin-bottom: 48px; }
     .exam-header h1 { font-size: 2.4rem; color: var(--text); }
@@ -10,7 +20,6 @@ extra_head: |
     .exam-meta span { background: var(--surface-alt); padding: 6px 18px; border-radius: 20px; }
     .table-wrapper { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--card-shadow); background: white; margin-bottom: 40px; }
     .score-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-    .score-table th { background: var(--hero-bg); color: #ffffff; padding: 16px 14px; font-weight: 600; text-align: center; }
     .score-table td { padding: 14px 14px; text-align: center; border-bottom: 1px solid var(--border); }
     .score-table tbody tr:hover { background: #f5f0e6; }
     .score-table .avg-row { background: #ececec; font-weight: 600; color: var(--text); border-top: 2px solid var(--accent); }
@@ -77,15 +86,7 @@ extra_head: |
     .delta-table .delta-zero { color: var(--text-muted); font-weight: 500; background: #f0f0f0; padding: 2px 12px; border-radius: 20px; display: inline-block; font-size: 0.9rem; }
     .delta-table .delta-arrow { margin-right: 4px; }
     .delta-table .delta-badge { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-    /* 难度徽章 */
-    .diff-badge { display:inline-block; padding:2px 7px; border-radius:12px; font-size:0.75rem; font-weight:700; }
-    .diff-easy    { background:#d1fae5; color:#065f46; }
-    .diff-mid     { background:#dcfce7; color:#166534; }
-    .diff-hard    { background:#fef9c3; color:#854d0e; }
-    .diff-harder  { background:#fed7aa; color:#9a3412; }
-    .diff-extreme { background:#fee2e2; color:#991b1b; }
-    .diff-cell    { background:#1f2937; padding:4px 8px; text-align:center; border-right:1px solid #374151; }
-
+    
     /* 得分色阶 — 在 <td> 上通过 Liquid 判断加 class */
     .score-full   { background:#d1fae5 !important; color:#065f46; font-weight:600; }
     .score-good   { background:#f0fdf4 !important; color:#166534; }
@@ -124,36 +125,64 @@ extra_scripts:
   {% assign results = exam.results | sort: "total" %}
   <div class="table-wrapper">
     <table class="score-table">
+      <!-- 👇 1. 替换为三行复杂表头，完全匹配你提供的 Tailwind 样式 -->
       <thead>
+        <!-- 第一行：按模块分类分组（使用 rowspan 和 colspan 合并单元格） -->
         <tr>
-          <th>考号</th>
-          <th>姓名</th>
+          <th rowspan="3" class="left-0 z-20 bg-gray-900 text-white px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[72px]">考号</th>
+          <th rowspan="3" class="bg-gray-900 text-white px-4 py-3 text-center font-semibold border-r border-gray-700 min-w-[80px]">姓名</th>
+          <th colspan="9" class="bg-gray-800 text-gray-200 px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide">单选题</th>
+          <th colspan="4" class="bg-gray-800 text-gray-200 px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide">多选题</th>
+          <th colspan="4" class="bg-gray-800 text-gray-200 px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide">填空题</th>
+          <th colspan="6" class="bg-gray-800 text-gray-200 px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide">大题</th>
+          <th colspan="1" class="bg-gray-800 text-gray-200 px-3 py-2 text-center font-semibold border-r border-gray-700 text-xs tracking-wide">总分</th>
+        </tr>
+        
+        <!-- 第二行：具体的题号和满分 -->
+        <tr>
+          {% for col in exam.columns_def %}
+            {% if col.is_subtotal %}
+              <th class="bg-gray-900 text-white px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px] transition-colors cursor-default bg-gray-700 text-amber-300">
+                {{ col.title }}
+              </th>
+            {% else %}
+              <th class="bg-gray-900 text-white px-3 py-2 text-center font-semibold border-r border-gray-700 min-w-[52px] transition-colors cursor-default">
+                {{ col.title }}
+                <span class="block text-xs font-normal text-gray-400">/{{ col.max_score }}</span>
+              </th>
+            {% endif %}
+          {% endfor %}
+        </tr>
+
+        <!-- 第三行：难度徽章 -->
+        <tr>
           {% for col in exam.columns_def %}
             {% if col.difficulty and col.is_subtotal == false %}
               {% assign d = col.difficulty | plus: 0 %}
-              {% if d <= 4 %}{% assign diff_class = "diff-easy" %}
-              {% elsif d <= 7 %}{% assign diff_class = "diff-mid" %}
-              {% elsif d <= 10 %}{% assign diff_class = "diff-hard" %}
-              {% elsif d <= 13 %}{% assign diff_class = "diff-harder" %}
-              {% else %}{% assign diff_class = "diff-extreme" %}{% endif %}
-              <th class="diff-cell">
-                <span class="diff-badge {{ diff_class }}" title="难度{{ col.difficulty }} — 需约{{ col.difficulty | times: 10 }}分实力">
-                  {{ col.difficulty }}
-                </span>
+              {% if d <= 4 %}{% assign diff_bg = "bg-emerald-100" %}{% assign diff_text = "text-emerald-700" %}
+              {% elsif d <= 7 %}{% assign diff_bg = "bg-green-100" %}{% assign diff_text = "text-green-700" %}
+              {% elsif d <= 10 %}{% assign diff_bg = "bg-yellow-100" %}{% assign diff_text = "text-yellow-700" %}
+              {% elsif d <= 13 %}{% assign diff_bg = "bg-orange-100" %}{% assign diff_text = "text-orange-700" %}
+              {% else %}{% assign diff_bg = "bg-red-100" %}{% assign diff_text = "text-red-700" %}{% endif %}
+              <th class="bg-gray-800 px-1 py-1 border-r border-gray-700 text-center cursor-default" title="难度 {{ col.difficulty }} — 需约 {{ col.difficulty | times: 10 }} 分实力">
+                <span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold {{ diff_bg }} {{ diff_text }}">{{ col.difficulty }}</span>
               </th>
             {% else %}
-              <th class="diff-cell"><span style="color:#9ca3af">—</span></th>
+              <th class="bg-gray-800 px-1 py-1 border-r border-gray-700 text-center">
+                <span class="text-gray-500 text-xs">—</span>
+              </th>
             {% endif %}
           {% endfor %}
         </tr>
       </thead>
+
       <tbody>
         {% for r in results %}
         <tr {% if forloop.first %}style="font-weight:600; background:#fbf5e8;"{% endif %}>
           <td>{{ r.studentId }}</td>
           <td><strong>{{ r.name }}</strong></td>
           {% for col in exam.columns_def %}
-            <!-- 👇 替换为得分色阶判断逻辑 -->
+            <!-- 下面保持你之前修好的得分色阶判断逻辑 -->
             {% assign val = r.columns[col.field] | plus: 0 %}
             {% assign max_s = col.max_score | plus: 0 %}
             {% assign score_class = "" %}
