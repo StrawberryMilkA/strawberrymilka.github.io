@@ -351,6 +351,7 @@ extra_scripts:
         <p style="margin-top: 6px; font-weight: 600;">基准分的意义：消除不同场次卷子难度差异后，各场成绩可直接横向对比，客观反映选手实力。</p>
       </div>
 
+      {% if exam.baseline_scores and exam.baseline_scores != empty %}
       <div class="table-wrapper" style="box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-radius: 14px;">
         <table class="delta-table">
           <thead>
@@ -382,6 +383,12 @@ extra_scripts:
         </table>
       </div>
       <div class="chart-container"><canvas id="chart-baseline"></canvas></div>
+      {% else %}
+      <div class="info-banner banner-yellow" style="margin-top: 20px;">
+        <p class="info-banner-title"><span>⚠️</span> 本次联测未计算基准分</p>
+        <p class="desc">该场考试尚未录入基准分数据，无法提供基准分对比。</p>
+      </div>
+      {% endif %}
     </div>
 
     <!-- ===== Panel 3: Rating ===== -->
