@@ -1,10 +1,10 @@
 {
   "gaokaoMath": [
-    { "id": "100001", "history": [null, null, 156] },
-    { "id": "100002", "history": [null, null, 148] },
-    { "id": "100003", "history": [null, null, 144] },
+    { "id": "100001", "history": [null, null, 129] },
+    { "id": "100002", "history": [null, null, 135] },
+    { "id": "100003", "history": [null, null, 115] },
     { "id": "100005", "history": [null, null, null] },
-    { "id": "100006", "history": [null, null, 136] },
+    { "id": "100006", "history": [null, null, 126] },
     { "id": "100007", "history": [null, null, null] },
     { "id": "500001", "history": [null, null, null] }
   ],
