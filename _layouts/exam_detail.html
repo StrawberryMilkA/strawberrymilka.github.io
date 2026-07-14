@@ -517,12 +517,12 @@ extra_scripts:
                 {% elsif exam.category == "gaokao-math" %}
                   {% assign sec_names = "单选,多选,填空,大题" | split: "," %}
                   {% assign sec_fields = "single_total,multi_total,fill_total,big_total" | split: "," %}
-                  {% assign sec_maxs = "40,16,15,79" | split: "," %}
+                  {% assign sec_maxs = "40,18,15,79" | split: "," %}
                   {% for i in (0..3) %}
                     {% assign field = sec_fields[i] %}{% assign max = sec_maxs[i] | plus: 0 %}
                     {% assign val = r.columns[field] | default: 0 %}
                     {% assign ratio = val | times: 1.0 | divided_by: max %}
-                    <span class="mini-score-chip {% if ratio >= 1 %}mini-chip-full{% elsif ratio >= 0.7 %}mini-chip-good{% else %}mini-chip-bad{% endif %}">
+                    <span class="mini-score-chip {% if ratio >= 1 %}mini-chip-full{% elsif ratio >= 0.65 %}mini-chip-good{% else %}mini-chip-bad{% endif %}">
                       {{ sec_names[i] }} {{ val }}/{{ max }}
                     </span>
                   {% endfor %}
