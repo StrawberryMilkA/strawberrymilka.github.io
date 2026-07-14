@@ -48,6 +48,98 @@
   },
   {
     "id": "2",
+    "title": "2026.5.13 高联联测",
+    "date": "2026.5.13",
+    "time": "一试 19:00-20:20 二试 20:30-21:30",
+    "source": "2025广东预赛",
+    "code": "ABHM_LCGL_25GD",
+    "category": "entertainment",
+    "card_quote": "md数归差点就写完了",
+    "participants": 7,
+    "top_score": 121,
+    "top_name": "丁致远",
+    "pinned": false,
+    "sort_date": "2026-05-13",
+    "rating_index": 2,
+    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2025年广东省预赛试题，最高分<strong>丁致远121分</strong>，高联部部长一改上次二试零蛋的遗憾，一试81分强势领跑，T11满分、T12斩获5分，并在二试T1也拿到满分40分，充分展现了扎实的竞赛实力。</p><p style='margin-top:12px;'>曾奂霖以118分紧随其后，二试T1同样满分，二者差距主要在一试T12及填空题。邹宗睿103分表现稳健，赵哲宇与何慕均为58分并列第四。张浩民与李沂铮分列六七位，仍有较大提升空间。总体来看，本次联测竞争更为激烈，区分度较上次有所提升。</p>",
+    "columns_def": [
+      { "field": "fill", "title": "填空", "is_subtotal": false, "max_score": 80 },
+      { "field": "t11", "title": "T11", "is_subtotal": false, "max_score": 20 },
+      { "field": "t12", "title": "T12", "is_subtotal": false, "max_score": 20 },
+      { "field": "trial1_total", "title": "一试总分", "is_subtotal": true },
+      { "field": "trial2_t1", "title": "二试 T1", "is_subtotal": false, "max_score": 40 },
+      { "field": "trial2_t2", "title": "二试 T2", "is_subtotal": false, "max_score": 40 },
+      { "field": "trial2_total", "title": "二试总分", "is_subtotal": true },
+      { "field": "total", "title": "总分", "is_subtotal": true }
+    ],
+    "results": [
+      { "studentId": "100002", "name": "丁致远", "columns": { "fill": 56, "t11": 20, "t12": 5, "trial1_total": 81, "trial2_t1": 40, "trial2_t2": 0, "trial2_total": 40, "total": 121 } },
+      { "studentId": "100001", "name": "曾奂霖", "columns": { "fill": 48, "t11": 20, "t12": 0, "trial1_total": 68, "trial2_t1": 40, "trial2_t2": 10, "trial2_total": 50, "total": 118 } },
+      { "studentId": "100003", "name": "邹宗睿", "columns": { "fill": 48, "t11": 10, "t12": 5, "trial1_total": 63, "trial2_t1": 30, "trial2_t2": 10, "trial2_total": 40, "total": 103 } },
+      { "studentId": "100005", "name": "何慕", "columns": { "fill": 48, "t11": 5, "t12": 5, "trial1_total": 58, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 58 } },
+      { "studentId": "100007", "name": "赵哲宇", "columns": { "fill": 48, "t11": 10, "t12": 0, "trial1_total": 58, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 58 } },
+      { "studentId": "100006", "name": "张浩民", "columns": { "fill": 32, "t11": 10, "t12": 0, "trial1_total": 42, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 42 } },
+      { "studentId": "500001", "name": "李沂铮", "columns": { "fill": 24, "t11": 0, "t12": 0, "trial1_total": 24, "trial2_t1": 0, "trial2_t2": 10, "trial2_total": 10, "total": 34 } }
+    ],
+    "ratings": {
+      "entertainment": [
+        { "id": "100001", "history": [1596, 1631] },
+        { "id": "100002", "history": [1501, 1596] },
+        { "id": "100003", "history": [1564, 1576] },
+        { "id": "100005", "history": [1404, 1417] },
+        { "id": "100006", "history": [1452, 1403] },
+        { "id": "100007", "history": [1532, 1506] },
+        { "id": "500001", "history": [1452, 1371] }
+      ]
+    }
+  },
+  {
+    "id": "3",
+    "title": "2026.5.20 高联联测",
+    "date": "2026.5.20",
+    "time": "一试 19:00-20:20 二试 20:30-21:30",
+    "source": "2024广东预赛",
+    "code": "ABHM_LCGL_24GD",
+    "category": "entertainment",
+    "card_quote": "520❤ 用数学表白，最浪漫的事",
+    "participants": 6,
+    "top_score": 110,
+    "top_name": "邹宗睿",
+    "pinned": false,
+    "sort_date": "2026-05-20",
+    "rating_index": 3,
+    "overall_review": "<p><strong>整体表现：</strong>本次联测恰逢520，选用2024年广东省预赛试题。最高分<strong>邹宗睿110分</strong>，高联部副部长一改往日二试T1无解的遗憾，一试80分大幅领先，二试T1也拿下20分，总分110分登顶，全面爆发。</p><p style='margin-top:12px;'>曾奂霖96分位列第二，二试T1满分40分是本场最佳单题表现，但一试T11意外失手0分较为可惜。张浩民84分表现亮眼，二试T1同样满分40分，大幅刷新个人最好成绩。丁致远本场一试发挥不稳，仅32分，但二试T1逆风满分，总分72分列第四。赵哲宇与何慕分列五六位，总体本场二试T1表现普遍出色，创历届联测最高二试T1参与度。</p>",
+    "columns_def": [
+      { "field": "fill", "title": "填空", "is_subtotal": false, "max_score": 80 },
+      { "field": "t11", "title": "T11", "is_subtotal": false, "max_score": 20 },
+      { "field": "t12", "title": "T12", "is_subtotal": false, "max_score": 20 },
+      { "field": "trial1_total", "title": "一试总分", "is_subtotal": true },
+      { "field": "trial2_t1", "title": "二试 T1", "is_subtotal": false, "max_score": 40 },
+      { "field": "trial2_t2", "title": "二试 T2", "is_subtotal": false, "max_score": 40 },
+      { "field": "trial2_total", "title": "二试总分", "is_subtotal": true },
+      { "field": "total", "title": "总分", "is_subtotal": true }
+    ],
+    "results": [
+      { "studentId": "100003", "name": "邹宗睿", "columns": { "fill": 56, "t11": 16, "t12": 8, "trial1_total": 80, "trial2_t1": 20, "trial2_t2": 10, "trial2_total": 30, "total": 110 } },
+      { "studentId": "100001", "name": "曾奂霖", "columns": { "fill": 48, "t11": 0, "t12": 8, "trial1_total": 56, "trial2_t1": 40, "trial2_t2": 0, "trial2_total": 40, "total": 96 } },
+      { "studentId": "100006", "name": "张浩民", "columns": { "fill": 32, "t11": 4, "t12": 8, "trial1_total": 44, "trial2_t1": 40, "trial2_t2": 0, "trial2_total": 40, "total": 84 } },
+      { "studentId": "100002", "name": "丁致远", "columns": { "fill": 24, "t11": 0, "t12": 8, "trial1_total": 32, "trial2_t1": 40, "trial2_t2": 0, "trial2_total": 40, "total": 72 } },
+      { "studentId": "100007", "name": "赵哲宇", "columns": { "fill": 16, "t11": 4, "t12": 4, "trial1_total": 24, "trial2_t1": 40, "trial2_t2": 0, "trial2_total": 40, "total": 64 } },
+      { "studentId": "100005", "name": "何慕", "columns": { "fill": 40, "t11": 4, "t12": 16, "trial1_total": 60, "trial2_t1": 0, "trial2_t2": 0, "trial2_total": 0, "total": 60 } }
+    ],
+    "ratings": {
+      "entertainment": [
+        { "id": "100001", "history": [1631, 1651] },
+        { "id": "100002", "history": [1596, 1561] },
+        { "id": "100003", "history": [1576, 1642] },
+        { "id": "100005", "history": [1417, 1364] },
+        { "id": "100006", "history": [1403, 1449] },
+        { "id": "100007", "history": [1506, 1462] }
+      ]
+    }
+  },
+  {
+    "id": "4",
     "title": "2026.6.19 高考数学联测",
     "date": "2026.6.19",
     "time": "19:30-21:30",
