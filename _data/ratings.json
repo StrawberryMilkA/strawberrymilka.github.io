@@ -1,29 +1,225 @@
 {
   "gaokaoMath": [
-    { "id": "100001", "history": [null, null, null, null, 129] },
-    { "id": "100002", "history": [null, null, null, null, 135] },
-    { "id": "100003", "history": [null, null, null, null, 115] },
-    { "id": "100005", "history": [null, null, null, null, null] },
-    { "id": "100006", "history": [null, null, null, null, 126] },
-    { "id": "100007", "history": [null, null, null, null, null] },
-    { "id": "500001", "history": [null, null, null, null, null] }
+    {
+      "id": "100001",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        129,
+        130
+      ]
+    },
+    {
+      "id": "100002",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        135,
+        136
+      ]
+    },
+    {
+      "id": "100003",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        115,
+        118
+      ]
+    },
+    {
+      "id": "100005",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "100006",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        126,
+        122
+      ]
+    },
+    {
+      "id": "100007",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "500001",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
   ],
   "gaokaoPhy": [
-    { "id": "100001", "history": [null, null, null, null, null] },
-    { "id": "100002", "history": [null, null, null, null, null] },
-    { "id": "100003", "history": [null, null, null, null, null] },
-    { "id": "100005", "history": [null, null, null, null, null] },
-    { "id": "100006", "history": [null, null, null, null, null] },
-    { "id": "100007", "history": [null, null, null, null, null] },
-    { "id": "500001", "history": [null, null, null, null, null] }
+    {
+      "id": "100001",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "100002",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "100003",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "100005",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "100006",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "100007",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "id": "500001",
+      "history": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
   ],
   "entertainment": [
-    { "id": "100001", "history": [1500, 1596, 1631, 1651, null] },
-    { "id": "100002", "history": [1500, 1501, 1596, 1561, null] },
-    { "id": "100003", "history": [1500, 1564, 1576, 1642, null] },
-    { "id": "100005", "history": [1500, 1404, 1417, 1364, null] },
-    { "id": "100006", "history": [1500, 1452, 1403, 1449, null] },
-    { "id": "100007", "history": [1500, 1532, 1506, 1462, null] },
-    { "id": "500001", "history": [1500, 1452, 1371, null,  null] }
+    {
+      "id": "100001",
+      "history": [
+        1500,
+        1596,
+        1631,
+        1651,
+        null
+      ]
+    },
+    {
+      "id": "100002",
+      "history": [
+        1500,
+        1501,
+        1596,
+        1561,
+        null
+      ]
+    },
+    {
+      "id": "100003",
+      "history": [
+        1500,
+        1564,
+        1576,
+        1642,
+        null
+      ]
+    },
+    {
+      "id": "100005",
+      "history": [
+        1500,
+        1404,
+        1417,
+        1364,
+        null
+      ]
+    },
+    {
+      "id": "100006",
+      "history": [
+        1500,
+        1452,
+        1403,
+        1449,
+        null
+      ]
+    },
+    {
+      "id": "100007",
+      "history": [
+        1500,
+        1532,
+        1506,
+        1462,
+        null
+      ]
+    },
+    {
+      "id": "500001",
+      "history": [
+        1500,
+        1452,
+        1371,
+        null,
+        null
+      ]
+    }
   ]
 }
