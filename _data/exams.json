@@ -1002,14 +1002,14 @@
     "source": "2026全国二卷",
     "code": "ABHM_LC_26GKII",
     "category": "gaokao-math",
-    "card_quote": "笑里藏刀，杀人于无形之中",
+    "card_quote": "大题杀人于无形之中",
     "participants": 4,
     "top_score": 135,
     "top_name": "丁致远",
     "pinned": false,
     "sort_date": "2026-06-15",
     "rating_index": 5,
-    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2026全国二卷，呈现出鲜明的“前松后紧”特征。试题前段（单选1-8）极为友好，平均得分率达100%，全员均拿下满分40分，彰显了大家对基础送分题的绝对掌控力。</p><p style='margin-top:12px;'>然而随着试题深入，难度阶梯陡增。在多选部分，张浩民以18分夺得全场唯一多选满分，表现亮眼；填空题则开始出现分化，压轴填空T14难度极大，仅邹宗睿与张浩民两人成功拿下5分，余下同学均为0分，成为小题部分的“分水岭”。</p><p style='margin-top:12px;'>真正拉开差距的是后半程大题。T15、T16多数同学发挥稳健，但T17之后难度骤然升级：T17仅丁致远、曾奂霖拿下满分，张浩民仅得5分；T18丁致远以17分满分独秀，其余同学均在8-13分区间。而压轴大题T19堪称本场最大“拦路虎”，均分仅为8分（满分17分），除丁致远与曾奂霖凭借扎实功底拼下12分外，邹宗睿与张浩民分别仅得2分与4分。这充分暴露出大家在面对高难度、新情境综合压轴题时，破局能力与应变策略仍存在明显短板。</p><p style='margin-top:12px;'>总体来看，本次联测区分度极高，基础分大家均能稳稳守住，而谁能在攻坚克难阶段抢占先机，谁便能主导排名。此后备考中，针对压轴题的系统训练与临场策略优化势在必行。</p>",
+    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2026全国二卷，试题前段单选部分极为友好，实现全员满分；但后半程大题难度陡增，特别是第19题均分仅为8分，充分暴露了大家在综合压轴题应对能力上的显著差距。</p>",
     "columns_def": [
       {
         "field": "q1",
@@ -1279,8 +1279,8 @@
           "q11": 6,
           "multi_total": 18,
           "q12": 5,
-          "q13": 0,
-          "q14": 5,
+          "q13": 5,
+          "q14": 0,
           "fill_total": 10,
           "q15": 13,
           "q16": 5,
@@ -1350,6 +1350,361 @@
           ]
         }
       ]
+    }
+  },
+  {
+    "id": "6",
+    "title": "2026.6.22 2025深圳二模联测",
+    "date": "2026.6.22",
+    "time": "18:20-20:20",
+    "source": "2025深圳二模",
+    "code": "ABHM_LC_2026_GS1",
+    "category": "gaokao-math",
+    "card_quote": "新定义直接爽飞",
+    "participants": 5,
+    "top_score": 129,
+    "top_name": "曾奂霖",
+    "pinned": false,
+    "sort_date": "2026-06-22",
+    "rating_index": 6,
+    "overall_review": "<p><strong>整体表现：</strong>本次联测选用2025深圳二模，整体平均分113.75分，难度曲线呈现出极强的“断崖式”特征。前8道单选题整体友好，但前排选手也出现了T1、T6、T7的非典型失分，说明基础环节仍有瑕疵。试卷真正的“鬼门关”在于填空与压轴大题：T13（难度9）堪称全场“死亡之题”，仅有张浩民一人拿下5分，其余4人均吞零蛋；压轴大题T19（难度14）得分率暴跌至27%，均分仅为4.6分，是决定梯队排名的决定性分水岭。整体来看，大家在保底分数上都做得不错，但在高难度、高思维量的压轴关卡上，集体“翻车”现象严重，后续专攻攻坚克难将是提分关键。</p>",
+    "columns_def": [
+      {
+        "field": "q1",
+        "title": "1",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q2",
+        "title": "2",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q3",
+        "title": "3",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q4",
+        "title": "4",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q5",
+        "title": "5",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q6",
+        "title": "6",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q7",
+        "title": "7",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q8",
+        "title": "8",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "___",
+        "title": "单选总",
+        "is_subtotal": true
+      },
+      {
+        "field": "q9",
+        "title": "9",
+        "is_subtotal": false,
+        "max_score": 6
+      },
+      {
+        "field": "q10",
+        "title": "10",
+        "is_subtotal": false,
+        "max_score": 6
+      },
+      {
+        "field": "q11",
+        "title": "11",
+        "is_subtotal": false,
+        "max_score": 6
+      },
+      {
+        "field": "___",
+        "title": "多选总",
+        "is_subtotal": true
+      },
+      {
+        "field": "q12",
+        "title": "12",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q13",
+        "title": "13",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "q14",
+        "title": "14",
+        "is_subtotal": false,
+        "max_score": 5
+      },
+      {
+        "field": "___",
+        "title": "填空总",
+        "is_subtotal": true
+      },
+      {
+        "field": "q15",
+        "title": "15",
+        "is_subtotal": false,
+        "max_score": 13
+      },
+      {
+        "field": "q16",
+        "title": "16",
+        "is_subtotal": false,
+        "max_score": 15
+      },
+      {
+        "field": "q17",
+        "title": "17",
+        "is_subtotal": false,
+        "max_score": 15
+      },
+      {
+        "field": "q18",
+        "title": "18",
+        "is_subtotal": false,
+        "max_score": 17
+      },
+      {
+        "field": "q19",
+        "title": "19",
+        "is_subtotal": false,
+        "max_score": 17
+      },
+      {
+        "field": "___",
+        "title": "大题总",
+        "is_subtotal": true
+      },
+      {
+        "field": "total",
+        "title": "总分",
+        "is_subtotal": true
+      }
+    ],
+    "results": [
+      {
+        "studentId": "100001",
+        "name": "曾奂霖",
+        "columns": {
+          "q1": 5,
+          "q2": 5,
+          "q3": 5,
+          "q4": 5,
+          "q5": 5,
+          "q6": 5,
+          "q7": 5,
+          "q8": 5,
+          "___": 61,
+          "q9": 6,
+          "q10": 6,
+          "q11": 6,
+          "q12": 5,
+          "q13": 0,
+          "q14": 5,
+          "q15": 13,
+          "q16": 15,
+          "q17": 15,
+          "q18": 10,
+          "q19": 8,
+          "total": 129
+        }
+      },
+      {
+        "studentId": "100002",
+        "name": "丁致远",
+        "columns": {
+          "q1": 0,
+          "q2": 5,
+          "q3": 5,
+          "q4": 5,
+          "q5": 5,
+          "q6": 5,
+          "q7": 5,
+          "q8": 5,
+          "___": 61,
+          "q9": 6,
+          "q10": 6,
+          "q11": 6,
+          "q12": 5,
+          "q13": 0,
+          "q14": 5,
+          "q15": 13,
+          "q16": 15,
+          "q17": 15,
+          "q18": 16,
+          "q19": 2,
+          "total": 124
+        }
+      },
+      {
+        "studentId": "500001",
+        "name": "李沂铮",
+        "columns": {
+          "q1": 5,
+          "q2": 5,
+          "q3": 5,
+          "q4": 5,
+          "q5": 5,
+          "q6": 5,
+          "q7": 5,
+          "q8": 5,
+          "___": 47,
+          "q9": 6,
+          "q10": 4,
+          "q11": 6,
+          "q12": 5,
+          "q13": 0,
+          "q14": 5,
+          "q15": 13,
+          "q16": 14,
+          "q17": 6,
+          "q18": 5,
+          "q19": 9,
+          "total": 113
+        }
+      },
+      {
+        "studentId": "100006",
+        "name": "张浩民",
+        "columns": {
+          "q1": 5,
+          "q2": 5,
+          "q3": 5,
+          "q4": 5,
+          "q5": 5,
+          "q6": 0,
+          "q7": 5,
+          "q8": 5,
+          "___": 50,
+          "q9": 6,
+          "q10": 4,
+          "q11": 6,
+          "q12": 5,
+          "q13": 5,
+          "q14": 0,
+          "q15": 13,
+          "q16": 13,
+          "q17": 12,
+          "q18": 10,
+          "q19": 2,
+          "total": 111
+        }
+      },
+      {
+        "studentId": "100003",
+        "name": "邹宗睿",
+        "columns": {
+          "q1": 5,
+          "q2": 5,
+          "q3": 5,
+          "q4": 5,
+          "q5": 5,
+          "q6": 5,
+          "q7": 0,
+          "q8": 5,
+          "___": 44,
+          "q9": 6,
+          "q10": 6,
+          "q11": 6,
+          "q12": 5,
+          "q13": 0,
+          "q14": 5,
+          "q15": 8,
+          "q16": 14,
+          "q17": 9,
+          "q18": 11,
+          "q19": 2,
+          "total": 107
+        }
+      }
+    ],
+    "ratings": {
+      "gaokaoMath": [
+        {
+          "id": "100001",
+          "history": [
+            130,
+            132
+          ]
+        },
+        {
+          "id": "100002",
+          "history": [
+            136,
+            134
+          ]
+        },
+        {
+          "id": "100003",
+          "history": [
+            118,
+            118
+          ]
+        },
+        {
+          "id": "100005",
+          "history": [
+            null,
+            null
+          ]
+        },
+        {
+          "id": "100006",
+          "history": [
+            122,
+            121
+          ]
+        },
+        {
+          "id": "100007",
+          "history": [
+            null,
+            null
+          ]
+        },
+        {
+          "id": "500001",
+          "history": [
+            null,
+            122
+          ]
+        }
+      ]
+    },
+    "baseline_scores": {
+      "100001": 135,
+      "100002": 131,
+      "100003": 118,
+      "100006": 121,
+      "500001": 122
     }
   }
 ]
