@@ -1419,7 +1419,7 @@
       },
       {
         "field": "___",
-        "title": "单选总",
+        "title": "单选合计",
         "is_subtotal": true
       },
       {
@@ -1442,7 +1442,7 @@
       },
       {
         "field": "___",
-        "title": "多选总",
+        "title": "多选合计",
         "is_subtotal": true
       },
       {
@@ -1465,7 +1465,7 @@
       },
       {
         "field": "___",
-        "title": "填空总",
+        "title": "填空合计",
         "is_subtotal": true
       },
       {
@@ -1500,7 +1500,7 @@
       },
       {
         "field": "___",
-        "title": "大题总",
+        "title": "大题合计",
         "is_subtotal": true
       },
       {
